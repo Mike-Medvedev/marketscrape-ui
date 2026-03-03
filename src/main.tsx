@@ -6,9 +6,9 @@ import { Notifications } from '@mantine/notifications'
 import '@mantine/core/styles.css'
 import '@mantine/notifications/styles.css'
 import './index.css'
-import { theme } from './theme/theme'
-import { queryClient } from './infra/tanstack.client'
-import { Router } from './router'
+import { theme } from '@/theme/theme'
+import { queryClient } from '@/infra/tanstack.client'
+import { Router } from '@/router'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>

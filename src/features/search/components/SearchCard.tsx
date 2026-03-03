@@ -7,7 +7,7 @@ import {
   IconPencil,
 } from '@tabler/icons-react'
 import { ActionIcon } from '@mantine/core'
-import type { ActiveSearch } from '../../../generated/types.gen'
+import type { ActiveSearch } from '@/generated/types.gen'
 import './SearchCard.css'
 
 interface SearchCardProps {

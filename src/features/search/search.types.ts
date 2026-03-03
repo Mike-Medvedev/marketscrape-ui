@@ -9,7 +9,7 @@ export type {
   NotificationMethod,
   CreateSearchPayload,
   UpdateSearchPayload,
-} from '../../generated/types.gen'
+} from '@/generated/types.gen'
 
 export const dateListedSchema = z.enum(['24h', '7d', '30d'])
 

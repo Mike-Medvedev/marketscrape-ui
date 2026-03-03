@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { settings } from '../settings'
+import { settings } from '@/settings'
 
 export const httpClient = axios.create({
   baseURL: settings.env.VITE_API_URL,

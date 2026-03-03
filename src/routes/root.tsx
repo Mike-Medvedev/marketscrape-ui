@@ -1,5 +1,5 @@
 import { Outlet } from 'react-router'
-import { AppLayout } from '../theme/components/AppLayout'
+import { AppLayout } from '@/theme/components/AppLayout'
 
 export function RootLayout() {
   return (

@@ -1,8 +1,8 @@
 import { createBrowserRouter, RouterProvider } from 'react-router'
-import { RootLayout } from './routes/root'
-import { DashboardPage } from './features/search/page/DashboardPage'
-import { NewSearchPage } from './features/search/page/NewSearchPage'
-import { FacebookAuthPage } from './features/auth/page/FacebookAuthPage'
+import { RootLayout } from '@/routes/root'
+import { DashboardPage } from '@/features/search/page/DashboardPage'
+import { NewSearchPage } from '@/features/search/page/NewSearchPage'
+import { FacebookAuthPage } from '@/features/auth/page/FacebookAuthPage'
 
 const router = createBrowserRouter([
   {

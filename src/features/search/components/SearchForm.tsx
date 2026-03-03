@@ -22,9 +22,9 @@ import {
   type SearchCriteria,
   type MonitoringSettings,
   type NotificationMethod,
-} from '../search.types'
-import type { ActiveSearch } from '../../../generated/types.gen'
-import { useCreateSearch, useUpdateSearch } from '../hooks/search.hook'
+} from '@/features/search/search.types'
+import type { ActiveSearch } from '@/generated/types.gen'
+import { useCreateSearch, useUpdateSearch } from '@/features/search/hooks/search.hook'
 import '../page/NewSearchPage.css'
 
 const DATE_LISTED_OPTIONS = [

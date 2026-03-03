@@ -1,8 +1,8 @@
 import { useParams } from 'react-router'
 import { Container, Skeleton } from '@mantine/core'
-import { useSearch } from '../hooks/search.hook'
-import { SearchForm } from '../components/SearchForm'
-import { AppError } from '../../../theme/components/AppError'
+import { useSearch } from '@/features/search/hooks/search.hook'
+import { SearchForm } from '@/features/search/components/SearchForm'
+import { AppError } from '@/theme/components/AppError'
 import './NewSearchPage.css'
 
 export function NewSearchPage() {

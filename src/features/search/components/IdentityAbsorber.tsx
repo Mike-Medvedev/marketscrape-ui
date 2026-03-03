@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { IconX, IconCircleCheck } from "@tabler/icons-react";
 import { Modal, ActionIcon } from "@mantine/core";
-import { toast } from "../../../utils/toast.utils";
+import { toast } from "@/utils/toast.utils";
 import "./IdentityAbsorber.css";
 
 interface IdentityAbsorberProps {

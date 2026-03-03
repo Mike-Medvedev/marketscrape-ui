@@ -6,7 +6,7 @@ import { SearchCard } from './SearchCard'
 import { SessionAlert } from './SessionAlert'
 import { IdentityAbsorber } from './IdentityAbsorber'
 import { NewSearchButton } from './NewSearchButton'
-import { useSearches, useDeleteSearch } from '../hooks/search.hook'
+import { useSearches, useDeleteSearch } from '@/features/search/hooks/search.hook'
 import '../page/DashboardPage.css'
 
 export function DashboardContent() {

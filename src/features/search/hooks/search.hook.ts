@@ -12,10 +12,10 @@ import {
   createSearchMutation,
   updateSearchMutation,
   deleteSearchMutation,
-} from "../../../generated/@tanstack/react-query.gen";
-import type { Options } from "../../../generated/sdk.gen";
-import type { UpdateSearchData } from "../../../generated/types.gen";
-import { toast } from "../../../utils/toast.utils";
+} from "@/generated/@tanstack/react-query.gen";
+import type { Options } from "@/generated/sdk.gen";
+import type { UpdateSearchData } from "@/generated/types.gen";
+import { toast } from "@/utils/toast.utils";
 
 export function useSearches() {
   return useSuspenseQuery({
