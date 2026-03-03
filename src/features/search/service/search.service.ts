@@ -116,7 +116,6 @@ export async function updateSearch(id: string, payload: UpdateSearchPayload): Pr
 }
 
 export async function deleteSearch(id: string): Promise<void> {
-  await delay(300)
   mockSearches = mockSearches.filter((s) => s.id !== id)
   // await httpClient.delete(`/searches/${id}`)
 }
