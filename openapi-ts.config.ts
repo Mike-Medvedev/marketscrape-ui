@@ -1,14 +1,18 @@
 import 'dotenv/config'
+import { existsSync } from 'node:fs'
 import { defineConfig } from '@hey-api/openapi-ts'
 
 const apiUrl = process.env.VITE_API_URL?.replace(/\/$/, '')
+const remoteSpec = apiUrl ? `${apiUrl}/docs/openapi.json` : undefined
+const localSpec = './openapi.json'
 
-if (!apiUrl) {
-  throw new Error('VITE_API_URL is not set in .env')
+const input = remoteSpec ?? localSpec
+if (!remoteSpec && !existsSync(localSpec)) {
+  throw new Error('VITE_API_URL is not set and no local openapi.json found')
 }
 
 export default defineConfig({
-  input: `${apiUrl}/docs/openapi.json`,
+  input,
   output: 'src/generated',
   plugins: [
     {

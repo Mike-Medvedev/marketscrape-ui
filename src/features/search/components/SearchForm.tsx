@@ -22,8 +22,8 @@ import {
   type SearchCriteria,
   type MonitoringSettings,
   type NotificationMethod,
-  type ActiveSearch,
 } from '../search.types'
+import type { ActiveSearch } from '../../../generated/types.gen'
 import { useCreateSearch, useUpdateSearch } from '../hooks/search.hook'
 import '../page/NewSearchPage.css'
 
@@ -93,13 +93,14 @@ export function SearchForm({ existingSearch }: SearchFormProps) {
 
       if (isEditing && existingSearch) {
         updateMutation.mutate(
-          { id: existingSearch.id, payload },
+          { body: payload, path: { id: existingSearch.id } },
           { onSuccess: () => navigate('/') },
         )
       } else {
-        createMutation.mutate(payload, {
-          onSuccess: () => navigate('/'),
-        })
+        createMutation.mutate(
+          { body: payload },
+          { onSuccess: () => navigate('/') },
+        )
       }
     }
   }

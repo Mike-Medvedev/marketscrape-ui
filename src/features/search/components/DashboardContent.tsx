@@ -18,7 +18,7 @@ export function DashboardContent() {
   const hasExpiredSession = searches.some((s) => s.status === 'refresh')
 
   const handleDelete = (id: string) => {
-    deleteMutation.mutate(id)
+    deleteMutation.mutate({ path: { id } })
   }
 
   const handleEdit = (id: string) => {

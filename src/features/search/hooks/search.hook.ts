@@ -5,31 +5,27 @@ import {
   useQueryClient,
 } from '@tanstack/react-query'
 import {
-  getSearches,
-  getSearchById,
-  createSearch,
-  updateSearch,
-  deleteSearch,
-} from '../service/search.service'
-import type { CreateSearchPayload, UpdateSearchPayload } from '../search.types'
+  getSearchesOptions,
+  getSearchesQueryKey,
+  getSearchByIdOptions,
+  getSearchByIdQueryKey,
+  createSearchMutation,
+  updateSearchMutation,
+  deleteSearchMutation,
+} from '../../../generated/@tanstack/react-query.gen'
+import type { Options } from '../../../generated/sdk.gen'
+import type { UpdateSearchData } from '../../../generated/types.gen'
 import { toast } from '../../../utils/toast.utils'
-
-export const searchKeys = {
-  all: ['searches'] as const,
-  detail: (id: string) => ['searches', id] as const,
-}
 
 export function useSearches() {
   return useSuspenseQuery({
-    queryKey: searchKeys.all,
-    queryFn: getSearches,
+    ...getSearchesOptions(),
   })
 }
 
 export function useSearch(id: string | undefined) {
   return useQuery({
-    queryKey: searchKeys.detail(id!),
-    queryFn: () => getSearchById(id!),
+    ...getSearchByIdOptions({ path: { id: id! } }),
     enabled: !!id,
   })
 }
@@ -37,9 +33,9 @@ export function useSearch(id: string | undefined) {
 export function useCreateSearch() {
   const queryClient = useQueryClient()
   return useMutation({
-    mutationFn: (payload: CreateSearchPayload) => createSearch(payload),
+    ...createSearchMutation(),
     onSuccess: async (data) => {
-      await queryClient.invalidateQueries({ queryKey: searchKeys.all })
+      await queryClient.invalidateQueries({ queryKey: getSearchesQueryKey() })
       toast.success({ message: `Search for "${data.criteria.query}" created` })
     },
     onError: () => {
@@ -51,12 +47,11 @@ export function useCreateSearch() {
 export function useUpdateSearch() {
   const queryClient = useQueryClient()
   return useMutation({
-    mutationFn: ({ id, payload }: { id: string; payload: UpdateSearchPayload }) =>
-      updateSearch(id, payload),
-    onSuccess: async (data, variables) => {
+    ...updateSearchMutation(),
+    onSuccess: async (data, variables: Options<UpdateSearchData>) => {
       await Promise.all([
-        queryClient.invalidateQueries({ queryKey: searchKeys.all }),
-        queryClient.invalidateQueries({ queryKey: searchKeys.detail(variables.id) }),
+        queryClient.invalidateQueries({ queryKey: getSearchesQueryKey() }),
+        queryClient.invalidateQueries({ queryKey: getSearchByIdQueryKey({ path: { id: variables.path!.id } }) }),
       ])
       toast.success({ message: `Search for "${data.criteria.query}" updated` })
     },
@@ -69,9 +64,9 @@ export function useUpdateSearch() {
 export function useDeleteSearch() {
   const queryClient = useQueryClient()
   return useMutation({
-    mutationFn: (id: string) => deleteSearch(id),
+    ...deleteSearchMutation(),
     onSuccess: async () => {
-      await queryClient.invalidateQueries({ queryKey: searchKeys.all })
+      await queryClient.invalidateQueries({ queryKey: getSearchesQueryKey() })
       toast.success({ message: 'Search deleted' })
     },
     onError: () => {
