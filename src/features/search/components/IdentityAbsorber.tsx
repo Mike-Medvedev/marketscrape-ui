@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { IconX, IconCircleCheck } from "@tabler/icons-react";
 import { Modal, ActionIcon } from "@mantine/core";
 import { toast } from "@/utils/toast.utils";
-import "./IdentityAbsorber.css";
+import '@/features/search/components/IdentityAbsorber.css'
 
 interface IdentityAbsorberProps {
   isOpen: boolean;

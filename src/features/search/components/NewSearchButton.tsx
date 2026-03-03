@@ -1,7 +1,7 @@
 import { IconSparkles } from '@tabler/icons-react'
 import { Button } from '@mantine/core'
 import type { ReactNode } from 'react'
-import './NewSearchButton.css'
+import '@/features/search/components/NewSearchButton.css'
 
 interface NewSearchButtonProps {
   onClick: () => void

@@ -3,7 +3,7 @@ import { Container, Skeleton } from '@mantine/core'
 import { useSearch } from '@/features/search/hooks/search.hook'
 import { SearchForm } from '@/features/search/components/SearchForm'
 import { AppError } from '@/theme/components/AppError'
-import './NewSearchPage.css'
+import '@/features/search/page/NewSearchPage.css'
 
 export function NewSearchPage() {
   const { id } = useParams()

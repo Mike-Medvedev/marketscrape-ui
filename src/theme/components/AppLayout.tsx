@@ -2,7 +2,7 @@ import { type ReactNode } from 'react'
 import { useNavigate } from 'react-router'
 import { AppShell } from '@mantine/core'
 import { IconSearch } from '@tabler/icons-react'
-import './AppLayout.css'
+import '@/theme/components/AppLayout.css'
 
 interface AppLayoutProps {
   children: ReactNode

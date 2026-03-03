@@ -5,44 +5,44 @@ import {
   IconCircleCheck,
   IconRefresh,
   IconPencil,
-} from '@tabler/icons-react'
-import { ActionIcon } from '@mantine/core'
-import type { ActiveSearch } from '@/generated/types.gen'
-import './SearchCard.css'
+} from "@tabler/icons-react";
+import { ActionIcon } from "@mantine/core";
+import type { ActiveSearch } from "@/generated/types.gen";
+import '@/features/search/components/SearchCard.css'
 
 interface SearchCardProps {
-  search: ActiveSearch
-  onDelete: (id: string) => void
-  onEdit: (id: string) => void
+  search: ActiveSearch;
+  onDelete: (id: string) => void;
+  onEdit: (id: string) => void;
 }
 
 const statusConfig = {
   running: {
     icon: IconCircleCheck,
-    label: 'Sync Healthy',
-    dotClass: 'status-dot--running',
+    label: "Sync Healthy",
+    dotClass: "status-dot--running",
   },
   refresh: {
     icon: IconRefresh,
-    label: 'Action Required',
-    dotClass: 'status-dot--refresh',
+    label: "Action Required",
+    dotClass: "status-dot--refresh",
   },
   error: {
     icon: IconAlertCircle,
-    label: 'Error',
-    dotClass: 'status-dot--error',
+    label: "Error",
+    dotClass: "status-dot--error",
   },
-} as const
+} as const;
 
 export function SearchCard({ search, onDelete, onEdit }: SearchCardProps) {
-  const config = statusConfig[search.status]
+  const config = statusConfig[search.status];
 
   const dateLabel =
-    search.criteria.dateListed === '24h'
-      ? 'Last 24h'
-      : search.criteria.dateListed === '7d'
-        ? 'Last 7 days'
-        : 'Last 30 days'
+    search.criteria.dateListed === "24h"
+      ? "Last 24h"
+      : search.criteria.dateListed === "7d"
+        ? "Last 7 days"
+        : "Last 30 days";
 
   return (
     <div className="search-card">
@@ -53,10 +53,14 @@ export function SearchCard({ search, onDelete, onEdit }: SearchCardProps) {
             {search.criteria.location}
             {(search.criteria.minPrice || search.criteria.maxPrice) && (
               <>
-                {' \u2022 '}
-                {search.criteria.minPrice ? `$${search.criteria.minPrice}` : 'Any'}
-                {' - '}
-                {search.criteria.maxPrice ? `$${search.criteria.maxPrice}` : 'Any'}
+                {" \u2022 "}
+                {search.criteria.minPrice
+                  ? `$${search.criteria.minPrice}`
+                  : "Any"}
+                {" - "}
+                {search.criteria.maxPrice
+                  ? `$${search.criteria.maxPrice}`
+                  : "Any"}
               </>
             )}
           </p>
@@ -92,7 +96,9 @@ export function SearchCard({ search, onDelete, onEdit }: SearchCardProps) {
         </div>
         <div className="search-card-detail">
           <p className="detail-label">Listings</p>
-          <p className="detail-value">{search.settings.listingsPerCheck} per check</p>
+          <p className="detail-value">
+            {search.settings.listingsPerCheck} per check
+          </p>
         </div>
         <div className="search-card-detail">
           <p className="detail-label">Listed</p>
@@ -102,8 +108,8 @@ export function SearchCard({ search, onDelete, onEdit }: SearchCardProps) {
           <p className="detail-label">Notifications</p>
           <p className="detail-value detail-value--capitalize">
             {search.settings.notifications.length > 0
-              ? search.settings.notifications.join(', ')
-              : 'None'}
+              ? search.settings.notifications.join(", ")
+              : "None"}
           </p>
         </div>
       </div>
@@ -115,5 +121,5 @@ export function SearchCard({ search, onDelete, onEdit }: SearchCardProps) {
         </div>
       )}
     </div>
-  )
+  );
 }

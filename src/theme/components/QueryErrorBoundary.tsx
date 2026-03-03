@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react'
 import { useQueryErrorResetBoundary } from '@tanstack/react-query'
 import { ErrorBoundary } from 'react-error-boundary'
-import { AppError } from './AppError'
+import { AppError } from '@/theme/components/AppError'
 
 interface QueryErrorBoundaryProps {
   children: ReactNode

@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router'
 import { Container, Button, Title, Text } from '@mantine/core'
 import { IconArrowLeft, IconDeviceDesktop } from '@tabler/icons-react'
-import './FacebookAuthPage.css'
+import '@/features/auth/page/FacebookAuthPage.css'
 
 export function FacebookAuthPage() {
   const navigate = useNavigate()
