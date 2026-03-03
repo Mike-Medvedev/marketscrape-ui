@@ -26,5 +26,3 @@ dist-ssr
 
 .env
 
-# Generated client (hey-api)
-src/generated
