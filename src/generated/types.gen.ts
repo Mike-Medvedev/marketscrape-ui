@@ -36,7 +36,7 @@ export type GetSearchesResponses = {
 
 export type GetSearchesResponse = GetSearchesResponses[keyof GetSearchesResponses];
 
-export type PostSearchesData = {
+export type CreateSearchData = {
     /**
      * Request body
      */
@@ -59,7 +59,7 @@ export type PostSearchesData = {
     url: '/searches/';
 };
 
-export type PostSearchesResponses = {
+export type CreateSearchResponses = {
     /**
      * Success
      */
@@ -82,9 +82,9 @@ export type PostSearchesResponses = {
     };
 };
 
-export type PostSearchesResponse = PostSearchesResponses[keyof PostSearchesResponses];
+export type CreateSearchResponse = CreateSearchResponses[keyof CreateSearchResponses];
 
-export type DeleteSearchesIdData = {
+export type DeleteSearchData = {
     body?: never;
     path: {
         id: string;
@@ -93,7 +93,7 @@ export type DeleteSearchesIdData = {
     url: '/searches/:id';
 };
 
-export type DeleteSearchesIdErrors = {
+export type DeleteSearchErrors = {
     /**
      * Not Found
      */
@@ -102,9 +102,9 @@ export type DeleteSearchesIdErrors = {
     };
 };
 
-export type DeleteSearchesIdError = DeleteSearchesIdErrors[keyof DeleteSearchesIdErrors];
+export type DeleteSearchError = DeleteSearchErrors[keyof DeleteSearchErrors];
 
-export type DeleteSearchesIdResponses = {
+export type DeleteSearchResponses = {
     /**
      * Success
      */
@@ -113,9 +113,9 @@ export type DeleteSearchesIdResponses = {
     };
 };
 
-export type DeleteSearchesIdResponse = DeleteSearchesIdResponses[keyof DeleteSearchesIdResponses];
+export type DeleteSearchResponse = DeleteSearchResponses[keyof DeleteSearchResponses];
 
-export type GetSearchesIdData = {
+export type GetSearchByIdData = {
     body?: never;
     path: {
         id: string;
@@ -124,7 +124,7 @@ export type GetSearchesIdData = {
     url: '/searches/:id';
 };
 
-export type GetSearchesIdErrors = {
+export type GetSearchByIdErrors = {
     /**
      * Not Found
      */
@@ -133,9 +133,9 @@ export type GetSearchesIdErrors = {
     };
 };
 
-export type GetSearchesIdError = GetSearchesIdErrors[keyof GetSearchesIdErrors];
+export type GetSearchByIdError = GetSearchByIdErrors[keyof GetSearchByIdErrors];
 
-export type GetSearchesIdResponses = {
+export type GetSearchByIdResponses = {
     /**
      * Success
      */
@@ -158,9 +158,9 @@ export type GetSearchesIdResponses = {
     };
 };
 
-export type GetSearchesIdResponse = GetSearchesIdResponses[keyof GetSearchesIdResponses];
+export type GetSearchByIdResponse = GetSearchByIdResponses[keyof GetSearchByIdResponses];
 
-export type PutSearchesIdData = {
+export type UpdateSearchData = {
     /**
      * Request body
      */
@@ -185,7 +185,7 @@ export type PutSearchesIdData = {
     url: '/searches/:id';
 };
 
-export type PutSearchesIdErrors = {
+export type UpdateSearchErrors = {
     /**
      * Not Found
      */
@@ -194,9 +194,9 @@ export type PutSearchesIdErrors = {
     };
 };
 
-export type PutSearchesIdError = PutSearchesIdErrors[keyof PutSearchesIdErrors];
+export type UpdateSearchError = UpdateSearchErrors[keyof UpdateSearchErrors];
 
-export type PutSearchesIdResponses = {
+export type UpdateSearchResponses = {
     /**
      * Success
      */
@@ -219,7 +219,7 @@ export type PutSearchesIdResponses = {
     };
 };
 
-export type PutSearchesIdResponse = PutSearchesIdResponses[keyof PutSearchesIdResponses];
+export type UpdateSearchResponse = UpdateSearchResponses[keyof UpdateSearchResponses];
 
 export type PostScrapeData = {
     /**

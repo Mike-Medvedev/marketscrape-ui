@@ -4,8 +4,8 @@ import { type DefaultError, queryOptions, type UseMutationOptions } from '@tanst
 import type { AxiosError } from 'axios';
 
 import { client } from '../client.gen';
-import { deleteSearchesId, getSearches, getSearchesId, type Options, postScrape, postSearches, postWebhookAnalyzedListings, postWebhookContainerStarted, postWebhookRefresh, putSearchesId } from '../sdk.gen';
-import type { DeleteSearchesIdData, DeleteSearchesIdError, DeleteSearchesIdResponse, GetSearchesData, GetSearchesIdData, GetSearchesIdError, GetSearchesIdResponse, GetSearchesResponse, PostScrapeData, PostScrapeResponse, PostSearchesData, PostSearchesResponse, PostWebhookAnalyzedListingsData, PostWebhookContainerStartedData, PostWebhookRefreshData, PutSearchesIdData, PutSearchesIdError, PutSearchesIdResponse } from '../types.gen';
+import { createSearch, deleteSearch, getSearchById, getSearches, type Options, postScrape, postWebhookAnalyzedListings, postWebhookContainerStarted, postWebhookRefresh, updateSearch } from '../sdk.gen';
+import type { CreateSearchData, CreateSearchResponse, DeleteSearchData, DeleteSearchError, DeleteSearchResponse, GetSearchByIdData, GetSearchByIdError, GetSearchByIdResponse, GetSearchesData, GetSearchesResponse, PostScrapeData, PostScrapeResponse, PostWebhookAnalyzedListingsData, PostWebhookContainerStartedData, PostWebhookRefreshData, UpdateSearchData, UpdateSearchError, UpdateSearchResponse } from '../types.gen';
 
 export type QueryKey<TOptions extends Options> = [
     Pick<TOptions, 'baseURL' | 'body' | 'headers' | 'path' | 'query'> & {
@@ -61,10 +61,10 @@ export const getSearchesOptions = (options?: Options<GetSearchesData>) => queryO
 /**
  * Create a new saved search
  */
-export const postSearchesMutation = (options?: Partial<Options<PostSearchesData>>): UseMutationOptions<PostSearchesResponse, AxiosError<DefaultError>, Options<PostSearchesData>> => {
-    const mutationOptions: UseMutationOptions<PostSearchesResponse, AxiosError<DefaultError>, Options<PostSearchesData>> = {
+export const createSearchMutation = (options?: Partial<Options<CreateSearchData>>): UseMutationOptions<CreateSearchResponse, AxiosError<DefaultError>, Options<CreateSearchData>> => {
+    const mutationOptions: UseMutationOptions<CreateSearchResponse, AxiosError<DefaultError>, Options<CreateSearchData>> = {
         mutationFn: async (fnOptions) => {
-            const { data } = await postSearches({
+            const { data } = await createSearch({
                 ...options,
                 ...fnOptions,
                 throwOnError: true
@@ -78,10 +78,10 @@ export const postSearchesMutation = (options?: Partial<Options<PostSearchesData>
 /**
  * Delete a saved search
  */
-export const deleteSearchesIdMutation = (options?: Partial<Options<DeleteSearchesIdData>>): UseMutationOptions<DeleteSearchesIdResponse, AxiosError<DeleteSearchesIdError>, Options<DeleteSearchesIdData>> => {
-    const mutationOptions: UseMutationOptions<DeleteSearchesIdResponse, AxiosError<DeleteSearchesIdError>, Options<DeleteSearchesIdData>> = {
+export const deleteSearchMutation = (options?: Partial<Options<DeleteSearchData>>): UseMutationOptions<DeleteSearchResponse, AxiosError<DeleteSearchError>, Options<DeleteSearchData>> => {
+    const mutationOptions: UseMutationOptions<DeleteSearchResponse, AxiosError<DeleteSearchError>, Options<DeleteSearchData>> = {
         mutationFn: async (fnOptions) => {
-            const { data } = await deleteSearchesId({
+            const { data } = await deleteSearch({
                 ...options,
                 ...fnOptions,
                 throwOnError: true
@@ -92,14 +92,14 @@ export const deleteSearchesIdMutation = (options?: Partial<Options<DeleteSearche
     return mutationOptions;
 };
 
-export const getSearchesIdQueryKey = (options: Options<GetSearchesIdData>) => createQueryKey('getSearchesId', options);
+export const getSearchByIdQueryKey = (options: Options<GetSearchByIdData>) => createQueryKey('getSearchById', options);
 
 /**
  * Get a saved search by ID
  */
-export const getSearchesIdOptions = (options: Options<GetSearchesIdData>) => queryOptions<GetSearchesIdResponse, AxiosError<GetSearchesIdError>, GetSearchesIdResponse, ReturnType<typeof getSearchesIdQueryKey>>({
+export const getSearchByIdOptions = (options: Options<GetSearchByIdData>) => queryOptions<GetSearchByIdResponse, AxiosError<GetSearchByIdError>, GetSearchByIdResponse, ReturnType<typeof getSearchByIdQueryKey>>({
     queryFn: async ({ queryKey, signal }) => {
-        const { data } = await getSearchesId({
+        const { data } = await getSearchById({
             ...options,
             ...queryKey[0],
             signal,
@@ -107,16 +107,16 @@ export const getSearchesIdOptions = (options: Options<GetSearchesIdData>) => que
         });
         return data;
     },
-    queryKey: getSearchesIdQueryKey(options)
+    queryKey: getSearchByIdQueryKey(options)
 });
 
 /**
  * Update a saved search
  */
-export const putSearchesIdMutation = (options?: Partial<Options<PutSearchesIdData>>): UseMutationOptions<PutSearchesIdResponse, AxiosError<PutSearchesIdError>, Options<PutSearchesIdData>> => {
-    const mutationOptions: UseMutationOptions<PutSearchesIdResponse, AxiosError<PutSearchesIdError>, Options<PutSearchesIdData>> = {
+export const updateSearchMutation = (options?: Partial<Options<UpdateSearchData>>): UseMutationOptions<UpdateSearchResponse, AxiosError<UpdateSearchError>, Options<UpdateSearchData>> => {
+    const mutationOptions: UseMutationOptions<UpdateSearchResponse, AxiosError<UpdateSearchError>, Options<UpdateSearchData>> = {
         mutationFn: async (fnOptions) => {
-            const { data } = await putSearchesId({
+            const { data } = await updateSearch({
                 ...options,
                 ...fnOptions,
                 throwOnError: true

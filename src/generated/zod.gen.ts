@@ -41,7 +41,7 @@ export const zGetSearchesResponse = z.array(z.object({
     lastRun: z.iso.datetime().nullable()
 }));
 
-export const zPostSearchesData = z.object({
+export const zCreateSearchData = z.object({
     body: z.object({
         criteria: z.object({
             query: z.string(),
@@ -71,7 +71,7 @@ export const zPostSearchesData = z.object({
 /**
  * Success
  */
-export const zPostSearchesResponse = z.object({
+export const zCreateSearchResponse = z.object({
     id: z.uuid(),
     criteria: z.object({
         query: z.string(),
@@ -101,7 +101,7 @@ export const zPostSearchesResponse = z.object({
     lastRun: z.iso.datetime().nullable()
 });
 
-export const zDeleteSearchesIdData = z.object({
+export const zDeleteSearchData = z.object({
     body: z.never().optional(),
     path: z.object({
         id: z.uuid()
@@ -112,9 +112,9 @@ export const zDeleteSearchesIdData = z.object({
 /**
  * Success
  */
-export const zDeleteSearchesIdResponse = z.record(z.string(), z.unknown());
+export const zDeleteSearchResponse = z.record(z.string(), z.unknown());
 
-export const zGetSearchesIdData = z.object({
+export const zGetSearchByIdData = z.object({
     body: z.never().optional(),
     path: z.object({
         id: z.uuid()
@@ -125,7 +125,7 @@ export const zGetSearchesIdData = z.object({
 /**
  * Success
  */
-export const zGetSearchesIdResponse = z.object({
+export const zGetSearchByIdResponse = z.object({
     id: z.uuid(),
     criteria: z.object({
         query: z.string(),
@@ -155,7 +155,7 @@ export const zGetSearchesIdResponse = z.object({
     lastRun: z.iso.datetime().nullable()
 });
 
-export const zPutSearchesIdData = z.object({
+export const zUpdateSearchData = z.object({
     body: z.object({
         criteria: z.object({
             query: z.string(),
@@ -187,7 +187,7 @@ export const zPutSearchesIdData = z.object({
 /**
  * Success
  */
-export const zPutSearchesIdResponse = z.object({
+export const zUpdateSearchResponse = z.object({
     id: z.uuid(),
     criteria: z.object({
         query: z.string(),

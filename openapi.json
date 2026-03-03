@@ -12,6 +12,7 @@
     "/searches/": {
       "get": {
         "summary": "List all saved searches",
+        "operationId": "getSearches",
         "tags": ["Searches"],
         "responses": {
           "200": {
@@ -105,6 +106,7 @@
       },
       "post": {
         "summary": "Create a new saved search",
+        "operationId": "createSearch",
         "tags": ["Searches"],
         "requestBody": {
           "description": "Request body",
@@ -262,6 +264,7 @@
     "/searches/:id": {
       "get": {
         "summary": "Get a saved search by ID",
+        "operationId": "getSearchById",
         "tags": ["Searches"],
         "parameters": [
           {
@@ -379,6 +382,7 @@
       },
       "put": {
         "summary": "Update a saved search",
+        "operationId": "updateSearch",
         "tags": ["Searches"],
         "parameters": [
           {
@@ -561,6 +565,7 @@
       },
       "delete": {
         "summary": "Delete a saved search",
+        "operationId": "deleteSearch",
         "tags": ["Searches"],
         "parameters": [
           {
