@@ -23,7 +23,7 @@ import {
   type MonitoringSettings,
   type NotificationMethod,
 } from "@/features/search/search.types";
-import type { ActiveSearch } from "@/generated/types.gen";
+import type { ActiveSearch } from "@/features/search/search.types";
 import {
   useCreateSearch,
   useUpdateSearch,

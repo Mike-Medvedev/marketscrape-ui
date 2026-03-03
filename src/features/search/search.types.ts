@@ -1,15 +1,18 @@
 import { z } from "zod/v4";
-
-export type {
-  ActiveSearch,
-  SearchCriteria,
-  MonitoringSettings,
-  SearchStatus,
-  DateListedOption,
-  NotificationMethod,
-  CreateSearchPayload,
-  UpdateSearchPayload,
+import type {
+  GetSearchesResponse,
+  CreateSearchData,
+  UpdateSearchData,
 } from "@/generated/types.gen";
+
+export type ActiveSearch = GetSearchesResponse[number];
+export type SearchCriteria = ActiveSearch["criteria"];
+export type MonitoringSettings = ActiveSearch["settings"];
+export type SearchStatus = ActiveSearch["status"];
+export type DateListedOption = SearchCriteria["dateListed"];
+export type NotificationMethod = MonitoringSettings["notifications"][number];
+export type CreateSearchPayload = NonNullable<CreateSearchData["body"]>;
+export type UpdateSearchPayload = NonNullable<UpdateSearchData["body"]>;
 
 export const dateListedSchema = z.enum(["24h", "7d", "30d"]);
 
