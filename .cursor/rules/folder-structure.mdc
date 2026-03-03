@@ -1,0 +1,111 @@
+---
+description: Feature-based folder structure, infra vs lib, theme, and CSS-only styling (no inline styles)
+alwaysApply: true
+---
+
+# Folder Structure & Styling
+
+## Top-level layout
+
+- **`routes/`** — Route definitions and route-level components (e.g. root layout, index).
+- **`features/`** — Feature-based modules. Each feature (and sub-features) lives here.
+- **`utils/`** — Shared utilities; same level as `features/`.
+- **`infra/`** — Shared integrations (not `lib`): clients (TanStack, Stripe, HTTP) and **services** (adapters that wrap those clients, e.g. `stripe.service.ts`).
+- **`errors/`** — Custom error classes (e.g. `errors.ts` or `errors/errors.ts`). Used by services and caught by the global error boundary.
+- **`theme/`** — `theme.ts` plus `theme/components/` for shared UI components.
+
+## Feature structure
+
+Each feature (and sub-feature) uses this layout:
+
+```
+features/
+  auth/
+    components/   # Feature-specific components
+    hooks/       # Feature-specific hooks
+    page/        # The actual page(s)
+    service/     # Feature-specific service/API
+  dashboard/
+    components/
+    hooks/
+    page/
+    service/
+    reports/     # Sub-feature with same structure
+      components/
+      hooks/
+      page/
+      service/
+```
+
+- **`components/`** — Components used only in this feature.
+- **`hooks/`** — Hooks used only in this feature.
+- **`page/`** — Page component(s) for the feature.
+- **`service/`** — API or business logic for the feature.
+
+## Infra structure
+
+`infra/` holds **clients** (SDKs, HTTP instance) and **services** (adapters that use those clients, shared across features).
+
+```
+infra/
+  http.client.ts       # Axios instance, auth, headers
+  tanstack.client.ts  # Query client config
+  stripe.client.ts    # Stripe SDK instance
+  stripe.service.ts   # Adapter: wraps stripe.client, used by features
+```
+
+- **`.client.ts`** — Raw client/SDK setup (Stripe, Axios, TanStack Query, etc.).
+- **`.service.ts`** — Adapter or shared service that uses a client; e.g. `stripe.service.ts` wraps `stripe.client.ts` and exposes methods used by multiple features.
+
+## Theme & shared UI
+
+- **`theme/theme.ts`** — Theme config (e.g. Mantine or custom).
+- **`theme/components/`** — Shared UI (Button, Card, etc.). Each component has a co-located CSS file.
+
+## Types & validation
+
+- **Feature types:** Put TypeScript interfaces and Zod schemas for a feature in **`<feature-name>.types.ts`** inside that feature folder (e.g. `features/auth/auth.types.ts`, `features/banking/banking.types.ts`). Use Zod for validation; inferred types and interfaces can live in the same file.
+- **Global types:** Put app-wide types, namespace declarations, and shared type definitions in a single **`types.ts`** (or `global.types.ts`) at the same level as `features/` (e.g. `src/types.ts`). Use this for things like `declare global`, module augmentation, and types used across multiple features.
+
+```text
+features/banking/banking.types.ts   # Account, Transaction, accountSchema, etc.
+src/types.ts                       # Global types, namespaces, shared enums
+```
+
+## File naming: `<name>.<use>.ts`
+
+Use the pattern **`<name>.<use>.ts`** (or `.tsx` where applicable) so the file’s role is clear from its name.
+
+| Location | Use suffix | Example |
+|----------|------------|--------|
+| `utils/` | `.utils` | `date.utils.ts`, `format.utils.ts` |
+| `features/<feature>/service/` | `.service` | `banking.service.ts`, `auth.service.ts` |
+| `infra/` | `.client`, `.service` | `tanstack.client.ts`, `stripe.client.ts`, `stripe.service.ts` |
+| `features/<feature>/` | `.types` | `auth.types.ts`, `banking.types.ts` |
+
+- **Utils:** `utils/date.utils.ts`, `utils/format.utils.ts`
+- **Feature types (interfaces + Zod):** `features/auth/auth.types.ts`, `features/banking/banking.types.ts`
+- **Global types:** `types.ts` or `global.types.ts` at src root — namespaces, `declare global`, shared types
+- **Feature services:** `features/banking/service/banking.service.ts`
+- **Infra clients:** `infra/tanstack.client.ts`, `infra/stripe.client.ts`, `infra/http.client.ts`
+- **Infra services (adapters):** `infra/stripe.service.ts` — wraps a client, shared across features
+- **Errors:** `errors/errors.ts` — custom error classes (e.g. `NotFoundError`, `ValidationError`)
+
+Use the same idea for other types (e.g. `something.hook.ts`, `something.page.tsx`) where it helps. Components stay as `Name.tsx` with co-located `Name.css`.
+
+## Styling rules
+
+- **No inline styles.** Use CSS (or CSS modules) only.
+- **One CSS file per component.** For every `ComponentName.tsx` there is a `ComponentName.css` (or `ComponentName.module.css`) next to it or in an agreed location.
+
+```text
+# ✅ GOOD
+theme/components/Button.tsx
+theme/components/Button.css
+
+features/auth/components/LoginForm.tsx
+features/auth/components/LoginForm.css
+
+# ❌ BAD
+<button style={{ padding: 8, color: 'blue' }}>Click</button>
+```

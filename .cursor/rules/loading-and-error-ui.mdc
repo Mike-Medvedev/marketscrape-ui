@@ -1,0 +1,60 @@
+---
+description: Loading and error UI — Mantine Skeleton while loading, centralized error component, then content
+alwaysApply: true
+---
+
+# Loading & Error UI
+
+Use **TanStack Query** (`useQuery`) for data loading. Drive the UI from `isLoading`, `isError`, and `data` (or `error`). Use **React Suspense** where it fits (e.g. with Suspense-enabled data).
+
+## Three states
+
+1. **Loading** — Show a **Mantine Skeleton** that mirrors the layout of the real content (same structure: headings, rows, cards) so the transition from skeleton to content feels smooth.
+2. **Error** — Show a **centralized error component** (one shared UI for “something went wrong”). Do not inline ad-hoc error messages; use the same error component everywhere.
+3. **Success** — Render the actual component with the loaded data.
+
+## Pattern
+
+```tsx
+function AccountsPage() {
+  const { data, isLoading, isError, error } = useAccounts()
+
+  if (isLoading) {
+    return <AccountsPageSkeleton />
+  }
+
+  if (isError) {
+    return <AppError error={error} />
+  }
+
+  return <AccountsContent accounts={data} />
+}
+```
+
+- **Skeleton:** Use Mantine’s `Skeleton` (e.g. from `@mantine/core`). Build a skeleton that matches the **structure** of the real view (same sections, list length, card layout) so the UI doesn’t jump when data loads.
+- **Error:** Use a single shared component (e.g. `AppError`, `ErrorState`) that accepts `error` and optionally a retry action. Reuse it across features.
+
+## Skeleton structure
+
+Match the loading component to the final component:
+
+```tsx
+// Same layout as AccountsContent: title, then list of cards
+function AccountsPageSkeleton() {
+  return (
+    <>
+      <Skeleton height={28} width={200} mb="md" />
+      {[1, 2, 3].map((i) => (
+        <Skeleton key={i} height={80} mb="sm" radius="md" />
+      ))}
+    </>
+  )
+}
+```
+
+## Summary
+
+- **Loading:** Mantine `Skeleton` in a dedicated skeleton component that mirrors the real component’s structure.
+- **Error:** One centralized error component; pass `error` (and optional retry). No one-off error UIs.
+- **Success:** Render the actual component with `data`.
+- Prefer this order in the component: `isLoading` → `isError` → success content.

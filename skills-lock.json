@@ -1,6 +1,11 @@
 {
   "version": 1,
   "skills": {
+    "error-handling-patterns": {
+      "source": "wshobson/agents",
+      "sourceType": "github",
+      "computedHash": "4930af6f5c144997c6d43a1cbbabc9776eb98cc0926cde29db6e92623dcf78a0"
+    },
     "mantine-dev": {
       "source": "itechmeat/llm-code",
       "sourceType": "github",
