@@ -1,56 +1,56 @@
-import { useState, useEffect } from 'react'
-import { IconX, IconCircleCheck } from '@tabler/icons-react'
-import { Modal, ActionIcon } from '@mantine/core'
-import { toast } from '../../../utils/toast.utils'
-import './IdentityAbsorber.css'
+import { useState, useEffect } from "react";
+import { IconX, IconCircleCheck } from "@tabler/icons-react";
+import { Modal, ActionIcon } from "@mantine/core";
+import { toast } from "../../../utils/toast.utils";
+import "./IdentityAbsorber.css";
 
 interface IdentityAbsorberProps {
-  isOpen: boolean
-  onClose: () => void
+  isOpen: boolean;
+  onClose: () => void;
 }
 
 export function IdentityAbsorber({ isOpen, onClose }: IdentityAbsorberProps) {
-  const [logs, setLogs] = useState<string[]>([])
-  const [isAuthenticated, setIsAuthenticated] = useState(false)
+  const [logs, setLogs] = useState<string[]>([]);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   useEffect(() => {
     if (isOpen) {
-      setLogs([])
-      setIsAuthenticated(false)
+      setLogs([]);
+      setIsAuthenticated(false);
 
       const logSequence = [
-        'Launching Instance...',
-        'Connecting to VNC...',
-        'Loading Facebook Auth...',
-        'Awaiting Auth...',
-      ]
+        "Launching Instance...",
+        "Connecting to VNC...",
+        "Loading Facebook Auth...",
+        "Awaiting Auth...",
+      ];
 
-      const timeouts: ReturnType<typeof setTimeout>[] = []
+      const timeouts: ReturnType<typeof setTimeout>[] = [];
 
       logSequence.forEach((log, index) => {
         const t = setTimeout(() => {
-          setLogs((prev) => [...prev, log])
-        }, index * 800)
-        timeouts.push(t)
-      })
+          setLogs((prev) => [...prev, log]);
+        }, index * 800);
+        timeouts.push(t);
+      });
 
       const authTimeout = setTimeout(() => {
-        setLogs((prev) => [...prev, 'Identity Absorbed \u2713'])
-        setIsAuthenticated(true)
-        toast.success({ message: 'Facebook session synced successfully' })
+        setLogs((prev) => [...prev, "Identity Absorbed \u2713"]);
+        setIsAuthenticated(true);
+        toast.success({ message: "Facebook session synced successfully" });
 
         const closeTimeout = setTimeout(() => {
-          onClose()
-        }, 2000)
-        timeouts.push(closeTimeout)
-      }, 5000)
-      timeouts.push(authTimeout)
+          onClose();
+        }, 2000);
+        timeouts.push(closeTimeout);
+      }, 5000);
+      timeouts.push(authTimeout);
 
       return () => {
-        timeouts.forEach(clearTimeout)
-      }
+        timeouts.forEach(clearTimeout);
+      };
     }
-  }, [isOpen, onClose])
+  }, [isOpen, onClose]);
 
   return (
     <Modal
@@ -59,7 +59,10 @@ export function IdentityAbsorber({ isOpen, onClose }: IdentityAbsorberProps) {
       size="xl"
       withCloseButton={false}
       centered
-      classNames={{ content: 'identity-modal-content', body: 'identity-modal-body' }}
+      classNames={{
+        content: "identity-modal-content",
+        body: "identity-modal-body",
+      }}
       closeOnClickOutside={isAuthenticated}
     >
       <div className="identity-shimmer" />
@@ -85,14 +88,20 @@ export function IdentityAbsorber({ isOpen, onClose }: IdentityAbsorberProps) {
                 <IconCircleCheck size={32} color="var(--status-running)" />
               </div>
               <div>
-                <h3 className="identity-success-title">Session Cloned to Cloud</h3>
-                <p className="identity-success-desc">Auto-closing in 2 seconds...</p>
+                <h3 className="identity-success-title">
+                  Session Cloned to Cloud
+                </h3>
+                <p className="identity-success-desc">
+                  Auto-closing in 2 seconds...
+                </p>
               </div>
             </div>
           ) : (
             <div className="identity-loading">
               <div className="identity-spinner" />
-              <p className="identity-loading-text">Facebook login screen would appear here</p>
+              <p className="identity-loading-text">
+                Facebook login screen would appear here
+              </p>
               <p className="identity-loading-hint">VNC component integration</p>
             </div>
           )}
@@ -110,5 +119,5 @@ export function IdentityAbsorber({ isOpen, onClose }: IdentityAbsorberProps) {
         </div>
       </div>
     </Modal>
-  )
+  );
 }
