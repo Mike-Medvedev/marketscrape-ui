@@ -1,0 +1,35 @@
+{
+  "version": 1,
+  "skills": {
+    "mantine-dev": {
+      "source": "itechmeat/llm-code",
+      "sourceType": "github",
+      "computedHash": "8f018d577908b89d1abb332cf1416840830cf1ff1ee61f474119217e674f0fba"
+    },
+    "mantine-form": {
+      "source": "mantinedev/skills",
+      "sourceType": "github",
+      "computedHash": "1bf98bd02676810bf420019b501ffaaba61774869b2b758dd5518620311ef518"
+    },
+    "tanstack-query-best-practices": {
+      "source": "deckardger/tanstack-agent-skills",
+      "sourceType": "github",
+      "computedHash": "21d2e8b7468a81d772b6527ad8ca178cc2f3f08af777bb9061333013ee88a0c9"
+    },
+    "tanstack-start-best-practices": {
+      "source": "deckardger/tanstack-agent-skills",
+      "sourceType": "github",
+      "computedHash": "50c1b6d9b35b05927fa0c81962d560634385c9567b7b1d66396b171965b33105"
+    },
+    "vercel-react-best-practices": {
+      "source": "vercel-labs/agent-skills",
+      "sourceType": "github",
+      "computedHash": "3462ec83f862abb2d532953df33a4dbf87f4616849da5d4b5cc7c13601aaf997"
+    },
+    "web-design-guidelines": {
+      "source": "vercel-labs/agent-skills",
+      "sourceType": "github",
+      "computedHash": "a6a44d5498f7e8f68289902f3dedfc6f38ae0cee1e96527c80724cf27f727c2a"
+    }
+  }
+}
