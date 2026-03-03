@@ -1,0 +1,10 @@
+.dashboard-skeleton {
+  padding-top: 2rem;
+  padding-bottom: 2rem;
+}
+
+.dashboard-skeleton-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}

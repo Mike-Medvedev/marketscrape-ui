@@ -49,3 +49,23 @@ const user = formData as User
 - **Route/URL params:** Parse query or params with a Zod schema before using in components or hooks.
 
 Keep schemas next to types (e.g. in `<feature>.types.ts`) and reuse them for both runtime validation and TypeScript inference (`z.infer<typeof schema>`).
+
+## Zod version
+
+This project uses **Zod v4**. Always import from `zod/v4`:
+
+```typescript
+import { z } from 'zod/v4'
+```
+
+For Mantine form validation, use `zod4Resolver` from `mantine-form-zod-resolver` — **not** the deprecated `zodResolver` from `@mantine/form`:
+
+```typescript
+import { useForm } from '@mantine/form'
+import { zod4Resolver } from 'mantine-form-zod-resolver'
+
+const form = useForm({
+  initialValues: { name: '' },
+  validate: zod4Resolver(schema),
+})
+```

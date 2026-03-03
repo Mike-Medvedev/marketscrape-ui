@@ -1,0 +1,35 @@
+.new-search-btn {
+  position: relative;
+  overflow: hidden;
+  transition: box-shadow 0.3s, transform 0.3s;
+}
+
+.new-search-btn:hover {
+  box-shadow: 0 0 24px rgba(250, 204, 21, 0.4);
+  transform: scale(1.02);
+}
+
+.new-search-btn:active {
+  transform: scale(0.98);
+}
+
+.new-search-btn-gradient {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.1), transparent);
+  transform: translateX(-200%);
+  transition: transform 1s;
+  pointer-events: none;
+}
+
+.new-search-btn:hover .new-search-btn-gradient {
+  transform: translateX(200%);
+}
+
+.new-search-btn-icon {
+  transition: transform 0.3s;
+}
+
+.new-search-btn:hover .new-search-btn-icon {
+  transform: rotate(12deg);
+}

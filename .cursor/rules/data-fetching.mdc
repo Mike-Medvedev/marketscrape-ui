@@ -1,5 +1,5 @@
 ---
-description: Data fetching flow — HTTP client (infra) → service (business logic) → TanStack Query hook
+description: Data fetching flow — HTTP client (infra) → service (business logic) → TanStack Query hook with Suspense
 alwaysApply: true
 ---
 
@@ -9,9 +9,15 @@ alwaysApply: true
 
 1. **HTTP client** (in `infra/`) — Axios instance with headers, auth, base URL. Shared by all services.
 2. **Service** (in `features/<feature>/service/`) — Business logic and API calls using the HTTP client. No React, no hooks.
-3. **Custom hook** (in `features/<feature>/hooks/`) — TanStack Query (`useQuery` / `useMutation`) that calls the service. Used by components.
+3. **Custom hook** (in `features/<feature>/hooks/`) — TanStack Query (`useSuspenseQuery` / `useMutation`) that calls the service. Used by components.
 
-Components never call the HTTP client or raw API; they use the feature’s hook, which uses the service.
+Components never call the HTTP client or raw API; they use the feature's hook, which uses the service.
+
+## Suspense-first queries
+
+Use **`useSuspenseQuery`** instead of `useQuery` for data fetching hooks. This integrates with React Suspense and error boundaries, eliminating manual `isLoading` / `isError` checks in components. The hook **always returns data** (never `undefined`), and loading/error states are handled declaratively by `<Suspense>` and `<ErrorBoundary>` in the parent tree.
+
+Use regular `useQuery` only when you need conditional fetching (`enabled` option) since `useSuspenseQuery` does not support `enabled`.
 
 ## Example
 
@@ -26,7 +32,7 @@ export const httpClient = axios.create({
 })
 
 httpClient.interceptors.request.use((config) => {
-  const token = getAuthToken() // from auth store/cookie
+  const token = getAuthToken()
   if (token) config.headers.Authorization = `Bearer ${token}`
   return config
 })
@@ -37,29 +43,27 @@ httpClient.interceptors.request.use((config) => {
 ```typescript
 import { httpClient } from '@/infra/http.client'
 
-export type Account = { id: string; name: string; balance: number }
-
 export async function getAccounts(): Promise<Account[]> {
-  const { data } = await httpClient.get<Account[]>('/accounts')
-  return data
+  const { data } = await httpClient.get('/accounts')
+  return accountSchema.array().parse(data)
 }
 
-export async function createAccount(payload: { name: string }) {
-  const { data } = await httpClient.post<Account>('/accounts', payload)
-  return data
+export async function createAccount(payload: CreateAccountPayload) {
+  const { data } = await httpClient.post('/accounts', payload)
+  return accountSchema.parse(data)
 }
 ```
 
 **3. Custom hook** — `features/banking/hooks/accounts.hook.ts`
 
 ```typescript
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
+import { useSuspenseQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { getAccounts, createAccount } from '../service/banking.service'
 
 export const accountsKeys = { all: ['accounts'] as const }
 
 export function useAccounts() {
-  return useQuery({
+  return useSuspenseQuery({
     queryKey: accountsKeys.all,
     queryFn: getAccounts,
   })
@@ -74,16 +78,24 @@ export function useCreateAccount() {
 }
 ```
 
-**4. Component** — uses the hook only
+**4. Component** — uses the hook inside a Suspense boundary
 
 ```tsx
 function AccountsPage() {
-  const { data: accounts, isLoading } = useAccounts()
+  return (
+    <QueryErrorBoundary>
+      <Suspense fallback={<AccountsPageSkeleton />}>
+        <AccountsContent />
+      </Suspense>
+    </QueryErrorBoundary>
+  )
+}
 
-  if (isLoading) return <Spinner />
+function AccountsContent() {
+  const { data: accounts } = useAccounts()
   return (
     <ul>
-      {accounts?.map((a) => (
+      {accounts.map((a) => (
         <li key={a.id}>{a.name}: ${a.balance}</li>
       ))}
     </ul>
@@ -94,6 +106,6 @@ function AccountsPage() {
 ## Summary
 
 - **infra:** HTTP client only (axios, auth, headers).
-- **service:** All API/business logic; uses HTTP client; no React.
-- **hooks:** TanStack Query + service functions; expose `useQuery`/`useMutation` to components.
-- **components:** Use hooks only; never import the HTTP client or service directly for data fetching.
+- **service:** All API/business logic; uses HTTP client; no React. Validate responses with Zod.
+- **hooks:** TanStack Query + service functions. Use `useSuspenseQuery` for reads (integrates with Suspense). Use `useMutation` for writes.
+- **components:** Use hooks only; never import the HTTP client or service directly. Wrap data components in `<Suspense>` + `<QueryErrorBoundary>`.

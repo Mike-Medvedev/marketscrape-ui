@@ -1,0 +1,25 @@
+.new-search-container {
+  padding-top: 3rem;
+  padding-bottom: 3rem;
+}
+
+.new-search-stepper {
+  margin-bottom: 1rem;
+}
+
+.new-search-title {
+  color: var(--foreground);
+  font-size: 1.875rem;
+  margin-bottom: 2rem;
+}
+
+.new-search-form-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--mantine-radius-md);
+  padding: 1.5rem;
+}
+
+.new-search-submit {
+  flex: 1;
+}

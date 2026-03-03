@@ -1,0 +1,18 @@
+.app-error {
+  padding-top: 6rem;
+  padding-bottom: 6rem;
+}
+
+.app-error-icon {
+  width: 4rem;
+  height: 4rem;
+  background: rgba(220, 38, 38, 0.1);
+  border-radius: 9999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.app-error-title {
+  color: var(--foreground);
+}

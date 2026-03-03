@@ -7,6 +7,7 @@ alwaysApply: true
 
 ## Top-level layout
 
+- **`settings.ts`** — App settings and validated environment variables. Uses a Zod schema to parse `import.meta.env` at startup and exports a typed `settings` object. All code reads env vars from `settings` — never from `import.meta.env` directly.
 - **`routes/`** — Route definitions and route-level components (e.g. root layout, index).
 - **`features/`** — Feature-based modules. Each feature (and sub-features) lives here.
 - **`utils/`** — Shared utilities; same level as `features/`.
@@ -66,10 +67,21 @@ infra/
 
 - **Feature types:** Put TypeScript interfaces and Zod schemas for a feature in **`<feature-name>.types.ts`** inside that feature folder (e.g. `features/auth/auth.types.ts`, `features/banking/banking.types.ts`). Use Zod for validation; inferred types and interfaces can live in the same file.
 - **Global types:** Put app-wide types, namespace declarations, and shared type definitions in a single **`types.ts`** (or `global.types.ts`) at the same level as `features/` (e.g. `src/types.ts`). Use this for things like `declare global`, module augmentation, and types used across multiple features.
+- **No types outside type files.** All `type`, `interface`, and `enum` definitions must live in `*.types.ts` (feature-level) or `types.ts` (global) — **never** in services, hooks, utils, or other non-type files. The only exception is **React component props** (`interface FooProps { ... }`), which stay in the component file they belong to.
 
 ```text
 features/banking/banking.types.ts   # Account, Transaction, accountSchema, etc.
 src/types.ts                       # Global types, namespaces, shared enums
+
+# ✅ GOOD — payload types in the feature types file
+features/search/search.types.ts    # SearchCriteria, CreateSearchPayload, etc.
+
+# ✅ GOOD — component props stay in the component
+features/search/components/SearchCard.tsx   # interface SearchCardProps { ... }
+
+# ❌ BAD — types defined in service or hook files
+features/search/service/search.service.ts   # export interface CreateSearchPayload
+features/search/hooks/search.hook.ts        # export type SomeType = ...
 ```
 
 ## File naming: `<name>.<use>.ts`

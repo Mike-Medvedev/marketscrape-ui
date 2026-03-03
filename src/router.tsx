@@ -1,16 +1,18 @@
 import { createBrowserRouter, RouterProvider } from 'react-router'
 import { RootLayout } from './routes/root'
-import { Index } from './routes/index'
+import { DashboardPage } from './features/search/page/DashboardPage'
+import { NewSearchPage } from './features/search/page/NewSearchPage'
+import { FacebookAuthPage } from './features/auth/page/FacebookAuthPage'
 
 const router = createBrowserRouter([
   {
     path: '/',
     element: <RootLayout />,
     children: [
-      {
-        index: true,
-        element: <Index />,
-      },
+      { index: true, element: <DashboardPage /> },
+      { path: 'new', element: <NewSearchPage /> },
+      { path: 'edit/:id', element: <NewSearchPage /> },
+      { path: 'auth/facebook', element: <FacebookAuthPage /> },
     ],
   },
 ])

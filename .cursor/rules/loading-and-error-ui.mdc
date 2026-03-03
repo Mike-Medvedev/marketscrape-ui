@@ -1,45 +1,66 @@
 ---
-description: Loading and error UI — Mantine Skeleton while loading, centralized error component, then content
+description: Loading and error UI — Suspense + ErrorBoundary with Mantine Skeleton fallbacks
 alwaysApply: true
 ---
 
 # Loading & Error UI
 
-Use **TanStack Query** (`useQuery`) for data loading. Drive the UI from `isLoading`, `isError`, and `data` (or `error`). Use **React Suspense** where it fits (e.g. with Suspense-enabled data).
+Use **TanStack Query** (`useSuspenseQuery`) with **React Suspense** and **react-error-boundary** for data loading. Do **not** manually check `isLoading` / `isError` in components — let Suspense and error boundaries handle these states declaratively.
 
-## Three states
+## Architecture
 
-1. **Loading** — Show a **Mantine Skeleton** that mirrors the layout of the real content (same structure: headings, rows, cards) so the transition from skeleton to content feels smooth.
-2. **Error** — Show a **centralized error component** (one shared UI for “something went wrong”). Do not inline ad-hoc error messages; use the same error component everywhere.
-3. **Success** — Render the actual component with the loaded data.
+1. **Loading** — `<Suspense fallback={<Skeleton />}>` wraps the data component. The fallback is a **Mantine Skeleton** that mirrors the layout of the real content.
+2. **Error** — `<QueryErrorBoundary>` wraps the Suspense boundary. It catches query errors and renders a shared error UI with a retry button that resets both the error boundary and query state.
+3. **Success** — The data component renders with `data` (never `undefined` when using `useSuspenseQuery`).
 
-## Pattern
+## QueryErrorBoundary
+
+A shared boundary component that pairs `react-error-boundary` with TanStack Query's `useQueryErrorResetBoundary` so retry actually clears query error state:
 
 ```tsx
-function AccountsPage() {
-  const { data, isLoading, isError, error } = useAccounts()
+import { useQueryErrorResetBoundary } from '@tanstack/react-query'
+import { ErrorBoundary } from 'react-error-boundary'
 
-  if (isLoading) {
-    return <AccountsPageSkeleton />
-  }
-
-  if (isError) {
-    return <AppError error={error} />
-  }
-
-  return <AccountsContent accounts={data} />
+function QueryErrorBoundary({ children }: { children: React.ReactNode }) {
+  const { reset } = useQueryErrorResetBoundary()
+  return (
+    <ErrorBoundary onReset={reset} fallbackRender={({ resetErrorBoundary }) => (
+      <AppError onRetry={resetErrorBoundary} />
+    )}>
+      {children}
+    </ErrorBoundary>
+  )
 }
 ```
 
-- **Skeleton:** Use Mantine’s `Skeleton` (e.g. from `@mantine/core`). Build a skeleton that matches the **structure** of the real view (same sections, list length, card layout) so the UI doesn’t jump when data loads.
-- **Error:** Use a single shared component (e.g. `AppError`, `ErrorState`) that accepts `error` and optionally a retry action. Reuse it across features.
+## Page pattern
+
+Pages are thin wrappers that compose Suspense + ErrorBoundary around the content component:
+
+```tsx
+function AccountsPage() {
+  return (
+    <QueryErrorBoundary>
+      <Suspense fallback={<AccountsPageSkeleton />}>
+        <AccountsContent />
+      </Suspense>
+    </QueryErrorBoundary>
+  )
+}
+
+function AccountsContent() {
+  const { data: accounts } = useAccounts()
+  return <ul>{accounts.map(a => <li key={a.id}>{a.name}</li>)}</ul>
+}
+```
+
+The page renders the header/layout immediately. Only the data section suspends.
 
 ## Skeleton structure
 
-Match the loading component to the final component:
+Match the skeleton to the final component layout so there is no layout shift:
 
 ```tsx
-// Same layout as AccountsContent: title, then list of cards
 function AccountsPageSkeleton() {
   return (
     <>
@@ -52,9 +73,38 @@ function AccountsPageSkeleton() {
 }
 ```
 
+## Granular boundaries
+
+Place Suspense + ErrorBoundary boundaries per section so one failure does not take down the whole page:
+
+```tsx
+function Dashboard() {
+  return (
+    <div>
+      <QueryErrorBoundary>
+        <Suspense fallback={<ActivitySkeleton />}>
+          <RecentActivity />
+        </Suspense>
+      </QueryErrorBoundary>
+
+      <QueryErrorBoundary>
+        <Suspense fallback={<StatsSkeleton />}>
+          <Statistics />
+        </Suspense>
+      </QueryErrorBoundary>
+    </div>
+  )
+}
+```
+
+## When to use regular useQuery
+
+Use `useQuery` (not `useSuspenseQuery`) only when you need the `enabled` option for conditional fetching (e.g. fetch only when an ID is available). In this case, handle loading/error states manually in the component.
+
 ## Summary
 
-- **Loading:** Mantine `Skeleton` in a dedicated skeleton component that mirrors the real component’s structure.
-- **Error:** One centralized error component; pass `error` (and optional retry). No one-off error UIs.
-- **Success:** Render the actual component with `data`.
-- Prefer this order in the component: `isLoading` → `isError` → success content.
+- **Default:** `useSuspenseQuery` + `<Suspense fallback={<Skeleton />}>` + `<QueryErrorBoundary>`.
+- **Skeleton:** Mantine `Skeleton` in a dedicated component that mirrors the real content's structure.
+- **Error:** `QueryErrorBoundary` wrapping Suspense, using `useQueryErrorResetBoundary` + `react-error-boundary`.
+- **No manual checks:** Do not use `isLoading` / `isError` / `if (data)` guards in components using `useSuspenseQuery`.
+- **Exception:** Use `useQuery` + manual checks only for conditional fetching (`enabled`).
