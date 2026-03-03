@@ -8,10 +8,11 @@ alwaysApply: true
 ## Top-level layout
 
 - **`settings.ts`** — App settings and validated environment variables. Uses a Zod schema to parse `import.meta.env` at startup and exports a typed `settings` object. All code reads env vars from `settings` — never from `import.meta.env` directly.
+- **`generated/`** — **Auto-generated** by `@hey-api/openapi-ts` from `openapi.json`. Contains typed SDK functions, Zod schemas, TanStack Query options, and the Axios client. **Never edit manually** — regenerate with `npm run openapi-ts`. Gitignored.
 - **`routes/`** — Route definitions and route-level components (e.g. root layout, index).
 - **`features/`** — Feature-based modules. Each feature (and sub-features) lives here.
 - **`utils/`** — Shared utilities; same level as `features/`.
-- **`infra/`** — Shared integrations (not `lib`): clients (TanStack, Stripe, HTTP) and **services** (adapters that wrap those clients, e.g. `stripe.service.ts`).
+- **`infra/`** — Shared integrations (not `lib`): clients (TanStack, Stripe, HTTP), **services** (adapters that wrap those clients), and `hey-api.config.ts` (runtime config for the generated client).
 - **`errors/`** — Custom error classes (e.g. `errors.ts` or `errors/errors.ts`). Used by services and caught by the global error boundary.
 - **`theme/`** — `theme.ts` plus `theme/components/` for shared UI components.
 
