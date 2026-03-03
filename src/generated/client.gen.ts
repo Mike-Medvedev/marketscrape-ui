@@ -15,4 +15,4 @@ import type { ClientOptions as ClientOptions2 } from './types.gen';
  */
 export type CreateClientConfig<T extends ClientOptions = ClientOptions2> = (override?: Config<ClientOptions & T>) => Config<Required<ClientOptions> & T> | Promise<Config<Required<ClientOptions> & T>>;
 
-export const client = createClient(await createClientConfig(createConfig<ClientOptions2>({ baseURL: 'https://marketscrape-api-eje2axb7e4fbb2dk.eastus2-01.azurewebsites.net' })));
+export const client = createClient(await createClientConfig(createConfig<ClientOptions2>()));

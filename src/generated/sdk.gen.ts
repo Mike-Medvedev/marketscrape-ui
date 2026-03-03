@@ -2,8 +2,8 @@
 
 import type { Client, Options as Options2, TDataShape } from './client';
 import { client } from './client.gen';
-import type { PostScrapeData, PostScrapeResponses, PostWebhookAnalyzedListingsData, PostWebhookContainerStartedData, PostWebhookRefreshData } from './types.gen';
-import { zPostScrapeData, zPostScrapeResponse, zPostWebhookAnalyzedListingsData, zPostWebhookContainerStartedData, zPostWebhookRefreshData } from './zod.gen';
+import type { DeleteSearchesIdData, DeleteSearchesIdErrors, DeleteSearchesIdResponses, GetSearchesData, GetSearchesIdData, GetSearchesIdErrors, GetSearchesIdResponses, GetSearchesResponses, PostScrapeData, PostScrapeResponses, PostSearchesData, PostSearchesResponses, PostWebhookAnalyzedListingsData, PostWebhookContainerStartedData, PostWebhookRefreshData, PutSearchesIdData, PutSearchesIdErrors, PutSearchesIdResponses } from './types.gen';
+import { zDeleteSearchesIdData, zDeleteSearchesIdResponse, zGetSearchesData, zGetSearchesIdData, zGetSearchesIdResponse, zGetSearchesResponse, zPostScrapeData, zPostScrapeResponse, zPostSearchesData, zPostSearchesResponse, zPostWebhookAnalyzedListingsData, zPostWebhookContainerStartedData, zPostWebhookRefreshData, zPutSearchesIdData, zPutSearchesIdResponse } from './zod.gen';
 
 export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends boolean = boolean> = Options2<TData, ThrowOnError> & {
     /**
@@ -18,6 +18,69 @@ export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends 
      */
     meta?: Record<string, unknown>;
 };
+
+/**
+ * List all saved searches
+ */
+export const getSearches = <ThrowOnError extends boolean = false>(options?: Options<GetSearchesData, ThrowOnError>) => (options?.client ?? client).get<GetSearchesResponses, unknown, ThrowOnError>({
+    requestValidator: async (data) => await zGetSearchesData.parseAsync(data),
+    responseType: 'json',
+    responseValidator: async (data) => await zGetSearchesResponse.parseAsync(data),
+    url: '/searches/',
+    ...options
+});
+
+/**
+ * Create a new saved search
+ */
+export const postSearches = <ThrowOnError extends boolean = false>(options?: Options<PostSearchesData, ThrowOnError>) => (options?.client ?? client).post<PostSearchesResponses, unknown, ThrowOnError>({
+    requestValidator: async (data) => await zPostSearchesData.parseAsync(data),
+    responseType: 'json',
+    responseValidator: async (data) => await zPostSearchesResponse.parseAsync(data),
+    url: '/searches/',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options?.headers
+    }
+});
+
+/**
+ * Delete a saved search
+ */
+export const deleteSearchesId = <ThrowOnError extends boolean = false>(options: Options<DeleteSearchesIdData, ThrowOnError>) => (options.client ?? client).delete<DeleteSearchesIdResponses, DeleteSearchesIdErrors, ThrowOnError>({
+    requestValidator: async (data) => await zDeleteSearchesIdData.parseAsync(data),
+    responseType: 'json',
+    responseValidator: async (data) => await zDeleteSearchesIdResponse.parseAsync(data),
+    url: '/searches/:id',
+    ...options
+});
+
+/**
+ * Get a saved search by ID
+ */
+export const getSearchesId = <ThrowOnError extends boolean = false>(options: Options<GetSearchesIdData, ThrowOnError>) => (options.client ?? client).get<GetSearchesIdResponses, GetSearchesIdErrors, ThrowOnError>({
+    requestValidator: async (data) => await zGetSearchesIdData.parseAsync(data),
+    responseType: 'json',
+    responseValidator: async (data) => await zGetSearchesIdResponse.parseAsync(data),
+    url: '/searches/:id',
+    ...options
+});
+
+/**
+ * Update a saved search
+ */
+export const putSearchesId = <ThrowOnError extends boolean = false>(options: Options<PutSearchesIdData, ThrowOnError>) => (options.client ?? client).put<PutSearchesIdResponses, PutSearchesIdErrors, ThrowOnError>({
+    requestValidator: async (data) => await zPutSearchesIdData.parseAsync(data),
+    responseType: 'json',
+    responseValidator: async (data) => await zPutSearchesIdResponse.parseAsync(data),
+    url: '/searches/:id',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
 
 /**
  * Searches Marketplace and returns listings

@@ -2,6 +2,221 @@
 
 import * as z from 'zod';
 
+export const zGetSearchesData = z.object({
+    body: z.never().optional(),
+    path: z.never().optional(),
+    query: z.never().optional()
+});
+
+/**
+ * Success
+ */
+export const zGetSearchesResponse = z.array(z.object({
+    id: z.uuid(),
+    criteria: z.object({
+        query: z.string(),
+        location: z.string(),
+        minPrice: z.string(),
+        maxPrice: z.string(),
+        dateListed: z.enum([
+            '24h',
+            '7d',
+            '30d'
+        ])
+    }),
+    settings: z.object({
+        frequency: z.string(),
+        listingsPerCheck: z.int().gte(1),
+        notifications: z.array(z.enum([
+            'email',
+            'sms',
+            'webhook'
+        ]))
+    }),
+    status: z.enum([
+        'running',
+        'refresh',
+        'error'
+    ]),
+    lastRun: z.iso.datetime().nullable()
+}));
+
+export const zPostSearchesData = z.object({
+    body: z.object({
+        criteria: z.object({
+            query: z.string(),
+            location: z.string(),
+            minPrice: z.string(),
+            maxPrice: z.string(),
+            dateListed: z.enum([
+                '24h',
+                '7d',
+                '30d'
+            ])
+        }),
+        settings: z.object({
+            frequency: z.string(),
+            listingsPerCheck: z.int().gte(1),
+            notifications: z.array(z.enum([
+                'email',
+                'sms',
+                'webhook'
+            ]))
+        })
+    }).optional(),
+    path: z.never().optional(),
+    query: z.never().optional()
+});
+
+/**
+ * Success
+ */
+export const zPostSearchesResponse = z.object({
+    id: z.uuid(),
+    criteria: z.object({
+        query: z.string(),
+        location: z.string(),
+        minPrice: z.string(),
+        maxPrice: z.string(),
+        dateListed: z.enum([
+            '24h',
+            '7d',
+            '30d'
+        ])
+    }),
+    settings: z.object({
+        frequency: z.string(),
+        listingsPerCheck: z.int().gte(1),
+        notifications: z.array(z.enum([
+            'email',
+            'sms',
+            'webhook'
+        ]))
+    }),
+    status: z.enum([
+        'running',
+        'refresh',
+        'error'
+    ]),
+    lastRun: z.iso.datetime().nullable()
+});
+
+export const zDeleteSearchesIdData = z.object({
+    body: z.never().optional(),
+    path: z.object({
+        id: z.uuid()
+    }),
+    query: z.never().optional()
+});
+
+/**
+ * Success
+ */
+export const zDeleteSearchesIdResponse = z.record(z.string(), z.unknown());
+
+export const zGetSearchesIdData = z.object({
+    body: z.never().optional(),
+    path: z.object({
+        id: z.uuid()
+    }),
+    query: z.never().optional()
+});
+
+/**
+ * Success
+ */
+export const zGetSearchesIdResponse = z.object({
+    id: z.uuid(),
+    criteria: z.object({
+        query: z.string(),
+        location: z.string(),
+        minPrice: z.string(),
+        maxPrice: z.string(),
+        dateListed: z.enum([
+            '24h',
+            '7d',
+            '30d'
+        ])
+    }),
+    settings: z.object({
+        frequency: z.string(),
+        listingsPerCheck: z.int().gte(1),
+        notifications: z.array(z.enum([
+            'email',
+            'sms',
+            'webhook'
+        ]))
+    }),
+    status: z.enum([
+        'running',
+        'refresh',
+        'error'
+    ]),
+    lastRun: z.iso.datetime().nullable()
+});
+
+export const zPutSearchesIdData = z.object({
+    body: z.object({
+        criteria: z.object({
+            query: z.string(),
+            location: z.string(),
+            minPrice: z.string(),
+            maxPrice: z.string(),
+            dateListed: z.enum([
+                '24h',
+                '7d',
+                '30d'
+            ])
+        }),
+        settings: z.object({
+            frequency: z.string(),
+            listingsPerCheck: z.int().gte(1),
+            notifications: z.array(z.enum([
+                'email',
+                'sms',
+                'webhook'
+            ]))
+        })
+    }).optional(),
+    path: z.object({
+        id: z.uuid()
+    }),
+    query: z.never().optional()
+});
+
+/**
+ * Success
+ */
+export const zPutSearchesIdResponse = z.object({
+    id: z.uuid(),
+    criteria: z.object({
+        query: z.string(),
+        location: z.string(),
+        minPrice: z.string(),
+        maxPrice: z.string(),
+        dateListed: z.enum([
+            '24h',
+            '7d',
+            '30d'
+        ])
+    }),
+    settings: z.object({
+        frequency: z.string(),
+        listingsPerCheck: z.int().gte(1),
+        notifications: z.array(z.enum([
+            'email',
+            'sms',
+            'webhook'
+        ]))
+    }),
+    status: z.enum([
+        'running',
+        'refresh',
+        'error'
+    ]),
+    lastRun: z.iso.datetime().nullable()
+});
+
 export const zPostScrapeData = z.object({
     body: z.object({
         query: z.string().optional(),
