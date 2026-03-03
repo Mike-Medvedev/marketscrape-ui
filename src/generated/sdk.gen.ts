@@ -26,7 +26,7 @@ export const getSearches = <ThrowOnError extends boolean = false>(options?: Opti
     requestValidator: async (data) => await zGetSearchesData.parseAsync(data),
     responseType: 'json',
     responseValidator: async (data) => await zGetSearchesResponse.parseAsync(data),
-    url: '/searches/',
+    url: '/api/v1/searches/',
     ...options
 });
 
@@ -37,7 +37,7 @@ export const createSearch = <ThrowOnError extends boolean = false>(options?: Opt
     requestValidator: async (data) => await zCreateSearchData.parseAsync(data),
     responseType: 'json',
     responseValidator: async (data) => await zCreateSearchResponse.parseAsync(data),
-    url: '/searches/',
+    url: '/api/v1/searches/',
     ...options,
     headers: {
         'Content-Type': 'application/json',
@@ -52,7 +52,7 @@ export const deleteSearch = <ThrowOnError extends boolean = false>(options: Opti
     requestValidator: async (data) => await zDeleteSearchData.parseAsync(data),
     responseType: 'json',
     responseValidator: async (data) => await zDeleteSearchResponse.parseAsync(data),
-    url: '/searches/:id',
+    url: '/api/v1/searches/:id',
     ...options
 });
 
@@ -63,7 +63,7 @@ export const getSearchById = <ThrowOnError extends boolean = false>(options: Opt
     requestValidator: async (data) => await zGetSearchByIdData.parseAsync(data),
     responseType: 'json',
     responseValidator: async (data) => await zGetSearchByIdResponse.parseAsync(data),
-    url: '/searches/:id',
+    url: '/api/v1/searches/:id',
     ...options
 });
 
@@ -74,7 +74,7 @@ export const updateSearch = <ThrowOnError extends boolean = false>(options: Opti
     requestValidator: async (data) => await zUpdateSearchData.parseAsync(data),
     responseType: 'json',
     responseValidator: async (data) => await zUpdateSearchResponse.parseAsync(data),
-    url: '/searches/:id',
+    url: '/api/v1/searches/:id',
     ...options,
     headers: {
         'Content-Type': 'application/json',
