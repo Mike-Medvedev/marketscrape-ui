@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { IconX, IconCircleCheck } from '@tabler/icons-react'
 import { Modal, ActionIcon } from '@mantine/core'
+import { toast } from '../../../utils/toast.utils'
 import './IdentityAbsorber.css'
 
 interface IdentityAbsorberProps {
@@ -36,6 +37,7 @@ export function IdentityAbsorber({ isOpen, onClose }: IdentityAbsorberProps) {
       const authTimeout = setTimeout(() => {
         setLogs((prev) => [...prev, 'Identity Absorbed \u2713'])
         setIsAuthenticated(true)
+        toast.success({ message: 'Facebook session synced successfully' })
 
         const closeTimeout = setTimeout(() => {
           onClose()

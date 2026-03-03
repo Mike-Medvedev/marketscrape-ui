@@ -7,6 +7,7 @@ import {
   deleteSearch,
 } from '../service/search.service'
 import type { CreateSearchPayload, UpdateSearchPayload } from '../search.types'
+import { toast } from '../../../utils/toast.utils'
 
 export const searchKeys = {
   all: ['searches'] as const,
@@ -32,8 +33,12 @@ export function useCreateSearch() {
   const queryClient = useQueryClient()
   return useMutation({
     mutationFn: (payload: CreateSearchPayload) => createSearch(payload),
-    onSuccess: () => {
+    onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: searchKeys.all })
+      toast.success({ message: `Search for "${data.criteria.query}" created` })
+    },
+    onError: () => {
+      toast.error({ message: 'Failed to create search. Please try again.' })
     },
   })
 }
@@ -43,9 +48,13 @@ export function useUpdateSearch() {
   return useMutation({
     mutationFn: ({ id, payload }: { id: string; payload: UpdateSearchPayload }) =>
       updateSearch(id, payload),
-    onSuccess: (_data, variables) => {
+    onSuccess: (data, variables) => {
       queryClient.invalidateQueries({ queryKey: searchKeys.all })
       queryClient.invalidateQueries({ queryKey: searchKeys.detail(variables.id) })
+      toast.success({ message: `Search for "${data.criteria.query}" updated` })
+    },
+    onError: () => {
+      toast.error({ message: 'Failed to update search. Please try again.' })
     },
   })
 }
@@ -56,6 +65,10 @@ export function useDeleteSearch() {
     mutationFn: (id: string) => deleteSearch(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: searchKeys.all })
+      toast.success({ message: 'Search deleted' })
+    },
+    onError: () => {
+      toast.error({ message: 'Failed to delete search. Please try again.' })
     },
   })
 }
