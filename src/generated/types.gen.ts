@@ -11,27 +11,46 @@ export type GetSearchesData = {
     url: '/api/v1/searches/';
 };
 
+export type GetSearchesErrors = {
+    /**
+     * Internal Server Error
+     */
+    500: {
+        success: false;
+        error: {
+            code: string;
+            message: string;
+            details?: unknown;
+        };
+    };
+};
+
+export type GetSearchesError = GetSearchesErrors[keyof GetSearchesErrors];
+
 export type GetSearchesResponses = {
     /**
      * Success
      */
-    200: Array<{
-        id: string;
-        criteria: {
-            query: string;
-            location: string;
-            minPrice: string;
-            maxPrice: string;
-            dateListed: '24h' | '7d' | '30d';
-        };
-        settings: {
-            frequency: string;
-            listingsPerCheck: number;
-            notifications: Array<'email' | 'sms' | 'webhook'>;
-        };
-        status: 'running' | 'refresh' | 'error';
-        lastRun: string | null;
-    }>;
+    200: {
+        success: true;
+        data: Array<{
+            id: string;
+            criteria: {
+                query: string;
+                location: string;
+                minPrice: string;
+                maxPrice: string;
+                dateListed: '24h' | '7d' | '30d';
+            };
+            settings: {
+                frequency: string;
+                listingsPerCheck: number;
+                notifications: Array<'email' | 'sms' | 'webhook'>;
+            };
+            status: 'running' | 'refresh' | 'error';
+            lastRun: string | null;
+        }>;
+    };
 };
 
 export type GetSearchesResponse = GetSearchesResponses[keyof GetSearchesResponses];
@@ -64,21 +83,24 @@ export type CreateSearchResponses = {
      * Success
      */
     200: {
-        id: string;
-        criteria: {
-            query: string;
-            location: string;
-            minPrice: string;
-            maxPrice: string;
-            dateListed: '24h' | '7d' | '30d';
+        success: true;
+        data: {
+            id: string;
+            criteria: {
+                query: string;
+                location: string;
+                minPrice: string;
+                maxPrice: string;
+                dateListed: '24h' | '7d' | '30d';
+            };
+            settings: {
+                frequency: string;
+                listingsPerCheck: number;
+                notifications: Array<'email' | 'sms' | 'webhook'>;
+            };
+            status: 'running' | 'refresh' | 'error';
+            lastRun: string | null;
         };
-        settings: {
-            frequency: string;
-            listingsPerCheck: number;
-            notifications: Array<'email' | 'sms' | 'webhook'>;
-        };
-        status: 'running' | 'refresh' | 'error';
-        lastRun: string | null;
     };
 };
 
@@ -90,7 +112,7 @@ export type DeleteSearchData = {
         id: string;
     };
     query?: never;
-    url: '/api/v1/searches/:id';
+    url: '/api/v1/searches/{id}';
 };
 
 export type DeleteSearchErrors = {
@@ -98,7 +120,12 @@ export type DeleteSearchErrors = {
      * Not Found
      */
     404: {
-        error: string;
+        success: false;
+        error: {
+            code: string;
+            message: string;
+            details?: unknown;
+        };
     };
 };
 
@@ -109,7 +136,8 @@ export type DeleteSearchResponses = {
      * Success
      */
     200: {
-        [key: string]: unknown;
+        success: true;
+        data: unknown;
     };
 };
 
@@ -121,7 +149,7 @@ export type GetSearchByIdData = {
         id: string;
     };
     query?: never;
-    url: '/api/v1/searches/:id';
+    url: '/api/v1/searches/{id}';
 };
 
 export type GetSearchByIdErrors = {
@@ -129,7 +157,12 @@ export type GetSearchByIdErrors = {
      * Not Found
      */
     404: {
-        error: string;
+        success: false;
+        error: {
+            code: string;
+            message: string;
+            details?: unknown;
+        };
     };
 };
 
@@ -140,21 +173,24 @@ export type GetSearchByIdResponses = {
      * Success
      */
     200: {
-        id: string;
-        criteria: {
-            query: string;
-            location: string;
-            minPrice: string;
-            maxPrice: string;
-            dateListed: '24h' | '7d' | '30d';
+        success: true;
+        data: {
+            id: string;
+            criteria: {
+                query: string;
+                location: string;
+                minPrice: string;
+                maxPrice: string;
+                dateListed: '24h' | '7d' | '30d';
+            };
+            settings: {
+                frequency: string;
+                listingsPerCheck: number;
+                notifications: Array<'email' | 'sms' | 'webhook'>;
+            };
+            status: 'running' | 'refresh' | 'error';
+            lastRun: string | null;
         };
-        settings: {
-            frequency: string;
-            listingsPerCheck: number;
-            notifications: Array<'email' | 'sms' | 'webhook'>;
-        };
-        status: 'running' | 'refresh' | 'error';
-        lastRun: string | null;
     };
 };
 
@@ -182,7 +218,7 @@ export type UpdateSearchData = {
         id: string;
     };
     query?: never;
-    url: '/api/v1/searches/:id';
+    url: '/api/v1/searches/{id}';
 };
 
 export type UpdateSearchErrors = {
@@ -190,7 +226,12 @@ export type UpdateSearchErrors = {
      * Not Found
      */
     404: {
-        error: string;
+        success: false;
+        error: {
+            code: string;
+            message: string;
+            details?: unknown;
+        };
     };
 };
 
@@ -201,21 +242,24 @@ export type UpdateSearchResponses = {
      * Success
      */
     200: {
-        id: string;
-        criteria: {
-            query: string;
-            location: string;
-            minPrice: string;
-            maxPrice: string;
-            dateListed: '24h' | '7d' | '30d';
+        success: true;
+        data: {
+            id: string;
+            criteria: {
+                query: string;
+                location: string;
+                minPrice: string;
+                maxPrice: string;
+                dateListed: '24h' | '7d' | '30d';
+            };
+            settings: {
+                frequency: string;
+                listingsPerCheck: number;
+                notifications: Array<'email' | 'sms' | 'webhook'>;
+            };
+            status: 'running' | 'refresh' | 'error';
+            lastRun: string | null;
         };
-        settings: {
-            frequency: string;
-            listingsPerCheck: number;
-            notifications: Array<'email' | 'sms' | 'webhook'>;
-        };
-        status: 'running' | 'refresh' | 'error';
-        lastRun: string | null;
     };
 };
 
@@ -246,14 +290,17 @@ export type PostScrapeResponses = {
      * Success
      */
     200: {
-        listings: Array<{
-            id: string;
-            url: string;
-            price: string;
-            title: string;
-            location: string;
-            primaryPhotoUri: string;
-        }>;
+        success: true;
+        data: {
+            listings: Array<{
+                id: string;
+                url: string;
+                price: string;
+                title: string;
+                location: string;
+                primaryPhotoUri: string;
+            }>;
+        };
     };
 };
 

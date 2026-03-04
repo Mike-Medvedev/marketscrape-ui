@@ -25,5 +25,5 @@ export function NewSearchPage() {
     return <AppError error={error} />
   }
 
-  return <SearchForm existingSearch={existingSearch} />
+  return <SearchForm existingSearch={existingSearch?.data} />
 }

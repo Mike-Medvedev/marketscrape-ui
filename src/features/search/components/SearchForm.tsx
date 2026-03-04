@@ -119,7 +119,7 @@ export function SearchForm({ existingSearch }: SearchFormProps) {
   const toggleNotification = (method: NotificationMethod) => {
     const current = settingsForm.values.notifications;
     const updated = current.includes(method)
-      ? current.filter((n) => n !== method)
+      ? current.filter((n: NotificationMethod) => n !== method)
       : [...current, method];
     settingsForm.setFieldValue("notifications", updated);
   };

@@ -14,7 +14,8 @@ import '@/features/search/page/DashboardPage.css'
 
 export function DashboardContent() {
   const navigate = useNavigate();
-  const { data: searches } = useSearches();
+  const { data: response } = useSearches();
+  const searches = response.data;
   const deleteMutation = useDeleteSearch();
   const [showIdentityModal, setShowIdentityModal] = useState(false);
 

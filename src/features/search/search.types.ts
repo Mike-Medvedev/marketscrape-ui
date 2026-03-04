@@ -5,7 +5,7 @@ import type {
   UpdateSearchData,
 } from "@/generated/types.gen";
 
-export type ActiveSearch = GetSearchesResponse[number];
+export type ActiveSearch = GetSearchesResponse['data'][number];
 export type SearchCriteria = ActiveSearch["criteria"];
 export type MonitoringSettings = ActiveSearch["settings"];
 export type SearchStatus = ActiveSearch["status"];

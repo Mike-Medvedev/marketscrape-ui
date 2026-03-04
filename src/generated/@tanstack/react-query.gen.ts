@@ -5,7 +5,7 @@ import type { AxiosError } from 'axios';
 
 import { client } from '../client.gen';
 import { createSearch, deleteSearch, getSearchById, getSearches, type Options, postScrape, postWebhookAnalyzedListings, postWebhookContainerStarted, postWebhookRefresh, updateSearch } from '../sdk.gen';
-import type { CreateSearchData, CreateSearchResponse, DeleteSearchData, DeleteSearchError, DeleteSearchResponse, GetSearchByIdData, GetSearchByIdError, GetSearchByIdResponse, GetSearchesData, GetSearchesResponse, PostScrapeData, PostScrapeResponse, PostWebhookAnalyzedListingsData, PostWebhookContainerStartedData, PostWebhookRefreshData, UpdateSearchData, UpdateSearchError, UpdateSearchResponse } from '../types.gen';
+import type { CreateSearchData, CreateSearchResponse, DeleteSearchData, DeleteSearchError, DeleteSearchResponse, GetSearchByIdData, GetSearchByIdError, GetSearchByIdResponse, GetSearchesData, GetSearchesError, GetSearchesResponse, PostScrapeData, PostScrapeResponse, PostWebhookAnalyzedListingsData, PostWebhookContainerStartedData, PostWebhookRefreshData, UpdateSearchData, UpdateSearchError, UpdateSearchResponse } from '../types.gen';
 
 export type QueryKey<TOptions extends Options> = [
     Pick<TOptions, 'baseURL' | 'body' | 'headers' | 'path' | 'query'> & {
@@ -45,7 +45,7 @@ export const getSearchesQueryKey = (options?: Options<GetSearchesData>) => creat
 /**
  * List all saved searches
  */
-export const getSearchesOptions = (options?: Options<GetSearchesData>) => queryOptions<GetSearchesResponse, AxiosError<DefaultError>, GetSearchesResponse, ReturnType<typeof getSearchesQueryKey>>({
+export const getSearchesOptions = (options?: Options<GetSearchesData>) => queryOptions<GetSearchesResponse, AxiosError<GetSearchesError>, GetSearchesResponse, ReturnType<typeof getSearchesQueryKey>>({
     queryFn: async ({ queryKey, signal }) => {
         const { data } = await getSearches({
             ...options,

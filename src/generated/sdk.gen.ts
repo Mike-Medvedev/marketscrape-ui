@@ -2,7 +2,7 @@
 
 import type { Client, Options as Options2, TDataShape } from './client';
 import { client } from './client.gen';
-import type { CreateSearchData, CreateSearchResponses, DeleteSearchData, DeleteSearchErrors, DeleteSearchResponses, GetSearchByIdData, GetSearchByIdErrors, GetSearchByIdResponses, GetSearchesData, GetSearchesResponses, PostScrapeData, PostScrapeResponses, PostWebhookAnalyzedListingsData, PostWebhookContainerStartedData, PostWebhookRefreshData, UpdateSearchData, UpdateSearchErrors, UpdateSearchResponses } from './types.gen';
+import type { CreateSearchData, CreateSearchResponses, DeleteSearchData, DeleteSearchErrors, DeleteSearchResponses, GetSearchByIdData, GetSearchByIdErrors, GetSearchByIdResponses, GetSearchesData, GetSearchesErrors, GetSearchesResponses, PostScrapeData, PostScrapeResponses, PostWebhookAnalyzedListingsData, PostWebhookContainerStartedData, PostWebhookRefreshData, UpdateSearchData, UpdateSearchErrors, UpdateSearchResponses } from './types.gen';
 import { zCreateSearchData, zCreateSearchResponse, zDeleteSearchData, zDeleteSearchResponse, zGetSearchByIdData, zGetSearchByIdResponse, zGetSearchesData, zGetSearchesResponse, zPostScrapeData, zPostScrapeResponse, zPostWebhookAnalyzedListingsData, zPostWebhookContainerStartedData, zPostWebhookRefreshData, zUpdateSearchData, zUpdateSearchResponse } from './zod.gen';
 
 export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends boolean = boolean> = Options2<TData, ThrowOnError> & {
@@ -22,7 +22,7 @@ export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends 
 /**
  * List all saved searches
  */
-export const getSearches = <ThrowOnError extends boolean = false>(options?: Options<GetSearchesData, ThrowOnError>) => (options?.client ?? client).get<GetSearchesResponses, unknown, ThrowOnError>({
+export const getSearches = <ThrowOnError extends boolean = false>(options?: Options<GetSearchesData, ThrowOnError>) => (options?.client ?? client).get<GetSearchesResponses, GetSearchesErrors, ThrowOnError>({
     requestValidator: async (data) => await zGetSearchesData.parseAsync(data),
     responseType: 'json',
     responseValidator: async (data) => await zGetSearchesResponse.parseAsync(data),
@@ -52,7 +52,7 @@ export const deleteSearch = <ThrowOnError extends boolean = false>(options: Opti
     requestValidator: async (data) => await zDeleteSearchData.parseAsync(data),
     responseType: 'json',
     responseValidator: async (data) => await zDeleteSearchResponse.parseAsync(data),
-    url: '/api/v1/searches/:id',
+    url: '/api/v1/searches/{id}',
     ...options
 });
 
@@ -63,7 +63,7 @@ export const getSearchById = <ThrowOnError extends boolean = false>(options: Opt
     requestValidator: async (data) => await zGetSearchByIdData.parseAsync(data),
     responseType: 'json',
     responseValidator: async (data) => await zGetSearchByIdResponse.parseAsync(data),
-    url: '/api/v1/searches/:id',
+    url: '/api/v1/searches/{id}',
     ...options
 });
 
@@ -74,7 +74,7 @@ export const updateSearch = <ThrowOnError extends boolean = false>(options: Opti
     requestValidator: async (data) => await zUpdateSearchData.parseAsync(data),
     responseType: 'json',
     responseValidator: async (data) => await zUpdateSearchResponse.parseAsync(data),
-    url: '/api/v1/searches/:id',
+    url: '/api/v1/searches/{id}',
     ...options,
     headers: {
         'Content-Type': 'application/json',
