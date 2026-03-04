@@ -2,8 +2,8 @@
 
 import type { Client, Options as Options2, TDataShape } from './client';
 import { client } from './client.gen';
-import type { CreateSearchData, CreateSearchResponses, DeleteSearchData, DeleteSearchErrors, DeleteSearchResponses, GetSearchByIdData, GetSearchByIdErrors, GetSearchByIdResponses, GetSearchesData, GetSearchesErrors, GetSearchesResponses, PostScrapeData, PostScrapeResponses, PostWebhookAnalyzedListingsData, PostWebhookContainerStartedData, PostWebhookRefreshData, UpdateSearchData, UpdateSearchErrors, UpdateSearchResponses } from './types.gen';
-import { zCreateSearchData, zCreateSearchResponse, zDeleteSearchData, zDeleteSearchResponse, zGetSearchByIdData, zGetSearchByIdResponse, zGetSearchesData, zGetSearchesResponse, zPostScrapeData, zPostScrapeResponse, zPostWebhookAnalyzedListingsData, zPostWebhookContainerStartedData, zPostWebhookRefreshData, zUpdateSearchData, zUpdateSearchResponse } from './zod.gen';
+import type { CreateSearchData, CreateSearchResponses, DeleteSearchData, DeleteSearchErrors, DeleteSearchResponses, GetSearchByIdData, GetSearchByIdErrors, GetSearchByIdResponses, GetSearchesData, GetSearchesErrors, GetSearchesResponses, PostApiV1WebhookAnalyzedListingsData, PostApiV1WebhookContainerStartedData, PostApiV1WebhookRefreshData, PostScrapeData, PostScrapeResponses, UpdateSearchData, UpdateSearchErrors, UpdateSearchResponses } from './types.gen';
+import { zCreateSearchData, zCreateSearchResponse, zDeleteSearchData, zDeleteSearchResponse, zGetSearchByIdData, zGetSearchByIdResponse, zGetSearchesData, zGetSearchesResponse, zPostApiV1WebhookAnalyzedListingsData, zPostApiV1WebhookContainerStartedData, zPostApiV1WebhookRefreshData, zPostScrapeData, zPostScrapeResponse, zUpdateSearchData, zUpdateSearchResponse } from './zod.gen';
 
 export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends boolean = boolean> = Options2<TData, ThrowOnError> & {
     /**
@@ -89,7 +89,7 @@ export const postScrape = <ThrowOnError extends boolean = false>(options?: Optio
     requestValidator: async (data) => await zPostScrapeData.parseAsync(data),
     responseType: 'json',
     responseValidator: async (data) => await zPostScrapeResponse.parseAsync(data),
-    url: '/scrape',
+    url: '/api/v1/scrape',
     ...options,
     headers: {
         'Content-Type': 'application/json',
@@ -98,28 +98,28 @@ export const postScrape = <ThrowOnError extends boolean = false>(options?: Optio
 });
 
 /**
- * POST /webhook/analyzed-listings
+ * POST /api/v1/webhook/analyzed-listings
  */
-export const postWebhookAnalyzedListings = <ThrowOnError extends boolean = false>(options?: Options<PostWebhookAnalyzedListingsData, ThrowOnError>) => (options?.client ?? client).post<unknown, unknown, ThrowOnError>({
-    requestValidator: async (data) => await zPostWebhookAnalyzedListingsData.parseAsync(data),
-    url: '/webhook/analyzed-listings',
+export const postApiV1WebhookAnalyzedListings = <ThrowOnError extends boolean = false>(options?: Options<PostApiV1WebhookAnalyzedListingsData, ThrowOnError>) => (options?.client ?? client).post<unknown, unknown, ThrowOnError>({
+    requestValidator: async (data) => await zPostApiV1WebhookAnalyzedListingsData.parseAsync(data),
+    url: '/api/v1/webhook/analyzed-listings',
     ...options
 });
 
 /**
- * POST /webhook/container-started
+ * POST /api/v1/webhook/container-started
  */
-export const postWebhookContainerStarted = <ThrowOnError extends boolean = false>(options?: Options<PostWebhookContainerStartedData, ThrowOnError>) => (options?.client ?? client).post<unknown, unknown, ThrowOnError>({
-    requestValidator: async (data) => await zPostWebhookContainerStartedData.parseAsync(data),
-    url: '/webhook/container-started',
+export const postApiV1WebhookContainerStarted = <ThrowOnError extends boolean = false>(options?: Options<PostApiV1WebhookContainerStartedData, ThrowOnError>) => (options?.client ?? client).post<unknown, unknown, ThrowOnError>({
+    requestValidator: async (data) => await zPostApiV1WebhookContainerStartedData.parseAsync(data),
+    url: '/api/v1/webhook/container-started',
     ...options
 });
 
 /**
- * POST /webhook/refresh
+ * POST /api/v1/webhook/refresh
  */
-export const postWebhookRefresh = <ThrowOnError extends boolean = false>(options?: Options<PostWebhookRefreshData, ThrowOnError>) => (options?.client ?? client).post<unknown, unknown, ThrowOnError>({
-    requestValidator: async (data) => await zPostWebhookRefreshData.parseAsync(data),
-    url: '/webhook/refresh',
+export const postApiV1WebhookRefresh = <ThrowOnError extends boolean = false>(options?: Options<PostApiV1WebhookRefreshData, ThrowOnError>) => (options?.client ?? client).post<unknown, unknown, ThrowOnError>({
+    requestValidator: async (data) => await zPostApiV1WebhookRefreshData.parseAsync(data),
+    url: '/api/v1/webhook/refresh',
     ...options
 });

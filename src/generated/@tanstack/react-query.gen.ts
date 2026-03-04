@@ -4,8 +4,8 @@ import { type DefaultError, queryOptions, type UseMutationOptions } from '@tanst
 import type { AxiosError } from 'axios';
 
 import { client } from '../client.gen';
-import { createSearch, deleteSearch, getSearchById, getSearches, type Options, postScrape, postWebhookAnalyzedListings, postWebhookContainerStarted, postWebhookRefresh, updateSearch } from '../sdk.gen';
-import type { CreateSearchData, CreateSearchResponse, DeleteSearchData, DeleteSearchError, DeleteSearchResponse, GetSearchByIdData, GetSearchByIdError, GetSearchByIdResponse, GetSearchesData, GetSearchesError, GetSearchesResponse, PostScrapeData, PostScrapeResponse, PostWebhookAnalyzedListingsData, PostWebhookContainerStartedData, PostWebhookRefreshData, UpdateSearchData, UpdateSearchError, UpdateSearchResponse } from '../types.gen';
+import { createSearch, deleteSearch, getSearchById, getSearches, type Options, postApiV1WebhookAnalyzedListings, postApiV1WebhookContainerStarted, postApiV1WebhookRefresh, postScrape, updateSearch } from '../sdk.gen';
+import type { CreateSearchData, CreateSearchResponse, DeleteSearchData, DeleteSearchError, DeleteSearchResponse, GetSearchByIdData, GetSearchByIdError, GetSearchByIdResponse, GetSearchesData, GetSearchesError, GetSearchesResponse, PostApiV1WebhookAnalyzedListingsData, PostApiV1WebhookContainerStartedData, PostApiV1WebhookRefreshData, PostScrapeData, PostScrapeResponse, UpdateSearchData, UpdateSearchError, UpdateSearchResponse } from '../types.gen';
 
 export type QueryKey<TOptions extends Options> = [
     Pick<TOptions, 'baseURL' | 'body' | 'headers' | 'path' | 'query'> & {
@@ -145,12 +145,12 @@ export const postScrapeMutation = (options?: Partial<Options<PostScrapeData>>): 
 };
 
 /**
- * POST /webhook/analyzed-listings
+ * POST /api/v1/webhook/analyzed-listings
  */
-export const postWebhookAnalyzedListingsMutation = (options?: Partial<Options<PostWebhookAnalyzedListingsData>>): UseMutationOptions<unknown, AxiosError<DefaultError>, Options<PostWebhookAnalyzedListingsData>> => {
-    const mutationOptions: UseMutationOptions<unknown, AxiosError<DefaultError>, Options<PostWebhookAnalyzedListingsData>> = {
+export const postApiV1WebhookAnalyzedListingsMutation = (options?: Partial<Options<PostApiV1WebhookAnalyzedListingsData>>): UseMutationOptions<unknown, AxiosError<DefaultError>, Options<PostApiV1WebhookAnalyzedListingsData>> => {
+    const mutationOptions: UseMutationOptions<unknown, AxiosError<DefaultError>, Options<PostApiV1WebhookAnalyzedListingsData>> = {
         mutationFn: async (fnOptions) => {
-            const { data } = await postWebhookAnalyzedListings({
+            const { data } = await postApiV1WebhookAnalyzedListings({
                 ...options,
                 ...fnOptions,
                 throwOnError: true
@@ -162,12 +162,12 @@ export const postWebhookAnalyzedListingsMutation = (options?: Partial<Options<Po
 };
 
 /**
- * POST /webhook/container-started
+ * POST /api/v1/webhook/container-started
  */
-export const postWebhookContainerStartedMutation = (options?: Partial<Options<PostWebhookContainerStartedData>>): UseMutationOptions<unknown, AxiosError<DefaultError>, Options<PostWebhookContainerStartedData>> => {
-    const mutationOptions: UseMutationOptions<unknown, AxiosError<DefaultError>, Options<PostWebhookContainerStartedData>> = {
+export const postApiV1WebhookContainerStartedMutation = (options?: Partial<Options<PostApiV1WebhookContainerStartedData>>): UseMutationOptions<unknown, AxiosError<DefaultError>, Options<PostApiV1WebhookContainerStartedData>> => {
+    const mutationOptions: UseMutationOptions<unknown, AxiosError<DefaultError>, Options<PostApiV1WebhookContainerStartedData>> = {
         mutationFn: async (fnOptions) => {
-            const { data } = await postWebhookContainerStarted({
+            const { data } = await postApiV1WebhookContainerStarted({
                 ...options,
                 ...fnOptions,
                 throwOnError: true
@@ -179,12 +179,12 @@ export const postWebhookContainerStartedMutation = (options?: Partial<Options<Po
 };
 
 /**
- * POST /webhook/refresh
+ * POST /api/v1/webhook/refresh
  */
-export const postWebhookRefreshMutation = (options?: Partial<Options<PostWebhookRefreshData>>): UseMutationOptions<unknown, AxiosError<DefaultError>, Options<PostWebhookRefreshData>> => {
-    const mutationOptions: UseMutationOptions<unknown, AxiosError<DefaultError>, Options<PostWebhookRefreshData>> = {
+export const postApiV1WebhookRefreshMutation = (options?: Partial<Options<PostApiV1WebhookRefreshData>>): UseMutationOptions<unknown, AxiosError<DefaultError>, Options<PostApiV1WebhookRefreshData>> => {
+    const mutationOptions: UseMutationOptions<unknown, AxiosError<DefaultError>, Options<PostApiV1WebhookRefreshData>> = {
         mutationFn: async (fnOptions) => {
-            const { data } = await postWebhookRefresh({
+            const { data } = await postApiV1WebhookRefresh({
                 ...options,
                 ...fnOptions,
                 throwOnError: true

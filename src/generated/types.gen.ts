@@ -282,7 +282,7 @@ export type PostScrapeData = {
     };
     path?: never;
     query?: never;
-    url: '/scrape';
+    url: '/api/v1/scrape';
 };
 
 export type PostScrapeResponses = {
@@ -306,23 +306,23 @@ export type PostScrapeResponses = {
 
 export type PostScrapeResponse = PostScrapeResponses[keyof PostScrapeResponses];
 
-export type PostWebhookAnalyzedListingsData = {
+export type PostApiV1WebhookAnalyzedListingsData = {
     body?: never;
     path?: never;
     query?: never;
-    url: '/webhook/analyzed-listings';
+    url: '/api/v1/webhook/analyzed-listings';
 };
 
-export type PostWebhookContainerStartedData = {
+export type PostApiV1WebhookContainerStartedData = {
     body?: never;
     path?: never;
     query?: never;
-    url: '/webhook/container-started';
+    url: '/api/v1/webhook/container-started';
 };
 
-export type PostWebhookRefreshData = {
+export type PostApiV1WebhookRefreshData = {
     body?: never;
     path?: never;
     query?: never;
-    url: '/webhook/refresh';
+    url: '/api/v1/webhook/refresh';
 };

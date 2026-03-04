@@ -265,19 +265,19 @@ export const zPostScrapeResponse = z.object({
     })
 });
 
-export const zPostWebhookAnalyzedListingsData = z.object({
+export const zPostApiV1WebhookAnalyzedListingsData = z.object({
     body: z.never().optional(),
     path: z.never().optional(),
     query: z.never().optional()
 });
 
-export const zPostWebhookContainerStartedData = z.object({
+export const zPostApiV1WebhookContainerStartedData = z.object({
     body: z.never().optional(),
     path: z.never().optional(),
     query: z.never().optional()
 });
 
-export const zPostWebhookRefreshData = z.object({
+export const zPostApiV1WebhookRefreshData = z.object({
     body: z.never().optional(),
     path: z.never().optional(),
     query: z.never().optional()
