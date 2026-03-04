@@ -81,7 +81,12 @@ export function useDeleteSearch() {
 export function useExecuteSearch() {
   return useMutation({
     ...postScrapeMutation(),
-    onError: () => {
+    onSuccess: (data) => {
+      const count = data.data.listings.length;
+      toast.success({ message: `Found ${count} listing${count !== 1 ? "s" : ""}` });
+    },
+    onError: (error) => {
+      console.error("Execute search failed:", error);
       toast.error({ message: "Failed to execute search. Please try again." });
     },
   });

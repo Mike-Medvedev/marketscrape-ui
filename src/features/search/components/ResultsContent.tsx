@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import { useNavigate, useParams } from "react-router";
 import { Container, Loader, Text, Title } from "@mantine/core";
 import {
@@ -19,18 +18,6 @@ export function ResultsContent() {
   const { data: searchResponse, isLoading: searchLoading } = useSearch(id);
   const search = searchResponse?.data;
   const executeMutation = useExecuteSearch();
-
-  useEffect(() => {
-    if (!search) return;
-    executeMutation.mutate({
-      body: {
-        query: search.criteria.query,
-        locationId: search.criteria.location,
-      },
-    });
-    // Run once when search data arrives
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [search?.id]);
 
   const listings = executeMutation.data?.data.listings ?? [];
 
@@ -121,10 +108,12 @@ export function ResultsContent() {
             <IconSearch size={32} color="var(--muted-foreground)" />
           </div>
           <Title order={3} className="results-empty-title">
-            No listings found
+            {executeMutation.isIdle ? "Ready to search" : "No listings found"}
           </Title>
           <Text size="sm" c="dimmed" className="results-empty-text">
-            Try executing the search or adjusting your criteria
+            {executeMutation.isIdle
+              ? "Hit execute to pull the latest marketplace listings"
+              : "Try executing the search again or adjusting your criteria"}
           </Text>
           <button className="results-execute-button" onClick={handleExecute}>
             <IconPlayerPlay size={16} />
