@@ -29,6 +29,10 @@ export function DashboardContent() {
     navigate(`/edit/${id}`);
   };
 
+  const handleViewResults = (id: string) => {
+    navigate(`/results/${id}`);
+  };
+
   const handleQuickSync = () => {
     setShowIdentityModal(true);
   };
@@ -60,6 +64,7 @@ export function DashboardContent() {
               search={search}
               onDelete={handleDelete}
               onEdit={handleEdit}
+              onViewResults={handleViewResults}
             />
           ))}
         </div>

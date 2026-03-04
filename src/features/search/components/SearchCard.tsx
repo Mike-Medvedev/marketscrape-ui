@@ -5,6 +5,7 @@ import {
   IconCircleCheck,
   IconRefresh,
   IconPencil,
+  IconListSearch,
 } from "@tabler/icons-react";
 import { ActionIcon } from "@mantine/core";
 import type { ActiveSearch } from "@/features/search/search.types";
@@ -14,6 +15,7 @@ interface SearchCardProps {
   search: ActiveSearch;
   onDelete: (id: string) => void;
   onEdit: (id: string) => void;
+  onViewResults: (id: string) => void;
 }
 
 const statusConfig = {
@@ -34,7 +36,7 @@ const statusConfig = {
   },
 } as const;
 
-export function SearchCard({ search, onDelete, onEdit }: SearchCardProps) {
+export function SearchCard({ search, onDelete, onEdit, onViewResults }: SearchCardProps) {
   const config = statusConfig[search.status];
 
   const dateLabel =
@@ -70,6 +72,14 @@ export function SearchCard({ search, onDelete, onEdit }: SearchCardProps) {
             <div className={`status-dot ${config.dotClass}`} />
             <span className="status-label">{config.label}</span>
           </div>
+          <ActionIcon
+            variant="subtle"
+            color="gray"
+            onClick={() => onViewResults(search.id)}
+            className="action-icon-results"
+          >
+            <IconListSearch size={16} />
+          </ActionIcon>
           <ActionIcon
             variant="subtle"
             color="gray"

@@ -78,6 +78,10 @@
   font-family: var(--mantine-font-family-monospace);
 }
 
+.action-icon-results:hover {
+  color: var(--primary);
+}
+
 .action-icon-edit:hover {
   color: var(--primary);
 }

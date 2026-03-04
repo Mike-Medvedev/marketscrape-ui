@@ -12,6 +12,7 @@ import {
   createSearchMutation,
   updateSearchMutation,
   deleteSearchMutation,
+  postScrapeMutation,
 } from "@/generated/@tanstack/react-query.gen";
 import type { Options } from "@/generated/sdk.gen";
 import type { UpdateSearchData } from "@/generated/types.gen";
@@ -73,6 +74,15 @@ export function useDeleteSearch() {
     },
     onError: () => {
       toast.error({ message: "Failed to delete search. Please try again." });
+    },
+  });
+}
+
+export function useExecuteSearch() {
+  return useMutation({
+    ...postScrapeMutation(),
+    onError: () => {
+      toast.error({ message: "Failed to execute search. Please try again." });
     },
   });
 }

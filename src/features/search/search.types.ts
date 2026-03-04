@@ -3,6 +3,7 @@ import type {
   GetSearchesResponse,
   CreateSearchData,
   UpdateSearchData,
+  PostScrapeResponse,
 } from "@/generated/types.gen";
 
 export type ActiveSearch = GetSearchesResponse['data'][number];
@@ -13,6 +14,7 @@ export type DateListedOption = SearchCriteria["dateListed"];
 export type NotificationMethod = MonitoringSettings["notifications"][number];
 export type CreateSearchPayload = NonNullable<CreateSearchData["body"]>;
 export type UpdateSearchPayload = NonNullable<UpdateSearchData["body"]>;
+export type Listing = PostScrapeResponse["data"]["listings"][number];
 
 export const dateListedSchema = z.enum(["24h", "7d", "30d"]);
 
