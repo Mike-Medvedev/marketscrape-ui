@@ -17,6 +17,7 @@ import {
 import type { Options } from "@/generated/sdk.gen";
 import type { UpdateSearchData } from "@/generated/types.gen";
 import { toast } from "@/utils/toast.utils";
+import { notifyApiError } from "@/errors/api-errors";
 
 export function useSearches() {
   return useSuspenseQuery({
@@ -39,8 +40,8 @@ export function useCreateSearch() {
       await queryClient.invalidateQueries({ queryKey: getSearchesQueryKey() });
       toast.success({ message: `Search for "${data.data.criteria.query}" created` });
     },
-    onError: () => {
-      toast.error({ message: "Failed to create search. Please try again." });
+    onError: (error) => {
+      notifyApiError(error, "Failed to create search. Please try again.");
     },
   });
 }
@@ -58,8 +59,8 @@ export function useUpdateSearch() {
       ]);
       toast.success({ message: `Search for "${data.data.criteria.query}" updated` });
     },
-    onError: () => {
-      toast.error({ message: "Failed to update search. Please try again." });
+    onError: (error) => {
+      notifyApiError(error, "Failed to update search. Please try again.");
     },
   });
 }
@@ -72,8 +73,8 @@ export function useDeleteSearch() {
       await queryClient.invalidateQueries({ queryKey: getSearchesQueryKey() });
       toast.success({ message: "Search deleted" });
     },
-    onError: () => {
-      toast.error({ message: "Failed to delete search. Please try again." });
+    onError: (error) => {
+      notifyApiError(error, "Failed to delete search. Please try again.");
     },
   });
 }
@@ -86,8 +87,7 @@ export function useExecuteSearch() {
       toast.success({ message: `Found ${count} listing${count !== 1 ? "s" : ""}` });
     },
     onError: (error) => {
-      console.error("Execute search failed:", error);
-      toast.error({ message: "Failed to execute search. Please try again." });
+      notifyApiError(error, "Failed to execute search. Please try again.");
     },
   });
 }
