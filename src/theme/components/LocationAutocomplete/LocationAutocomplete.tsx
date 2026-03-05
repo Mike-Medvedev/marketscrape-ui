@@ -3,16 +3,17 @@ import { TextInput, type TextInputProps } from "@mantine/core";
 import { useMapsLibrary } from "@vis.gl/react-google-maps";
 import "./LocationAutocomplete.css";
 
-interface LocationAutocompleteProps extends TextInputProps {
+type LocationAutocompleteProps = Omit<TextInputProps, "onChange"> & {
   onChange?: (value: string) => void;
-}
+};
 
 export function LocationAutocomplete({
   onChange,
   ...rest
 }: LocationAutocompleteProps) {
   const inputRef = useRef<HTMLInputElement>(null);
-  const autocompleteRef = useRef<google.maps.places.Autocomplete | null>(null);
+  const autocompleteRef =
+    useRef<google.maps.places.Autocomplete | null>(null);
   const onChangeRef = useRef(onChange);
   onChangeRef.current = onChange;
 
@@ -41,9 +42,12 @@ export function LocationAutocomplete({
     };
   }, [places]);
 
-  const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    onChangeRef.current?.(e.currentTarget.value);
-  }, []);
+  const handleChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      onChangeRef.current?.(e.currentTarget.value);
+    },
+    [],
+  );
 
   return (
     <div className="location-autocomplete-wrapper">
