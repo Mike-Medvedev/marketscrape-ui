@@ -2,6 +2,7 @@ import { useState, useRef, useCallback, useEffect } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { getSearchesQueryKey } from "@/generated/@tanstack/react-query.gen";
 import { settings } from "@/settings";
+import { getToken } from "@/infra/auth-token";
 import { toast } from "@/utils/toast.utils";
 import { syncSSEEventSchema } from "@/features/search/search.types";
 import type { SyncState } from "@/features/search/search.types";
@@ -60,8 +61,12 @@ export function useIdentitySync({ onDismiss }: UseIdentitySyncOptions = {}) {
     setErrorMessage(null);
     setLogs(["Connecting to sync service..."]);
 
-    const url = `${settings.env.VITE_API_URL}/api/v1/sync`;
-    const evtSource = new EventSource(url);
+    const token = getToken();
+    const url = new URL(`${settings.env.VITE_API_URL}/api/v1/sync`);
+    if (token) {
+      url.searchParams.set("token", token);
+    }
+    const evtSource = new EventSource(url.toString());
     eventSourceRef.current = evtSource;
 
     evtSource.onmessage = (event) => {

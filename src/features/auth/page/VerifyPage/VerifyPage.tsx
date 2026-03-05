@@ -1,10 +1,10 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import { useSearchParams, useNavigate, Link } from 'react-router'
-import { Title, Text, Loader, Stack } from '@mantine/core'
+import { Title, Text, Loader, Stack, RingProgress } from '@mantine/core'
 import { IconCircleCheck, IconAlertTriangle } from '@tabler/icons-react'
-import { useAuth } from '@/features/auth/hooks/auth.hook'
 import { getApiErrorCode } from '@/features/auth/hooks/auth-error.hook'
 import { AuthPageLayout } from '@/features/auth/components/AuthPageLayout/AuthPageLayout'
+import * as authService from '@/features/auth/service/auth.service'
 import './VerifyPage.css'
 
 type VerifyStatus = 'verifying' | 'success' | 'expired' | 'error'
@@ -13,30 +13,53 @@ const VERIFY_ERROR_MAP: Record<string, VerifyStatus> = {
   VERIFICATION_TOKEN_EXPIRED: 'expired',
 }
 
+const REDIRECT_DELAY = 3000
+
 export function VerifyPage() {
   const [searchParams] = useSearchParams()
   const navigate = useNavigate()
-  const { verify } = useAuth()
   const [status, setStatus] = useState<VerifyStatus>('verifying')
+  const [countdown, setCountdown] = useState(REDIRECT_DELAY / 1000)
+  const calledRef = useRef(false)
 
   const token = searchParams.get('token')
 
   useEffect(() => {
+    if (calledRef.current) return
+    calledRef.current = true
+
     if (!token) {
       setStatus('error')
       return
     }
 
-    verify(token)
+    authService
+      .verify(token)
       .then(() => {
         setStatus('success')
-        setTimeout(() => navigate('/', { replace: true }), 2000)
       })
       .catch((err) => {
         const code = getApiErrorCode(err)
         setStatus(code && VERIFY_ERROR_MAP[code] ? VERIFY_ERROR_MAP[code] : 'error')
       })
-  }, [token, verify, navigate])
+  }, [token])
+
+  useEffect(() => {
+    if (status !== 'success') return
+
+    const interval = setInterval(() => {
+      setCountdown((prev) => {
+        if (prev <= 1) {
+          clearInterval(interval)
+          navigate('/login', { replace: true })
+          return 0
+        }
+        return prev - 1
+      })
+    }, 1000)
+
+    return () => clearInterval(interval)
+  }, [status, navigate])
 
   return (
     <AuthPageLayout>
@@ -54,16 +77,42 @@ export function VerifyPage() {
         )}
 
         {status === 'success' && (
-          <Stack align="center" gap="md">
-            <div className="verify-icon verify-icon--success">
-              <IconCircleCheck size={40} />
+          <Stack align="center" gap="lg">
+            <div className="verify-success-check">
+              <IconCircleCheck size={48} />
             </div>
-            <Title order={3} className="auth-card-title" ta="center">
-              Email verified
-            </Title>
-            <Text size="sm" c="dimmed" ta="center">
-              Your account has been verified. Redirecting...
-            </Text>
+            <div>
+              <Title order={2} className="auth-card-title" ta="center">
+                You&apos;re all set!
+              </Title>
+              <Text size="sm" c="dimmed" ta="center" mt={4}>
+                Your email has been successfully verified.
+              </Text>
+            </div>
+            <div className="verify-redirect-ring">
+              <RingProgress
+                size={56}
+                thickness={3}
+                roundCaps
+                sections={[
+                  {
+                    value: (countdown / (REDIRECT_DELAY / 1000)) * 100,
+                    color: 'var(--primary)',
+                  },
+                ]}
+                label={
+                  <Text ta="center" size="sm" fw={600}>
+                    {countdown}
+                  </Text>
+                }
+              />
+              <Text size="xs" c="dimmed">
+                Redirecting to login...
+              </Text>
+            </div>
+            <Link to="/login" className="auth-card-link verify-login-link">
+              Go to login now
+            </Link>
           </Stack>
         )}
 
