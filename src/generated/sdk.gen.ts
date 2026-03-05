@@ -2,8 +2,8 @@
 
 import type { Client, Options as Options2, TDataShape } from './client';
 import { client } from './client.gen';
-import type { BeginIdentitySyncData, CreateSearchData, CreateSearchResponses, DeleteSearchData, DeleteSearchErrors, DeleteSearchResponses, GetSearchByIdData, GetSearchByIdErrors, GetSearchByIdResponses, GetSearchesData, GetSearchesErrors, GetSearchesResponses, PostScrapeData, PostScrapeResponses, UpdateSearchData, UpdateSearchErrors, UpdateSearchResponses, WebhookAnalyzedListingsData, WebhookContainerExitedData, WebhookNeedsLoginData, WebhookRefreshData } from './types.gen';
-import { zBeginIdentitySyncData, zCreateSearchData, zCreateSearchResponse, zDeleteSearchData, zDeleteSearchResponse, zGetSearchByIdData, zGetSearchByIdResponse, zGetSearchesData, zGetSearchesResponse, zPostScrapeData, zPostScrapeResponse, zUpdateSearchData, zUpdateSearchResponse, zWebhookAnalyzedListingsData, zWebhookContainerExitedData, zWebhookNeedsLoginData, zWebhookRefreshData } from './zod.gen';
+import type { BeginIdentitySyncData, CreateSearchData, CreateSearchResponses, DeleteSearchData, DeleteSearchErrors, DeleteSearchResponses, GetMeData, GetMeErrors, GetMeResponses, GetSearchByIdData, GetSearchByIdErrors, GetSearchByIdResponses, GetSearchesData, GetSearchesErrors, GetSearchesResponses, LoginData, LoginErrors, LoginResponses, LogoutData, LogoutErrors, LogoutResponses, PostScrapeData, PostScrapeResponses, SignupData, SignupErrors, SignupResponses, UpdateSearchData, UpdateSearchErrors, UpdateSearchResponses, VerifyEmailData, VerifyEmailErrors, VerifyEmailResponses, WebhookAnalyzedListingsData, WebhookContainerExitedData, WebhookNeedsLoginData, WebhookRefreshData } from './types.gen';
+import { zBeginIdentitySyncData, zCreateSearchData, zCreateSearchResponse, zDeleteSearchData, zDeleteSearchResponse, zGetMeData, zGetMeResponse, zGetSearchByIdData, zGetSearchByIdResponse, zGetSearchesData, zGetSearchesResponse, zLoginData, zLoginResponse, zLogoutData, zLogoutResponse, zPostScrapeData, zPostScrapeResponse, zSignupData, zSignupResponse, zUpdateSearchData, zUpdateSearchResponse, zVerifyEmailData, zVerifyEmailResponse, zWebhookAnalyzedListingsData, zWebhookContainerExitedData, zWebhookNeedsLoginData, zWebhookRefreshData } from './zod.gen';
 
 export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends boolean = boolean> = Options2<TData, ThrowOnError> & {
     /**
@@ -20,12 +20,81 @@ export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends 
 };
 
 /**
+ * Create a new account and send verification email
+ */
+export const signup = <ThrowOnError extends boolean = false>(options?: Options<SignupData, ThrowOnError>) => (options?.client ?? client).post<SignupResponses, SignupErrors, ThrowOnError>({
+    requestValidator: async (data) => await zSignupData.parseAsync(data),
+    responseType: 'json',
+    responseValidator: async (data) => await zSignupResponse.parseAsync(data),
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/auth/signup',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options?.headers
+    }
+});
+
+/**
+ * Authenticate with email and password
+ */
+export const login = <ThrowOnError extends boolean = false>(options?: Options<LoginData, ThrowOnError>) => (options?.client ?? client).post<LoginResponses, LoginErrors, ThrowOnError>({
+    requestValidator: async (data) => await zLoginData.parseAsync(data),
+    responseType: 'json',
+    responseValidator: async (data) => await zLoginResponse.parseAsync(data),
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/auth/login',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options?.headers
+    }
+});
+
+/**
+ * Verify email via token from verification link
+ */
+export const verifyEmail = <ThrowOnError extends boolean = false>(options: Options<VerifyEmailData, ThrowOnError>) => (options.client ?? client).get<VerifyEmailResponses, VerifyEmailErrors, ThrowOnError>({
+    requestValidator: async (data) => await zVerifyEmailData.parseAsync(data),
+    responseType: 'json',
+    responseValidator: async (data) => await zVerifyEmailResponse.parseAsync(data),
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/auth/verify',
+    ...options
+});
+
+/**
+ * Invalidate current session
+ */
+export const logout = <ThrowOnError extends boolean = false>(options?: Options<LogoutData, ThrowOnError>) => (options?.client ?? client).post<LogoutResponses, LogoutErrors, ThrowOnError>({
+    requestValidator: async (data) => await zLogoutData.parseAsync(data),
+    responseType: 'json',
+    responseValidator: async (data) => await zLogoutResponse.parseAsync(data),
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/auth/logout',
+    ...options
+});
+
+/**
+ * Get the current authenticated user
+ */
+export const getMe = <ThrowOnError extends boolean = false>(options?: Options<GetMeData, ThrowOnError>) => (options?.client ?? client).get<GetMeResponses, GetMeErrors, ThrowOnError>({
+    requestValidator: async (data) => await zGetMeData.parseAsync(data),
+    responseType: 'json',
+    responseValidator: async (data) => await zGetMeResponse.parseAsync(data),
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/auth/me',
+    ...options
+});
+
+/**
  * Searches Marketplace and returns listings
  */
 export const postScrape = <ThrowOnError extends boolean = false>(options?: Options<PostScrapeData, ThrowOnError>) => (options?.client ?? client).post<PostScrapeResponses, unknown, ThrowOnError>({
     requestValidator: async (data) => await zPostScrapeData.parseAsync(data),
     responseType: 'json',
     responseValidator: async (data) => await zPostScrapeResponse.parseAsync(data),
+    security: [{ scheme: 'bearer', type: 'http' }],
     url: '/api/v1/scrape',
     ...options,
     headers: {
@@ -41,6 +110,7 @@ export const getSearches = <ThrowOnError extends boolean = false>(options?: Opti
     requestValidator: async (data) => await zGetSearchesData.parseAsync(data),
     responseType: 'json',
     responseValidator: async (data) => await zGetSearchesResponse.parseAsync(data),
+    security: [{ scheme: 'bearer', type: 'http' }],
     url: '/api/v1/searches/',
     ...options
 });
@@ -52,6 +122,7 @@ export const createSearch = <ThrowOnError extends boolean = false>(options?: Opt
     requestValidator: async (data) => await zCreateSearchData.parseAsync(data),
     responseType: 'json',
     responseValidator: async (data) => await zCreateSearchResponse.parseAsync(data),
+    security: [{ scheme: 'bearer', type: 'http' }],
     url: '/api/v1/searches/',
     ...options,
     headers: {
@@ -67,6 +138,7 @@ export const deleteSearch = <ThrowOnError extends boolean = false>(options: Opti
     requestValidator: async (data) => await zDeleteSearchData.parseAsync(data),
     responseType: 'json',
     responseValidator: async (data) => await zDeleteSearchResponse.parseAsync(data),
+    security: [{ scheme: 'bearer', type: 'http' }],
     url: '/api/v1/searches/{id}',
     ...options
 });
@@ -78,6 +150,7 @@ export const getSearchById = <ThrowOnError extends boolean = false>(options: Opt
     requestValidator: async (data) => await zGetSearchByIdData.parseAsync(data),
     responseType: 'json',
     responseValidator: async (data) => await zGetSearchByIdResponse.parseAsync(data),
+    security: [{ scheme: 'bearer', type: 'http' }],
     url: '/api/v1/searches/{id}',
     ...options
 });
@@ -89,6 +162,7 @@ export const updateSearch = <ThrowOnError extends boolean = false>(options: Opti
     requestValidator: async (data) => await zUpdateSearchData.parseAsync(data),
     responseType: 'json',
     responseValidator: async (data) => await zUpdateSearchResponse.parseAsync(data),
+    security: [{ scheme: 'bearer', type: 'http' }],
     url: '/api/v1/searches/{id}',
     ...options,
     headers: {
@@ -102,6 +176,7 @@ export const updateSearch = <ThrowOnError extends boolean = false>(options: Opti
  */
 export const webhookAnalyzedListings = <ThrowOnError extends boolean = false>(options?: Options<WebhookAnalyzedListingsData, ThrowOnError>) => (options?.client ?? client).post<unknown, unknown, ThrowOnError>({
     requestValidator: async (data) => await zWebhookAnalyzedListingsData.parseAsync(data),
+    security: [{ scheme: 'bearer', type: 'http' }],
     url: '/webhook/analyzed-listings',
     ...options
 });
@@ -111,6 +186,7 @@ export const webhookAnalyzedListings = <ThrowOnError extends boolean = false>(op
  */
 export const webhookNeedsLogin = <ThrowOnError extends boolean = false>(options?: Options<WebhookNeedsLoginData, ThrowOnError>) => (options?.client ?? client).post<unknown, unknown, ThrowOnError>({
     requestValidator: async (data) => await zWebhookNeedsLoginData.parseAsync(data),
+    security: [{ scheme: 'bearer', type: 'http' }],
     url: '/webhook/needs-login',
     ...options
 });
@@ -120,6 +196,7 @@ export const webhookNeedsLogin = <ThrowOnError extends boolean = false>(options?
  */
 export const webhookContainerExited = <ThrowOnError extends boolean = false>(options?: Options<WebhookContainerExitedData, ThrowOnError>) => (options?.client ?? client).post<unknown, unknown, ThrowOnError>({
     requestValidator: async (data) => await zWebhookContainerExitedData.parseAsync(data),
+    security: [{ scheme: 'bearer', type: 'http' }],
     url: '/webhook/container-exited',
     ...options
 });
@@ -129,6 +206,7 @@ export const webhookContainerExited = <ThrowOnError extends boolean = false>(opt
  */
 export const webhookRefresh = <ThrowOnError extends boolean = false>(options?: Options<WebhookRefreshData, ThrowOnError>) => (options?.client ?? client).post<unknown, unknown, ThrowOnError>({
     requestValidator: async (data) => await zWebhookRefreshData.parseAsync(data),
+    security: [{ scheme: 'bearer', type: 'http' }],
     url: '/webhook/refresh',
     ...options
 });
@@ -138,6 +216,7 @@ export const webhookRefresh = <ThrowOnError extends boolean = false>(options?: O
  */
 export const beginIdentitySync = <ThrowOnError extends boolean = false>(options?: Options<BeginIdentitySyncData, ThrowOnError>) => (options?.client ?? client).get<unknown, unknown, ThrowOnError>({
     requestValidator: async (data) => await zBeginIdentitySyncData.parseAsync(data),
+    security: [{ scheme: 'bearer', type: 'http' }],
     url: '/api/v1/sync',
     ...options
 });

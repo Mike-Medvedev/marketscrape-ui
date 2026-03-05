@@ -15,7 +15,10 @@ export function LocationAutocomplete({
   const autocompleteRef =
     useRef<google.maps.places.Autocomplete | null>(null);
   const onChangeRef = useRef(onChange);
-  onChangeRef.current = onChange;
+
+  useEffect(() => {
+    onChangeRef.current = onChange;
+  });
 
   const places = useMapsLibrary("places");
 
