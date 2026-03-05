@@ -30,7 +30,7 @@ export const searchCriteriaSchema = z.object({
 
 export const monitoringSettingsSchema = z.object({
   frequency: z.string().min(1),
-  listingsPerCheck: z.number().int().positive(),
+  listingsPerCheck: z.number().int().min(1).max(10),
   notifications: z.array(notificationMethodSchema),
 });
 

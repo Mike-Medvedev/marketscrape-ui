@@ -23,10 +23,17 @@ export function ResultsContent() {
 
   const handleExecute = () => {
     if (!search) return;
+
+    const minPrice = Number(search.criteria.minPrice);
+
     executeMutation.mutate({
       body: {
         query: search.criteria.query,
         locationId: search.criteria.location,
+        ...(minPrice > 0 && { minPrice }),
+        ...(search.settings.listingsPerCheck > 0 && {
+          pageCount: search.settings.listingsPerCheck,
+        }),
       },
     });
   };

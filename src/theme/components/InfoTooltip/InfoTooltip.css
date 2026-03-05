@@ -1,0 +1,20 @@
+.info-tooltip-trigger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  border: none;
+  background: none;
+  padding: 0;
+  cursor: help;
+  color: var(--mantine-color-dimmed);
+  vertical-align: middle;
+  margin-left: 4px;
+  border-radius: 50%;
+  transition: color 150ms ease;
+}
+
+.info-tooltip-trigger:hover {
+  color: var(--mantine-color-text);
+}

@@ -13,6 +13,7 @@ import {
   Stack,
   Text,
 } from "@mantine/core";
+import { InfoTooltip } from "@/theme/components/InfoTooltip/InfoTooltip";
 import { useForm } from "@mantine/form";
 import { zod4Resolver } from "mantine-form-zod-resolver";
 import { IconArrowLeft, IconArrowRight } from "@tabler/icons-react";
@@ -74,7 +75,7 @@ export function SearchForm({ existingSearch }: SearchFormProps) {
     mode: "controlled",
     initialValues: {
       frequency: existingSearch?.settings.frequency ?? "",
-      listingsPerCheck: existingSearch?.settings.listingsPerCheck ?? 10,
+      listingsPerCheck: existingSearch?.settings.listingsPerCheck ?? 1,
       notifications: existingSearch?.settings.notifications ?? [],
     },
     validate: zod4Resolver(monitoringSettingsSchema),
@@ -201,8 +202,15 @@ export function SearchForm({ existingSearch }: SearchFormProps) {
               {...settingsForm.getInputProps("frequency")}
             />
             <NumberInput
-              label="Listings per Check"
+              label={
+                <span>
+                  Pages to Fetch
+                  <InfoTooltip label="Number of pages to retrieve from Facebook Marketplace. Each page contains up to 24 listings. Max 10 pages (240 listings)." />
+                </span>
+              }
               min={1}
+              max={10}
+              clampBehavior="strict"
               key={settingsForm.key("listingsPerCheck")}
               {...settingsForm.getInputProps("listingsPerCheck")}
             />
