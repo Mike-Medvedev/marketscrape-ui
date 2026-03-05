@@ -39,7 +39,7 @@ export type PostScrapeResponses = {
                 title: string;
                 location: {
                     [key: string]: unknown;
-                };
+                } | null;
                 primaryPhotoUri: string;
             }>;
         };

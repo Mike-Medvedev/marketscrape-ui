@@ -1,10 +1,6 @@
 import { useNavigate, useParams } from "react-router";
 import { Container, Loader, Text, Title } from "@mantine/core";
-import {
-  IconArrowLeft,
-  IconPlayerPlay,
-  IconSearch,
-} from "@tabler/icons-react";
+import { IconArrowLeft, IconPlayerPlay, IconSearch } from "@tabler/icons-react";
 import { ListingCard } from "@/features/search/components/ListingCard/ListingCard";
 import {
   useSearch,
@@ -29,7 +25,7 @@ export function ResultsContent() {
     executeMutation.mutate({
       body: {
         query: search.criteria.query,
-        locationId: search.criteria.location,
+        location: search.criteria.location,
         ...(minPrice > 0 && { minPrice }),
         ...(search.settings.listingsPerCheck > 0 && {
           pageCount: search.settings.listingsPerCheck,
@@ -43,10 +39,7 @@ export function ResultsContent() {
   return (
     <Container size="xl" className="results-container">
       <div className="results-header">
-        <button
-          className="results-back-button"
-          onClick={() => navigate("/")}
-        >
+        <button className="results-back-button" onClick={() => navigate("/")}>
           <IconArrowLeft size={18} />
           <span>Back</span>
         </button>
@@ -82,7 +75,9 @@ export function ResultsContent() {
           ) : (
             <IconPlayerPlay size={16} />
           )}
-          <span>{executeMutation.isPending ? "Searching..." : "Execute Search"}</span>
+          <span>
+            {executeMutation.isPending ? "Searching..." : "Execute Search"}
+          </span>
         </button>
       </div>
 

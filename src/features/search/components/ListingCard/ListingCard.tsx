@@ -31,9 +31,11 @@ export function ListingCard({ listing }: ListingCardProps) {
         <div className="listing-card-location">
           <IconMapPin size={12} />
           <span>
-            {typeof listing.location === 'string'
-              ? listing.location
-              : [listing.location.city, listing.location.state].filter(Boolean).join(', ') || '—'}
+            {listing.location == null
+              ? '—'
+              : typeof listing.location === 'string'
+                ? listing.location
+                : [listing.location.city, listing.location.state].filter(Boolean).join(', ') || '—'}
           </span>
         </div>
       </div>
