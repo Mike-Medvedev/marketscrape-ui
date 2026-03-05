@@ -11,14 +11,23 @@ export type SearchCriteria = ActiveSearch["criteria"];
 export type MonitoringSettings = ActiveSearch["settings"];
 export type SearchStatus = ActiveSearch["status"];
 export type DateListedOption = SearchCriteria["dateListed"];
-export type NotificationMethod = MonitoringSettings["notifications"][number];
+export type FrequencyOption = MonitoringSettings["frequency"];
+export type NotificationType = MonitoringSettings["notificationType"];
 export type CreateSearchPayload = NonNullable<CreateSearchData["body"]>;
 export type UpdateSearchPayload = NonNullable<UpdateSearchData["body"]>;
 export type Listing = PostScrapeResponse["data"]["listings"][number];
 
 export const dateListedSchema = z.enum(["24h", "7d", "30d"]);
 
-export const notificationMethodSchema = z.enum(["email", "sms", "webhook"]);
+export const frequencySchema = z.enum([
+  "every_1h",
+  "every_2h",
+  "every_6h",
+  "every_12h",
+  "every_24h",
+]);
+
+export const notificationTypeSchema = z.enum(["email", "sms", "webhook"]);
 
 export const searchCriteriaSchema = z.object({
   query: z.string().min(1),
@@ -29,9 +38,10 @@ export const searchCriteriaSchema = z.object({
 });
 
 export const monitoringSettingsSchema = z.object({
-  frequency: z.string().min(1),
+  frequency: frequencySchema,
   listingsPerCheck: z.number().int().min(1).max(10),
-  notifications: z.array(notificationMethodSchema),
+  notificationType: notificationTypeSchema,
+  notificationTarget: z.string().min(1, "Notification target is required"),
 });
 
 export type SyncSSEEvent =

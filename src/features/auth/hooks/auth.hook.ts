@@ -6,7 +6,6 @@ import {
   useCallback,
   useMemo,
 } from 'react'
-import type { ReactNode } from 'react'
 import { setToken, clearToken, getToken } from '@/infra/auth-token'
 import * as authService from '@/features/auth/service/auth.service'
 import type { AuthState } from '@/features/auth/auth.types'

@@ -118,11 +118,9 @@ export function SearchCard({ search, onDelete, onEdit, onViewResults }: SearchCa
           <p className="detail-value">{dateLabel}</p>
         </div>
         <div className="search-card-detail">
-          <p className="detail-label">Notifications</p>
+          <p className="detail-label">Notification</p>
           <p className="detail-value detail-value--capitalize">
-            {search.settings.notifications.length > 0
-              ? search.settings.notifications.join(", ")
-              : "None"}
+            {search.settings.notificationType}
           </p>
         </div>
       </div>

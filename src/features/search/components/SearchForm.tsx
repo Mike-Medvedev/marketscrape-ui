@@ -6,7 +6,6 @@ import {
   TextInput,
   NumberInput,
   Select,
-  Checkbox,
   Stepper,
   Title,
   Group,
@@ -23,7 +22,6 @@ import {
   monitoringSettingsSchema,
   type SearchCriteria,
   type MonitoringSettings,
-  type NotificationMethod,
 } from "@/features/search/search.types";
 import type { ActiveSearch } from "@/features/search/search.types";
 import {
@@ -39,12 +37,17 @@ const DATE_LISTED_OPTIONS = [
 ];
 
 const FREQUENCY_OPTIONS = [
-  { value: "Every 30 minutes", label: "Every 30 minutes" },
-  { value: "Every hour", label: "Every hour" },
-  { value: "Every 2 hours", label: "Every 2 hours" },
-  { value: "Every 6 hours", label: "Every 6 hours" },
-  { value: "Every 12 hours", label: "Every 12 hours" },
-  { value: "Daily", label: "Daily" },
+  { value: "every_1h", label: "Every hour" },
+  { value: "every_2h", label: "Every 2 hours" },
+  { value: "every_6h", label: "Every 6 hours" },
+  { value: "every_12h", label: "Every 12 hours" },
+  { value: "every_24h", label: "Daily" },
+];
+
+const NOTIFICATION_TYPE_OPTIONS = [
+  { value: "email", label: "Email" },
+  { value: "sms", label: "SMS" },
+  { value: "webhook", label: "Webhook" },
 ];
 
 interface SearchFormProps {
@@ -75,9 +78,10 @@ export function SearchForm({ existingSearch }: SearchFormProps) {
   const settingsForm = useForm<MonitoringSettings>({
     mode: "controlled",
     initialValues: {
-      frequency: existingSearch?.settings.frequency ?? "",
+      frequency: existingSearch?.settings.frequency ?? "every_1h",
       listingsPerCheck: existingSearch?.settings.listingsPerCheck ?? 1,
-      notifications: existingSearch?.settings.notifications ?? [],
+      notificationType: existingSearch?.settings.notificationType ?? "email",
+      notificationTarget: existingSearch?.settings.notificationTarget ?? "",
     },
     validate: zod4Resolver(monitoringSettingsSchema),
   });
@@ -116,14 +120,6 @@ export function SearchForm({ existingSearch }: SearchFormProps) {
     } else {
       navigate("/");
     }
-  };
-
-  const toggleNotification = (method: NotificationMethod) => {
-    const current = settingsForm.values.notifications;
-    const updated = current.includes(method)
-      ? current.filter((n: NotificationMethod) => n !== method)
-      : [...current, method];
-    settingsForm.setFieldValue("notifications", updated);
   };
 
   const isMutating = createMutation.isPending || updateMutation.isPending;
@@ -215,33 +211,24 @@ export function SearchForm({ existingSearch }: SearchFormProps) {
               key={settingsForm.key("listingsPerCheck")}
               {...settingsForm.getInputProps("listingsPerCheck")}
             />
-            <div>
-              <Text size="sm" fw={500} mb="xs">
-                Notifications{" "}
-                <Text span size="xs" c="dimmed">
-                  (optional)
-                </Text>
-              </Text>
-              <Stack gap="sm">
-                <Checkbox
-                  label="Email"
-                  checked={settingsForm.values.notifications.includes("email")}
-                  onChange={() => toggleNotification("email")}
-                />
-                <Checkbox
-                  label="SMS"
-                  checked={settingsForm.values.notifications.includes("sms")}
-                  onChange={() => toggleNotification("sms")}
-                />
-                <Checkbox
-                  label="Webhook"
-                  checked={settingsForm.values.notifications.includes(
-                    "webhook",
-                  )}
-                  onChange={() => toggleNotification("webhook")}
-                />
-              </Stack>
-            </div>
+            <Select
+              label="Notification Type"
+              data={NOTIFICATION_TYPE_OPTIONS}
+              key={settingsForm.key("notificationType")}
+              {...settingsForm.getInputProps("notificationType")}
+            />
+            <TextInput
+              label="Notification Target"
+              placeholder={
+                settingsForm.values.notificationType === "email"
+                  ? "you@example.com"
+                  : settingsForm.values.notificationType === "sms"
+                    ? "+1 234 567 8900"
+                    : "https://your-webhook.com/endpoint"
+              }
+              key={settingsForm.key("notificationTarget")}
+              {...settingsForm.getInputProps("notificationTarget")}
+            />
           </Stack>
         )}
       </div>
