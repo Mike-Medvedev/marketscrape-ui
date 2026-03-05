@@ -4,6 +4,218 @@ export type ClientOptions = {
     baseURL: 'http://localhost:3000' | (string & {});
 };
 
+export type SignupData = {
+    /**
+     * Request body
+     */
+    body?: {
+        email: string;
+        password: string;
+    };
+    path?: never;
+    query?: never;
+    url: '/api/v1/auth/signup';
+};
+
+export type SignupErrors = {
+    /**
+     * Conflict
+     */
+    409: {
+        success: false;
+        error: {
+            code: string;
+            message: string;
+            details?: unknown;
+        };
+    };
+};
+
+export type SignupError = SignupErrors[keyof SignupErrors];
+
+export type SignupResponses = {
+    /**
+     * Success
+     */
+    200: {
+        success: true;
+        data: {
+            message: string;
+        };
+    };
+};
+
+export type SignupResponse = SignupResponses[keyof SignupResponses];
+
+export type LoginData = {
+    /**
+     * Request body
+     */
+    body?: {
+        email: string;
+        password: string;
+    };
+    path?: never;
+    query?: never;
+    url: '/api/v1/auth/login';
+};
+
+export type LoginErrors = {
+    /**
+     * Unauthorized
+     */
+    401: {
+        success: false;
+        error: {
+            code: string;
+            message: string;
+            details?: unknown;
+        };
+    };
+    /**
+     * Forbidden
+     */
+    403: {
+        success: false;
+        error: {
+            code: string;
+            message: string;
+            details?: unknown;
+        };
+    };
+};
+
+export type LoginError = LoginErrors[keyof LoginErrors];
+
+export type LoginResponses = {
+    /**
+     * Success
+     */
+    200: {
+        success: true;
+        data: {
+            sessionToken: string;
+            email: string;
+        };
+    };
+};
+
+export type LoginResponse = LoginResponses[keyof LoginResponses];
+
+export type VerifyEmailData = {
+    body?: never;
+    path?: never;
+    query: {
+        token: string;
+    };
+    url: '/api/v1/auth/verify';
+};
+
+export type VerifyEmailErrors = {
+    /**
+     * Bad Request
+     */
+    400: {
+        success: false;
+        error: {
+            code: string;
+            message: string;
+            details?: unknown;
+        };
+    };
+};
+
+export type VerifyEmailError = VerifyEmailErrors[keyof VerifyEmailErrors];
+
+export type VerifyEmailResponses = {
+    /**
+     * Success
+     */
+    200: {
+        success: true;
+        data: {
+            sessionToken: string;
+            email: string;
+        };
+    };
+};
+
+export type VerifyEmailResponse = VerifyEmailResponses[keyof VerifyEmailResponses];
+
+export type LogoutData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/v1/auth/logout';
+};
+
+export type LogoutErrors = {
+    /**
+     * Unauthorized
+     */
+    401: {
+        success: false;
+        error: {
+            code: string;
+            message: string;
+            details?: unknown;
+        };
+    };
+};
+
+export type LogoutError = LogoutErrors[keyof LogoutErrors];
+
+export type LogoutResponses = {
+    /**
+     * Success
+     */
+    200: {
+        success: true;
+        data: {
+            message: string;
+        };
+    };
+};
+
+export type LogoutResponse = LogoutResponses[keyof LogoutResponses];
+
+export type GetMeData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/v1/auth/me';
+};
+
+export type GetMeErrors = {
+    /**
+     * Unauthorized
+     */
+    401: {
+        success: false;
+        error: {
+            code: string;
+            message: string;
+            details?: unknown;
+        };
+    };
+};
+
+export type GetMeError = GetMeErrors[keyof GetMeErrors];
+
+export type GetMeResponses = {
+    /**
+     * Success
+     */
+    200: {
+        success: true;
+        data: {
+            email: string;
+        };
+    };
+};
+
+export type GetMeResponse = GetMeResponses[keyof GetMeResponses];
+
 export type PostScrapeData = {
     /**
      * Request body

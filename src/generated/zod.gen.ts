@@ -2,6 +2,96 @@
 
 import * as z from 'zod';
 
+export const zSignupData = z.object({
+    body: z.object({
+        email: z.email(),
+        password: z.string().min(8)
+    }).optional(),
+    path: z.never().optional(),
+    query: z.never().optional()
+});
+
+/**
+ * Success
+ */
+export const zSignupResponse = z.object({
+    success: z.literal(true),
+    data: z.object({
+        message: z.string()
+    })
+});
+
+export const zLoginData = z.object({
+    body: z.object({
+        email: z.email(),
+        password: z.string().min(1)
+    }).optional(),
+    path: z.never().optional(),
+    query: z.never().optional()
+});
+
+/**
+ * Success
+ */
+export const zLoginResponse = z.object({
+    success: z.literal(true),
+    data: z.object({
+        sessionToken: z.string(),
+        email: z.string()
+    })
+});
+
+export const zVerifyEmailData = z.object({
+    body: z.never().optional(),
+    path: z.never().optional(),
+    query: z.object({
+        token: z.string().min(1)
+    })
+});
+
+/**
+ * Success
+ */
+export const zVerifyEmailResponse = z.object({
+    success: z.literal(true),
+    data: z.object({
+        sessionToken: z.string(),
+        email: z.string()
+    })
+});
+
+export const zLogoutData = z.object({
+    body: z.never().optional(),
+    path: z.never().optional(),
+    query: z.never().optional()
+});
+
+/**
+ * Success
+ */
+export const zLogoutResponse = z.object({
+    success: z.literal(true),
+    data: z.object({
+        message: z.string()
+    })
+});
+
+export const zGetMeData = z.object({
+    body: z.never().optional(),
+    path: z.never().optional(),
+    query: z.never().optional()
+});
+
+/**
+ * Success
+ */
+export const zGetMeResponse = z.object({
+    success: z.literal(true),
+    data: z.object({
+        email: z.string()
+    })
+});
+
 export const zPostScrapeData = z.object({
     body: z.object({
         query: z.string().optional(),
