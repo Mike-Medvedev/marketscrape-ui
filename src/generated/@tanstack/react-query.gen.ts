@@ -4,8 +4,8 @@ import { type DefaultError, queryOptions, type UseMutationOptions } from '@tanst
 import type { AxiosError } from 'axios';
 
 import { client } from '../client.gen';
-import { createSearch, deleteSearch, getSearchById, getSearches, type Options, postApiV1WebhookAnalyzedListings, postApiV1WebhookContainerStarted, postApiV1WebhookRefresh, postScrape, updateSearch } from '../sdk.gen';
-import type { CreateSearchData, CreateSearchResponse, DeleteSearchData, DeleteSearchError, DeleteSearchResponse, GetSearchByIdData, GetSearchByIdError, GetSearchByIdResponse, GetSearchesData, GetSearchesError, GetSearchesResponse, PostApiV1WebhookAnalyzedListingsData, PostApiV1WebhookContainerStartedData, PostApiV1WebhookRefreshData, PostScrapeData, PostScrapeResponse, UpdateSearchData, UpdateSearchError, UpdateSearchResponse } from '../types.gen';
+import { createSearch, deleteSearch, getSearchById, getSearches, type Options, postScrape, updateSearch } from '../sdk.gen';
+import type { CreateSearchData, CreateSearchResponse, DeleteSearchData, DeleteSearchError, DeleteSearchResponse, GetSearchByIdData, GetSearchByIdError, GetSearchByIdResponse, GetSearchesData, GetSearchesError, GetSearchesResponse, PostScrapeData, PostScrapeResponse, UpdateSearchData, UpdateSearchError, UpdateSearchResponse } from '../types.gen';
 
 export type QueryKey<TOptions extends Options> = [
     Pick<TOptions, 'baseURL' | 'body' | 'headers' | 'path' | 'query'> & {
@@ -134,57 +134,6 @@ export const postScrapeMutation = (options?: Partial<Options<PostScrapeData>>): 
     const mutationOptions: UseMutationOptions<PostScrapeResponse, AxiosError<DefaultError>, Options<PostScrapeData>> = {
         mutationFn: async (fnOptions) => {
             const { data } = await postScrape({
-                ...options,
-                ...fnOptions,
-                throwOnError: true
-            });
-            return data;
-        }
-    };
-    return mutationOptions;
-};
-
-/**
- * POST /api/v1/webhook/analyzed-listings
- */
-export const postApiV1WebhookAnalyzedListingsMutation = (options?: Partial<Options<PostApiV1WebhookAnalyzedListingsData>>): UseMutationOptions<unknown, AxiosError<DefaultError>, Options<PostApiV1WebhookAnalyzedListingsData>> => {
-    const mutationOptions: UseMutationOptions<unknown, AxiosError<DefaultError>, Options<PostApiV1WebhookAnalyzedListingsData>> = {
-        mutationFn: async (fnOptions) => {
-            const { data } = await postApiV1WebhookAnalyzedListings({
-                ...options,
-                ...fnOptions,
-                throwOnError: true
-            });
-            return data;
-        }
-    };
-    return mutationOptions;
-};
-
-/**
- * POST /api/v1/webhook/container-started
- */
-export const postApiV1WebhookContainerStartedMutation = (options?: Partial<Options<PostApiV1WebhookContainerStartedData>>): UseMutationOptions<unknown, AxiosError<DefaultError>, Options<PostApiV1WebhookContainerStartedData>> => {
-    const mutationOptions: UseMutationOptions<unknown, AxiosError<DefaultError>, Options<PostApiV1WebhookContainerStartedData>> = {
-        mutationFn: async (fnOptions) => {
-            const { data } = await postApiV1WebhookContainerStarted({
-                ...options,
-                ...fnOptions,
-                throwOnError: true
-            });
-            return data;
-        }
-    };
-    return mutationOptions;
-};
-
-/**
- * POST /api/v1/webhook/refresh
- */
-export const postApiV1WebhookRefreshMutation = (options?: Partial<Options<PostApiV1WebhookRefreshData>>): UseMutationOptions<unknown, AxiosError<DefaultError>, Options<PostApiV1WebhookRefreshData>> => {
-    const mutationOptions: UseMutationOptions<unknown, AxiosError<DefaultError>, Options<PostApiV1WebhookRefreshData>> = {
-        mutationFn: async (fnOptions) => {
-            const { data } = await postApiV1WebhookRefresh({
                 ...options,
                 ...fnOptions,
                 throwOnError: true

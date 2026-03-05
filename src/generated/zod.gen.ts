@@ -259,26 +259,8 @@ export const zPostScrapeResponse = z.object({
             url: z.string(),
             price: z.string(),
             title: z.string(),
-            location: z.string(),
+            location: z.record(z.string(), z.unknown()),
             primaryPhotoUri: z.string()
         }))
     })
-});
-
-export const zPostApiV1WebhookAnalyzedListingsData = z.object({
-    body: z.never().optional(),
-    path: z.never().optional(),
-    query: z.never().optional()
-});
-
-export const zPostApiV1WebhookContainerStartedData = z.object({
-    body: z.never().optional(),
-    path: z.never().optional(),
-    query: z.never().optional()
-});
-
-export const zPostApiV1WebhookRefreshData = z.object({
-    body: z.never().optional(),
-    path: z.never().optional(),
-    query: z.never().optional()
 });
