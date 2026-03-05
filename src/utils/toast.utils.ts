@@ -5,11 +5,11 @@ import {
   IconAlertTriangle,
   IconInfoCircle,
 } from '@tabler/icons-react'
-import { createElement } from 'react'
+import { createElement, type ReactNode } from 'react'
 
 interface ToastOptions {
   title?: string
-  message: string
+  message: ReactNode
   autoClose?: number
 }
 

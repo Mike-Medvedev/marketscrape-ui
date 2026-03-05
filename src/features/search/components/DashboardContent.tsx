@@ -1,15 +1,14 @@
-import { useState } from "react";
 import { useNavigate } from "react-router";
 import { Container, Text, Title } from "@mantine/core";
 import { IconSearch } from "@tabler/icons-react";
 import { SearchCard } from '@/features/search/components/SearchCard'
 import { SessionAlert } from '@/features/search/components/SessionAlert'
-import { IdentityAbsorber } from '@/features/search/components/IdentityAbsorber'
 import { NewSearchButton } from '@/features/search/components/NewSearchButton'
 import {
   useSearches,
   useDeleteSearch,
 } from "@/features/search/hooks/search.hook";
+import { requestIdentitySync } from "@/utils/identity-sync.utils";
 import '@/features/search/page/DashboardPage.css'
 
 export function DashboardContent() {
@@ -17,7 +16,6 @@ export function DashboardContent() {
   const { data: response } = useSearches();
   const searches = response.data;
   const deleteMutation = useDeleteSearch();
-  const [showIdentityModal, setShowIdentityModal] = useState(false);
 
   const hasExpiredSession = searches.some((s) => s.status === "refresh");
 
@@ -33,10 +31,6 @@ export function DashboardContent() {
     navigate(`/results/${id}`);
   };
 
-  const handleQuickSync = () => {
-    setShowIdentityModal(true);
-  };
-
   return (
     <Container size="lg" className="dashboard-container">
       <div className="dashboard-header">
@@ -47,14 +41,9 @@ export function DashboardContent() {
 
       {hasExpiredSession && (
         <div className="dashboard-alert">
-          <SessionAlert onQuickSync={handleQuickSync} onClose={() => {}} />
+          <SessionAlert onQuickSync={requestIdentitySync} onClose={() => {}} />
         </div>
       )}
-
-      <IdentityAbsorber
-        isOpen={showIdentityModal}
-        onClose={() => setShowIdentityModal(false)}
-      />
 
       {searches.length > 0 ? (
         <div className="dashboard-grid">

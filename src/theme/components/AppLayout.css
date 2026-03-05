@@ -52,3 +52,23 @@
   font-family: var(--mantine-font-family-monospace);
   letter-spacing: -0.025em;
 }
+
+.app-sync-button {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.4375rem 0.875rem;
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: var(--mantine-radius-md);
+  color: var(--muted-foreground);
+  font-size: 0.8125rem;
+  font-family: var(--mantine-font-family-monospace);
+  cursor: pointer;
+  transition: border-color 0.2s, color 0.2s;
+}
+
+.app-sync-button:hover {
+  border-color: var(--primary);
+  color: var(--primary);
+}

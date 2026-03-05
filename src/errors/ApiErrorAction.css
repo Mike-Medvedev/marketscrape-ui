@@ -1,0 +1,25 @@
+.api-error-toast {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.api-error-toast-action {
+  display: inline-flex;
+  align-items: center;
+  align-self: flex-start;
+  padding: 0.25rem 0.75rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  font-family: inherit;
+  color: var(--primary-foreground);
+  background: var(--primary);
+  border: none;
+  border-radius: var(--mantine-radius-sm);
+  cursor: pointer;
+  transition: opacity 0.15s;
+}
+
+.api-error-toast-action:hover {
+  opacity: 0.85;
+}

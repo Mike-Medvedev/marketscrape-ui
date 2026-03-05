@@ -1,5 +1,7 @@
+import { createElement } from "react";
 import type { AxiosError } from "axios";
 import { toast } from "@/utils/toast.utils";
+import { requestIdentitySync } from "@/utils/identity-sync.utils";
 
 interface ApiErrorBody {
   success: false;
@@ -10,10 +12,16 @@ interface ApiErrorBody {
   };
 }
 
+interface ErrorAction {
+  label: string;
+  onClick: () => void;
+}
+
 interface ErrorEntry {
   title: string;
   message: string;
   severity: "error" | "warning";
+  action?: ErrorAction;
 }
 
 const errorCodeRegistry: Record<string, ErrorEntry> = {
@@ -22,6 +30,10 @@ const errorCodeRegistry: Record<string, ErrorEntry> = {
     message:
       "Your Facebook session has expired. Please re-authenticate to continue.",
     severity: "warning",
+    action: {
+      label: "Sync Now",
+      onClick: requestIdentitySync,
+    },
   },
 };
 
@@ -53,6 +65,22 @@ function resolveEntry(code: string): ErrorEntry {
   return errorCodeRegistry[code] ?? defaultError;
 }
 
+function buildToastMessage(text: string, action?: ErrorAction) {
+  if (!action) return text;
+
+  return createElement("div", { className: "api-error-toast" },
+    createElement("span", null, text),
+    createElement(
+      "button",
+      {
+        className: "api-error-toast-action",
+        onClick: action.onClick,
+      },
+      action.label,
+    ),
+  );
+}
+
 export function getApiErrorMessage(error: unknown, fallback?: string): string {
   const apiError = parseApiErrorBody(error);
   if (apiError) {
@@ -66,7 +94,12 @@ export function notifyApiError(error: unknown, fallback?: string) {
 
   if (apiError) {
     const entry = resolveEntry(apiError.code);
-    toast[entry.severity]({ title: entry.title, message: entry.message });
+    const message = buildToastMessage(entry.message, entry.action);
+    toast[entry.severity]({
+      title: entry.title,
+      message,
+      autoClose: entry.action ? 8000 : undefined,
+    });
     return;
   }
 
