@@ -1,5 +1,5 @@
 import { Container, Skeleton } from "@mantine/core";
-import "@/features/search/components/ResultsSkeleton.css";
+import "./ResultsSkeleton.css";
 
 export function ResultsSkeleton() {
   return (

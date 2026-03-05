@@ -28,7 +28,7 @@ import {
   useCreateSearch,
   useUpdateSearch,
 } from "@/features/search/hooks/search.hook";
-import '@/features/search/page/NewSearchPage.css'
+import '@/features/search/page/NewSearchPage/NewSearchPage.css'
 
 const DATE_LISTED_OPTIONS = [
   { value: "24h", label: "Last 24 hours" },

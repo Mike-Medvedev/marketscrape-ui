@@ -1,15 +1,15 @@
 import { useNavigate } from "react-router";
 import { Container, Text, Title } from "@mantine/core";
 import { IconSearch } from "@tabler/icons-react";
-import { SearchCard } from '@/features/search/components/SearchCard'
-import { SessionAlert } from '@/features/search/components/SessionAlert'
-import { NewSearchButton } from '@/features/search/components/NewSearchButton'
+import { SearchCard } from '@/features/search/components/SearchCard/SearchCard'
+import { SessionAlert } from '@/features/search/components/SessionAlert/SessionAlert'
+import { NewSearchButton } from '@/features/search/components/NewSearchButton/NewSearchButton'
 import {
   useSearches,
   useDeleteSearch,
 } from "@/features/search/hooks/search.hook";
 import { requestIdentitySync } from "@/utils/identity-sync.utils";
-import '@/features/search/page/DashboardPage.css'
+import '@/features/search/page/DashboardPage/DashboardPage.css'
 
 export function DashboardContent() {
   const navigate = useNavigate();
@@ -17,7 +17,7 @@ export function DashboardContent() {
   const searches = response.data;
   const deleteMutation = useDeleteSearch();
 
-  const hasExpiredSession = searches.some((s) => s.status === "refresh");
+  const hasExpiredSession = searches.some((s) => s.status === "needs_attention");
 
   const handleDelete = (id: string) => {
     deleteMutation.mutate({ path: { id } });

@@ -2,12 +2,12 @@ import { type ReactNode, useState, useCallback } from 'react'
 import { useNavigate } from 'react-router'
 import { AppShell } from '@mantine/core'
 import { IconSearch, IconRefresh } from '@tabler/icons-react'
-import { IdentityAbsorber } from '@/features/search/components/IdentityAbsorber'
+import { IdentityAbsorber } from '@/features/search/components/IdentityAbsorber/IdentityAbsorber'
 import {
   requestIdentitySync,
   useIdentitySyncListener,
 } from '@/utils/identity-sync.utils'
-import '@/theme/components/AppLayout.css'
+import './AppLayout.css'
 
 interface AppLayoutProps {
   children: ReactNode
@@ -39,7 +39,8 @@ export function AppLayout({ children }: AppLayoutProps) {
 
           <button
             onClick={requestIdentitySync}
-            className="app-sync-button"
+            disabled={showSyncModal}
+            className={`app-sync-button${showSyncModal ? ' app-sync-button--disabled' : ''}`}
           >
             <IconRefresh size={16} />
             <span>Sync</span>

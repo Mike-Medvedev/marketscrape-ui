@@ -5,12 +5,12 @@ import {
   IconPlayerPlay,
   IconSearch,
 } from "@tabler/icons-react";
-import { ListingCard } from "@/features/search/components/ListingCard";
+import { ListingCard } from "@/features/search/components/ListingCard/ListingCard";
 import {
   useSearch,
   useExecuteSearch,
 } from "@/features/search/hooks/search.hook";
-import "@/features/search/components/ResultsContent.css";
+import "./ResultsContent.css";
 
 export function ResultsContent() {
   const { id } = useParams();

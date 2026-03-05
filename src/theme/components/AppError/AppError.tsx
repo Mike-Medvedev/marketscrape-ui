@@ -1,6 +1,6 @@
 import { Container, Title, Text, Button, Stack } from '@mantine/core'
 import { IconAlertTriangle } from '@tabler/icons-react'
-import '@/theme/components/AppError.css'
+import './AppError.css'
 
 interface AppErrorProps {
   error?: unknown

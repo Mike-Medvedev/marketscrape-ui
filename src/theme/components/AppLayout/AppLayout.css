@@ -68,7 +68,12 @@
   transition: border-color 0.2s, color 0.2s;
 }
 
-.app-sync-button:hover {
+.app-sync-button:hover:not(:disabled) {
   border-color: var(--primary);
   color: var(--primary);
+}
+
+.app-sync-button--disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
 }

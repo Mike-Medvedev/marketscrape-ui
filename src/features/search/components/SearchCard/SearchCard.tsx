@@ -9,7 +9,7 @@ import {
 } from "@tabler/icons-react";
 import { ActionIcon } from "@mantine/core";
 import type { ActiveSearch } from "@/features/search/search.types";
-import '@/features/search/components/SearchCard.css'
+import './SearchCard.css'
 
 interface SearchCardProps {
   search: ActiveSearch;
@@ -18,23 +18,26 @@ interface SearchCardProps {
   onViewResults: (id: string) => void;
 }
 
-const statusConfig = {
+const attentionConfig = {
+  icon: IconRefresh,
+  label: "Action Required",
+  dotClass: "status-dot--refresh",
+} as const;
+
+const statusConfig: Record<ActiveSearch["status"], { icon: typeof IconCircleCheck; label: string; dotClass: string }> = {
   running: {
     icon: IconCircleCheck,
     label: "Sync Healthy",
     dotClass: "status-dot--running",
   },
-  refresh: {
-    icon: IconRefresh,
-    label: "Action Required",
-    dotClass: "status-dot--refresh",
-  },
+  needs_attention: attentionConfig,
+  refresh: attentionConfig,
   error: {
     icon: IconAlertCircle,
     label: "Error",
     dotClass: "status-dot--error",
   },
-} as const;
+};
 
 export function SearchCard({ search, onDelete, onEdit, onViewResults }: SearchCardProps) {
   const config = statusConfig[search.status];

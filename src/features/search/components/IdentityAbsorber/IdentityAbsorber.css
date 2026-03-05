@@ -16,6 +16,20 @@
   animation: shimmer 2s linear infinite;
 }
 
+.identity-shimmer--success {
+  background: var(--status-running);
+  animation: none;
+}
+
+.identity-shimmer--error {
+  background: var(--status-error);
+  animation: none;
+}
+
+.identity-shimmer--hidden {
+  opacity: 0;
+}
+
 .identity-header {
   display: flex;
   align-items: center;
@@ -128,4 +142,63 @@
 .identity-log-prompt {
   color: var(--primary);
   margin-right: 0.5rem;
+}
+
+.identity-vnc-container {
+  width: 100%;
+  height: 100%;
+  display: flex;
+}
+
+.identity-vnc-screen {
+  width: 100%;
+  height: 100%;
+}
+
+.identity-browser:has(.identity-vnc-container) {
+  padding: 0;
+  align-items: stretch;
+  justify-content: stretch;
+}
+
+.identity-terminal {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.identity-terminal-icon {
+  width: 4rem;
+  height: 4rem;
+  border-radius: 9999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.identity-terminal-icon--warning {
+  background: rgba(250, 204, 21, 0.15);
+}
+
+.identity-terminal-icon--error {
+  background: rgba(239, 68, 68, 0.15);
+}
+
+.identity-terminal-title {
+  font-size: 1.25rem;
+  color: var(--foreground);
+  margin: 0;
+}
+
+.identity-terminal-desc {
+  font-size: 0.875rem;
+  color: var(--muted-foreground);
+  margin: 0;
+  max-width: 300px;
+}
+
+.identity-retry-btn {
+  margin-top: 0.5rem;
 }

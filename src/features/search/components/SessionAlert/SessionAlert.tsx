@@ -1,6 +1,6 @@
 import { IconAlertTriangle } from '@tabler/icons-react'
 import { Button } from '@mantine/core'
-import '@/features/search/components/SessionAlert.css'
+import './SessionAlert.css'
 
 interface SessionAlertProps {
   onQuickSync: () => void

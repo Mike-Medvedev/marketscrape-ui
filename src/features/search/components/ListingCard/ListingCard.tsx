@@ -1,6 +1,6 @@
 import { IconMapPin, IconExternalLink } from "@tabler/icons-react";
 import type { Listing } from "@/features/search/search.types";
-import "@/features/search/components/ListingCard.css";
+import "./ListingCard.css";
 
 interface ListingCardProps {
   listing: Listing;

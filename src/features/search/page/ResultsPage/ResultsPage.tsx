@@ -1,6 +1,6 @@
 import { Suspense } from "react";
-import { ResultsContent } from "@/features/search/components/ResultsContent";
-import { ResultsSkeleton } from "@/features/search/components/ResultsSkeleton";
+import { ResultsContent } from "@/features/search/components/ResultsContent/ResultsContent";
+import { ResultsSkeleton } from "@/features/search/components/ResultsSkeleton/ResultsSkeleton";
 import { QueryErrorBoundary } from "@/theme/components/QueryErrorBoundary";
 
 export function ResultsPage() {
