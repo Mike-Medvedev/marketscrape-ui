@@ -103,7 +103,13 @@ export const zPostScrapeData = z.object({
         pageCount: z.number().nullish(),
         pageDelayMs: z.number().nullish(),
         listingFetchDelayMs: z.number().nullish(),
-        searchFrequency: z.string().optional()
+        searchFrequency: z.enum([
+            'every_1h',
+            'every_2h',
+            'every_6h',
+            'every_12h',
+            'every_24h'
+        ]).optional()
     }).optional().default({}),
     path: z.never().optional(),
     query: z.never().optional()
@@ -151,13 +157,20 @@ export const zGetSearchesResponse = z.object({
             ])
         }),
         settings: z.object({
-            frequency: z.string(),
+            frequency: z.enum([
+                'every_1h',
+                'every_2h',
+                'every_6h',
+                'every_12h',
+                'every_24h'
+            ]),
             listingsPerCheck: z.int().gte(1),
-            notifications: z.array(z.enum([
+            notificationType: z.enum([
                 'email',
                 'sms',
                 'webhook'
-            ]))
+            ]),
+            notificationTarget: z.string().min(1)
         }),
         status: z.enum([
             'running',
@@ -183,13 +196,20 @@ export const zCreateSearchData = z.object({
             ])
         }),
         settings: z.object({
-            frequency: z.string(),
+            frequency: z.enum([
+                'every_1h',
+                'every_2h',
+                'every_6h',
+                'every_12h',
+                'every_24h'
+            ]),
             listingsPerCheck: z.int().gte(1),
-            notifications: z.array(z.enum([
+            notificationType: z.enum([
                 'email',
                 'sms',
                 'webhook'
-            ]))
+            ]),
+            notificationTarget: z.string().min(1)
         })
     }).optional(),
     path: z.never().optional(),
@@ -215,13 +235,20 @@ export const zCreateSearchResponse = z.object({
             ])
         }),
         settings: z.object({
-            frequency: z.string(),
+            frequency: z.enum([
+                'every_1h',
+                'every_2h',
+                'every_6h',
+                'every_12h',
+                'every_24h'
+            ]),
             listingsPerCheck: z.int().gte(1),
-            notifications: z.array(z.enum([
+            notificationType: z.enum([
                 'email',
                 'sms',
                 'webhook'
-            ]))
+            ]),
+            notificationTarget: z.string().min(1)
         }),
         status: z.enum([
             'running',
@@ -276,13 +303,20 @@ export const zGetSearchByIdResponse = z.object({
             ])
         }),
         settings: z.object({
-            frequency: z.string(),
+            frequency: z.enum([
+                'every_1h',
+                'every_2h',
+                'every_6h',
+                'every_12h',
+                'every_24h'
+            ]),
             listingsPerCheck: z.int().gte(1),
-            notifications: z.array(z.enum([
+            notificationType: z.enum([
                 'email',
                 'sms',
                 'webhook'
-            ]))
+            ]),
+            notificationTarget: z.string().min(1)
         }),
         status: z.enum([
             'running',
@@ -308,13 +342,20 @@ export const zUpdateSearchData = z.object({
             ])
         }),
         settings: z.object({
-            frequency: z.string(),
+            frequency: z.enum([
+                'every_1h',
+                'every_2h',
+                'every_6h',
+                'every_12h',
+                'every_24h'
+            ]),
             listingsPerCheck: z.int().gte(1),
-            notifications: z.array(z.enum([
+            notificationType: z.enum([
                 'email',
                 'sms',
                 'webhook'
-            ]))
+            ]),
+            notificationTarget: z.string().min(1)
         })
     }).optional(),
     path: z.object({
@@ -342,13 +383,20 @@ export const zUpdateSearchResponse = z.object({
             ])
         }),
         settings: z.object({
-            frequency: z.string(),
+            frequency: z.enum([
+                'every_1h',
+                'every_2h',
+                'every_6h',
+                'every_12h',
+                'every_24h'
+            ]),
             listingsPerCheck: z.int().gte(1),
-            notifications: z.array(z.enum([
+            notificationType: z.enum([
                 'email',
                 'sms',
                 'webhook'
-            ]))
+            ]),
+            notificationTarget: z.string().min(1)
         }),
         status: z.enum([
             'running',

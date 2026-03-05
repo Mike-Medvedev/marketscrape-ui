@@ -230,7 +230,7 @@ export type PostScrapeData = {
         pageCount?: number | null;
         pageDelayMs?: number | null;
         listingFetchDelayMs?: number | null;
-        searchFrequency?: string;
+        searchFrequency?: 'every_1h' | 'every_2h' | 'every_6h' | 'every_12h' | 'every_24h';
     };
     path?: never;
     query?: never;
@@ -299,9 +299,10 @@ export type GetSearchesResponses = {
                 dateListed: '24h' | '7d' | '30d';
             };
             settings: {
-                frequency: string;
+                frequency: 'every_1h' | 'every_2h' | 'every_6h' | 'every_12h' | 'every_24h';
                 listingsPerCheck: number;
-                notifications: Array<'email' | 'sms' | 'webhook'>;
+                notificationType: 'email' | 'sms' | 'webhook';
+                notificationTarget: string;
             };
             status: 'running' | 'refresh' | 'error' | 'needs_attention';
             lastRun: string | null;
@@ -324,9 +325,10 @@ export type CreateSearchData = {
             dateListed: '24h' | '7d' | '30d';
         };
         settings: {
-            frequency: string;
+            frequency: 'every_1h' | 'every_2h' | 'every_6h' | 'every_12h' | 'every_24h';
             listingsPerCheck: number;
-            notifications: Array<'email' | 'sms' | 'webhook'>;
+            notificationType: 'email' | 'sms' | 'webhook';
+            notificationTarget: string;
         };
     };
     path?: never;
@@ -350,9 +352,10 @@ export type CreateSearchResponses = {
                 dateListed: '24h' | '7d' | '30d';
             };
             settings: {
-                frequency: string;
+                frequency: 'every_1h' | 'every_2h' | 'every_6h' | 'every_12h' | 'every_24h';
                 listingsPerCheck: number;
-                notifications: Array<'email' | 'sms' | 'webhook'>;
+                notificationType: 'email' | 'sms' | 'webhook';
+                notificationTarget: string;
             };
             status: 'running' | 'refresh' | 'error' | 'needs_attention';
             lastRun: string | null;
@@ -440,9 +443,10 @@ export type GetSearchByIdResponses = {
                 dateListed: '24h' | '7d' | '30d';
             };
             settings: {
-                frequency: string;
+                frequency: 'every_1h' | 'every_2h' | 'every_6h' | 'every_12h' | 'every_24h';
                 listingsPerCheck: number;
-                notifications: Array<'email' | 'sms' | 'webhook'>;
+                notificationType: 'email' | 'sms' | 'webhook';
+                notificationTarget: string;
             };
             status: 'running' | 'refresh' | 'error' | 'needs_attention';
             lastRun: string | null;
@@ -465,9 +469,10 @@ export type UpdateSearchData = {
             dateListed: '24h' | '7d' | '30d';
         };
         settings: {
-            frequency: string;
+            frequency: 'every_1h' | 'every_2h' | 'every_6h' | 'every_12h' | 'every_24h';
             listingsPerCheck: number;
-            notifications: Array<'email' | 'sms' | 'webhook'>;
+            notificationType: 'email' | 'sms' | 'webhook';
+            notificationTarget: string;
         };
     };
     path: {
@@ -509,9 +514,10 @@ export type UpdateSearchResponses = {
                 dateListed: '24h' | '7d' | '30d';
             };
             settings: {
-                frequency: string;
+                frequency: 'every_1h' | 'every_2h' | 'every_6h' | 'every_12h' | 'every_24h';
                 listingsPerCheck: number;
-                notifications: Array<'email' | 'sms' | 'webhook'>;
+                notificationType: 'email' | 'sms' | 'webhook';
+                notificationTarget: string;
             };
             status: 'running' | 'refresh' | 'error' | 'needs_attention';
             lastRun: string | null;
