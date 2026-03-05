@@ -306,6 +306,8 @@ export type GetSearchesResponses = {
             };
             status: 'running' | 'refresh' | 'error' | 'needs_attention';
             lastRun: string | null;
+            isScheduled: boolean;
+            nextRunAt: string | null;
         }>;
     };
 };
@@ -359,6 +361,8 @@ export type CreateSearchResponses = {
             };
             status: 'running' | 'refresh' | 'error' | 'needs_attention';
             lastRun: string | null;
+            isScheduled: boolean;
+            nextRunAt: string | null;
         };
     };
 };
@@ -450,6 +454,8 @@ export type GetSearchByIdResponses = {
             };
             status: 'running' | 'refresh' | 'error' | 'needs_attention';
             lastRun: string | null;
+            isScheduled: boolean;
+            nextRunAt: string | null;
         };
     };
 };
@@ -521,6 +527,8 @@ export type UpdateSearchResponses = {
             };
             status: 'running' | 'refresh' | 'error' | 'needs_attention';
             lastRun: string | null;
+            isScheduled: boolean;
+            nextRunAt: string | null;
         };
     };
 };

@@ -178,7 +178,9 @@ export const zGetSearchesResponse = z.object({
             'error',
             'needs_attention'
         ]),
-        lastRun: z.iso.datetime().nullable()
+        lastRun: z.iso.datetime().nullable(),
+        isScheduled: z.boolean(),
+        nextRunAt: z.iso.datetime().nullable()
     }))
 });
 
@@ -256,7 +258,9 @@ export const zCreateSearchResponse = z.object({
             'error',
             'needs_attention'
         ]),
-        lastRun: z.iso.datetime().nullable()
+        lastRun: z.iso.datetime().nullable(),
+        isScheduled: z.boolean(),
+        nextRunAt: z.iso.datetime().nullable()
     })
 });
 
@@ -324,7 +328,9 @@ export const zGetSearchByIdResponse = z.object({
             'error',
             'needs_attention'
         ]),
-        lastRun: z.iso.datetime().nullable()
+        lastRun: z.iso.datetime().nullable(),
+        isScheduled: z.boolean(),
+        nextRunAt: z.iso.datetime().nullable()
     })
 });
 
@@ -404,7 +410,9 @@ export const zUpdateSearchResponse = z.object({
             'error',
             'needs_attention'
         ]),
-        lastRun: z.iso.datetime().nullable()
+        lastRun: z.iso.datetime().nullable(),
+        isScheduled: z.boolean(),
+        nextRunAt: z.iso.datetime().nullable()
     })
 });
 
