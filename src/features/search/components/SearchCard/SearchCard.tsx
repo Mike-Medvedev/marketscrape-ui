@@ -9,7 +9,7 @@ import {
   IconCalendarEvent,
   IconCalendarOff,
 } from "@tabler/icons-react";
-import { ActionIcon } from "@mantine/core";
+import { ActionIcon, Tooltip } from "@mantine/core";
 import type { ActiveSearch } from "@/features/search/search.types";
 import { relativeTime } from "@/utils/date.utils";
 import './SearchCard.css'
@@ -86,30 +86,36 @@ export function SearchCard({ search, onDelete, onEdit, onViewResults }: SearchCa
             <div className={`status-dot ${config.dotClass}`} />
             <span className="status-label">{config.label}</span>
           </div>
-          <ActionIcon
-            variant="subtle"
-            color="gray"
-            onClick={() => onViewResults(search.id)}
-            className="action-icon-results"
-          >
-            <IconListSearch size={16} />
-          </ActionIcon>
-          <ActionIcon
-            variant="subtle"
-            color="gray"
-            onClick={() => onEdit(search.id)}
-            className="action-icon-edit"
-          >
-            <IconPencil size={16} />
-          </ActionIcon>
-          <ActionIcon
-            variant="subtle"
-            color="gray"
-            onClick={() => onDelete(search.id)}
-            className="action-icon-delete"
-          >
-            <IconTrash size={16} />
-          </ActionIcon>
+          <Tooltip label="View listings" withArrow>
+            <ActionIcon
+              variant="subtle"
+              color="gray"
+              onClick={() => onViewResults(search.id)}
+              className="action-icon-results"
+            >
+              <IconListSearch size={16} />
+            </ActionIcon>
+          </Tooltip>
+          <Tooltip label="Edit search" withArrow>
+            <ActionIcon
+              variant="subtle"
+              color="gray"
+              onClick={() => onEdit(search.id)}
+              className="action-icon-edit"
+            >
+              <IconPencil size={16} />
+            </ActionIcon>
+          </Tooltip>
+          <Tooltip label="Delete search" withArrow>
+            <ActionIcon
+              variant="subtle"
+              color="gray"
+              onClick={() => onDelete(search.id)}
+              className="action-icon-delete"
+            >
+              <IconTrash size={16} />
+            </ActionIcon>
+          </Tooltip>
         </div>
       </div>
 
