@@ -76,6 +76,12 @@ const errorCodeRegistry: Record<string, ErrorEntry> = {
     message: "Your session has expired. Please log in again.",
     severity: "error",
   },
+  FACEBOOK_RATE_LIMITED: {
+    title: "Rate Limited",
+    message:
+      "Facebook is temporarily blocking requests. Please wait a few minutes before trying again.",
+    severity: "warning",
+  },
 };
 
 const defaultError: ErrorEntry = {
@@ -102,8 +108,21 @@ function isAxiosError(error: unknown): error is AxiosError {
   );
 }
 
-function resolveEntry(code: string): ErrorEntry {
-  return errorCodeRegistry[code] ?? defaultError;
+function resolveEntry(code: string, serverMessage?: string): ErrorEntry {
+  const registered = errorCodeRegistry[code];
+  if (registered) return registered;
+
+  if (serverMessage) {
+    return { title: "Error", message: serverMessage, severity: "error" };
+  }
+
+  return defaultError;
+}
+
+function extractErrorMessage(error: unknown): string | null {
+  if (error instanceof Error) return error.message;
+  if (typeof error === "string") return error;
+  return null;
 }
 
 function buildToastMessage(text: string, action?: ErrorAction) {
@@ -127,16 +146,20 @@ function buildToastMessage(text: string, action?: ErrorAction) {
 export function getApiErrorMessage(error: unknown, fallback?: string): string {
   const apiError = parseApiErrorBody(error);
   if (apiError) {
-    return resolveEntry(apiError.code).message;
+    return resolveEntry(apiError.code, apiError.message).message;
   }
-  return fallback ?? defaultError.message;
+  return extractErrorMessage(error) ?? fallback ?? defaultError.message;
 }
 
 export function notifyApiError(error: unknown, fallback?: string) {
+  if (import.meta.env.DEV) {
+    console.error("[API Error]", error);
+  }
+
   const apiError = parseApiErrorBody(error);
 
   if (apiError) {
-    const entry = resolveEntry(apiError.code);
+    const entry = resolveEntry(apiError.code, apiError.message);
     const message = buildToastMessage(entry.message, entry.action);
     toast[entry.severity]({
       title: entry.title,
@@ -146,5 +169,6 @@ export function notifyApiError(error: unknown, fallback?: string) {
     return;
   }
 
-  toast.error({ message: fallback ?? defaultError.message });
+  const message = extractErrorMessage(error) ?? fallback ?? defaultError.message;
+  toast.error({ message });
 }
