@@ -14,6 +14,7 @@ import {
   Text,
 } from "@mantine/core";
 import { InfoTooltip } from "@/theme/components/InfoTooltip/InfoTooltip";
+import { LocationAutocomplete } from "@/theme/components/LocationAutocomplete/LocationAutocomplete";
 import { useForm } from "@mantine/form";
 import { zod4Resolver } from "mantine-form-zod-resolver";
 import { IconArrowLeft, IconArrowRight } from "@tabler/icons-react";
@@ -149,7 +150,7 @@ export function SearchForm({ existingSearch }: SearchFormProps) {
               key={criteriaForm.key("query")}
               {...criteriaForm.getInputProps("query")}
             />
-            <TextInput
+            <LocationAutocomplete
               label="Location"
               placeholder="e.g., San Francisco, CA"
               key={criteriaForm.key("location")}

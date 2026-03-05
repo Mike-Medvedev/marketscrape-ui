@@ -35,6 +35,12 @@ const errorCodeRegistry: Record<string, ErrorEntry> = {
       onClick: requestIdentitySync,
     },
   },
+  GEOCODING_ERROR: {
+    title: "Location Not Found",
+    message:
+      "We couldn't find that location. Try a different city or zip code.",
+    severity: "error",
+  },
 };
 
 const defaultError: ErrorEntry = {
