@@ -6,9 +6,12 @@ import {
   IconRefresh,
   IconPencil,
   IconListSearch,
+  IconCalendarEvent,
+  IconCalendarOff,
 } from "@tabler/icons-react";
 import { ActionIcon } from "@mantine/core";
 import type { ActiveSearch } from "@/features/search/search.types";
+import { relativeTime } from "@/utils/date.utils";
 import './SearchCard.css'
 
 interface SearchCardProps {
@@ -17,6 +20,14 @@ interface SearchCardProps {
   onEdit: (id: string) => void;
   onViewResults: (id: string) => void;
 }
+
+const FREQUENCY_LABELS: Record<ActiveSearch["settings"]["frequency"], string> = {
+  every_1h: "Every hour",
+  every_2h: "Every 2 hours",
+  every_6h: "Every 6 hours",
+  every_12h: "Every 12 hours",
+  every_24h: "Every 24 hours",
+};
 
 const attentionConfig = {
   icon: IconRefresh,
@@ -105,7 +116,7 @@ export function SearchCard({ search, onDelete, onEdit, onViewResults }: SearchCa
       <div className="search-card-details">
         <div className="search-card-detail">
           <p className="detail-label">Frequency</p>
-          <p className="detail-value">{search.settings.frequency}</p>
+          <p className="detail-value">{FREQUENCY_LABELS[search.settings.frequency]}</p>
         </div>
         <div className="search-card-detail">
           <p className="detail-label">Listings</p>
@@ -125,12 +136,42 @@ export function SearchCard({ search, onDelete, onEdit, onViewResults }: SearchCa
         </div>
       </div>
 
-      {search.lastRun && (
-        <div className="search-card-last-run">
-          <IconClock size={12} />
-          Last run: {search.lastRun.toLocaleString()}
-        </div>
-      )}
+      <div className="search-card-schedule">
+        {search.isScheduled ? (
+          <div className="schedule-active">
+            <div className="schedule-badge schedule-badge--active">
+              <IconCalendarEvent size={14} />
+              <span>Scheduled</span>
+            </div>
+            {search.nextRunAt && (
+              <span className="schedule-next-run">
+                Next run {relativeTime(search.nextRunAt)}
+              </span>
+            )}
+          </div>
+        ) : (
+          <div className="schedule-inactive">
+            <div className="schedule-badge schedule-badge--inactive">
+              <IconCalendarOff size={14} />
+              <span>Not scheduled</span>
+            </div>
+            <button
+              type="button"
+              className="schedule-edit-link"
+              onClick={() => onEdit(search.id)}
+            >
+              Edit to re-schedule
+            </button>
+          </div>
+        )}
+
+        {search.lastRun && (
+          <div className="schedule-last-run">
+            <IconClock size={12} />
+            <span>Last ran {relativeTime(search.lastRun)}</span>
+          </div>
+        )}
+      </div>
     </div>
   );
 }

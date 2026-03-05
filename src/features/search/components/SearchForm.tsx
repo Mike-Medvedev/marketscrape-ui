@@ -41,7 +41,7 @@ const FREQUENCY_OPTIONS = [
   { value: "every_2h", label: "Every 2 hours" },
   { value: "every_6h", label: "Every 6 hours" },
   { value: "every_12h", label: "Every 12 hours" },
-  { value: "every_24h", label: "Daily" },
+  { value: "every_24h", label: "Every 24 hours" },
 ];
 
 const NOTIFICATION_TYPE_OPTIONS = [
@@ -218,7 +218,13 @@ export function SearchForm({ existingSearch }: SearchFormProps) {
               {...settingsForm.getInputProps("notificationType")}
             />
             <TextInput
-              label="Notification Target"
+              label={
+                settingsForm.values.notificationType === "email"
+                  ? "Email address"
+                  : settingsForm.values.notificationType === "sms"
+                    ? "Phone number"
+                    : "Webhook URL"
+              }
               placeholder={
                 settingsForm.values.notificationType === "email"
                   ? "you@example.com"
