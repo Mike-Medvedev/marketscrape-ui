@@ -20,7 +20,10 @@ export function useIdentitySync({ onDismiss }: UseIdentitySyncOptions = {}) {
   const eventSourceRef = useRef<EventSource | null>(null);
   const dismissTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const onDismissRef = useRef(onDismiss);
-  onDismissRef.current = onDismiss;
+
+  useEffect(() => {
+    onDismissRef.current = onDismiss;
+  });
 
   const appendLog = useCallback((message: string) => {
     setLogs((prev) => [...prev, message]);

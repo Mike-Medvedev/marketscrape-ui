@@ -4,8 +4,8 @@ import { type DefaultError, queryOptions, type UseMutationOptions } from '@tanst
 import type { AxiosError } from 'axios';
 
 import { client } from '../client.gen';
-import { beginIdentitySync, createSearch, deleteSearch, getSearchById, getSearches, type Options, postScrape, updateSearch, webhookAnalyzedListings, webhookNeedsLogin, webhookRefresh } from '../sdk.gen';
-import type { BeginIdentitySyncData, CreateSearchData, CreateSearchResponse, DeleteSearchData, DeleteSearchError, DeleteSearchResponse, GetSearchByIdData, GetSearchByIdError, GetSearchByIdResponse, GetSearchesData, GetSearchesError, GetSearchesResponse, PostScrapeData, PostScrapeResponse, UpdateSearchData, UpdateSearchError, UpdateSearchResponse, WebhookAnalyzedListingsData, WebhookNeedsLoginData, WebhookRefreshData } from '../types.gen';
+import { beginIdentitySync, createSearch, deleteSearch, getSearchById, getSearches, type Options, postScrape, updateSearch, webhookAnalyzedListings, webhookContainerExited, webhookNeedsLogin, webhookRefresh } from '../sdk.gen';
+import type { BeginIdentitySyncData, CreateSearchData, CreateSearchResponse, DeleteSearchData, DeleteSearchError, DeleteSearchResponse, GetSearchByIdData, GetSearchByIdError, GetSearchByIdResponse, GetSearchesData, GetSearchesError, GetSearchesResponse, PostScrapeData, PostScrapeResponse, UpdateSearchData, UpdateSearchError, UpdateSearchResponse, WebhookAnalyzedListingsData, WebhookContainerExitedData, WebhookNeedsLoginData, WebhookRefreshData } from '../types.gen';
 
 /**
  * Searches Marketplace and returns listings
@@ -168,6 +168,23 @@ export const webhookNeedsLoginMutation = (options?: Partial<Options<WebhookNeeds
     const mutationOptions: UseMutationOptions<unknown, AxiosError<DefaultError>, Options<WebhookNeedsLoginData>> = {
         mutationFn: async (fnOptions) => {
             const { data } = await webhookNeedsLogin({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
+/**
+ * Playwright container reports an error or unexpected exit
+ */
+export const webhookContainerExitedMutation = (options?: Partial<Options<WebhookContainerExitedData>>): UseMutationOptions<unknown, AxiosError<DefaultError>, Options<WebhookContainerExitedData>> => {
+    const mutationOptions: UseMutationOptions<unknown, AxiosError<DefaultError>, Options<WebhookContainerExitedData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await webhookContainerExited({
                 ...options,
                 ...fnOptions,
                 throwOnError: true

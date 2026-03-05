@@ -41,6 +41,16 @@ const errorCodeRegistry: Record<string, ErrorEntry> = {
       "We couldn't find that location. Try a different city or zip code.",
     severity: "error",
   },
+  SESSION_NOT_LOADED: {
+    title: "Session Not Loaded",
+    message:
+      "Your session is not loaded on the server. Please sync to continue.",
+    severity: "warning",
+    action: {
+      label: "Sync Now",
+      onClick: requestIdentitySync,
+    },
+  },
 };
 
 const defaultError: ErrorEntry = {
@@ -74,7 +84,9 @@ function resolveEntry(code: string): ErrorEntry {
 function buildToastMessage(text: string, action?: ErrorAction) {
   if (!action) return text;
 
-  return createElement("div", { className: "api-error-toast" },
+  return createElement(
+    "div",
+    { className: "api-error-toast" },
     createElement("span", null, text),
     createElement(
       "button",

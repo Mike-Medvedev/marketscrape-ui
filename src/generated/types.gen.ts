@@ -10,14 +10,15 @@ export type PostScrapeData = {
      */
     body?: {
         query?: string;
-        locationId?: string;
-        latitude?: number | null;
-        longitude?: number | null;
+        location?: string;
         radiusKm?: number | null;
         minPrice?: number | null;
+        maxPrice?: number | null;
+        dateListedDays?: number;
         pageCount?: number | null;
         pageDelayMs?: number | null;
         listingFetchDelayMs?: number | null;
+        searchFrequency?: string;
     };
     path?: never;
     query?: never;
@@ -320,6 +321,13 @@ export type WebhookNeedsLoginData = {
     path?: never;
     query?: never;
     url: '/webhook/needs-login';
+};
+
+export type WebhookContainerExitedData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/webhook/container-exited';
 };
 
 export type WebhookRefreshData = {

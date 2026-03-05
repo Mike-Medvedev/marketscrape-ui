@@ -5,14 +5,15 @@ import * as z from 'zod';
 export const zPostScrapeData = z.object({
     body: z.object({
         query: z.string().optional(),
-        locationId: z.string().optional(),
-        latitude: z.number().nullish(),
-        longitude: z.number().nullish(),
+        location: z.string().optional(),
         radiusKm: z.number().nullish(),
         minPrice: z.number().nullish(),
+        maxPrice: z.number().nullish(),
+        dateListedDays: z.number().optional(),
         pageCount: z.number().nullish(),
         pageDelayMs: z.number().nullish(),
-        listingFetchDelayMs: z.number().nullish()
+        listingFetchDelayMs: z.number().nullish(),
+        searchFrequency: z.string().optional()
     }).optional().default({}),
     path: z.never().optional(),
     query: z.never().optional()
@@ -276,6 +277,12 @@ export const zWebhookAnalyzedListingsData = z.object({
 });
 
 export const zWebhookNeedsLoginData = z.object({
+    body: z.never().optional(),
+    path: z.never().optional(),
+    query: z.never().optional()
+});
+
+export const zWebhookContainerExitedData = z.object({
     body: z.never().optional(),
     path: z.never().optional(),
     query: z.never().optional()
