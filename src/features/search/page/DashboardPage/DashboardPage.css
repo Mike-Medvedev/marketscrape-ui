@@ -47,3 +47,22 @@
 .dashboard-empty-text {
   margin-bottom: 1.5rem;
 }
+
+@media (max-width: 640px) {
+  .dashboard-container {
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+  }
+
+  .dashboard-header {
+    margin-bottom: 1.25rem;
+  }
+
+  .dashboard-grid {
+    gap: 1rem;
+  }
+
+  .dashboard-empty {
+    padding: 4rem 1rem;
+  }
+}

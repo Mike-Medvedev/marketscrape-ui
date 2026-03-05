@@ -6,6 +6,7 @@ import {
   IconAlertCircle,
 } from "@tabler/icons-react";
 import { Modal, ActionIcon, Button } from "@mantine/core";
+import { useMediaQuery } from "@mantine/hooks";
 import { VncScreen } from "react-vnc";
 import { useIdentitySync } from "@/features/search/hooks/sync.hook";
 import "./IdentityAbsorber.css";
@@ -16,6 +17,7 @@ interface IdentityAbsorberProps {
 }
 
 export function IdentityAbsorber({ isOpen, onClose }: IdentityAbsorberProps) {
+  const isMobile = useMediaQuery("(max-width: 640px)");
   const {
     syncState,
     vncUrl,
@@ -54,6 +56,7 @@ export function IdentityAbsorber({ isOpen, onClose }: IdentityAbsorberProps) {
       size="xl"
       withCloseButton={false}
       centered
+      fullScreen={isMobile ?? false}
       classNames={{
         content: "identity-modal-content",
         body: "identity-modal-body",

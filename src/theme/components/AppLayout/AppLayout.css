@@ -103,3 +103,92 @@
   border-color: var(--destructive);
   color: var(--destructive);
 }
+
+/* Mobile hamburger toggle — hidden on desktop */
+.app-mobile-toggle {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: var(--mantine-radius-md);
+  color: var(--foreground);
+  cursor: pointer;
+  padding: 0.375rem;
+  transition: border-color 0.2s;
+}
+
+.app-mobile-toggle:hover {
+  border-color: var(--primary);
+}
+
+/* Mobile dropdown menu */
+.app-mobile-backdrop {
+  position: fixed;
+  inset: 0;
+  top: 60px;
+  z-index: 199;
+  background: rgba(0, 0, 0, 0.4);
+}
+
+.app-mobile-menu {
+  display: none;
+  position: fixed;
+  top: 60px;
+  left: 0;
+  right: 0;
+  z-index: 200;
+  background: var(--card);
+  border-bottom: 1px solid var(--border);
+  padding: 0.5rem;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.app-mobile-menu-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  width: 100%;
+  padding: 0.75rem 1rem;
+  background: none;
+  border: none;
+  border-radius: var(--mantine-radius-md);
+  color: var(--foreground);
+  font-size: 0.875rem;
+  font-family: var(--mantine-font-family-monospace);
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.app-mobile-menu-item:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.app-mobile-menu-item--disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.app-mobile-menu-item--danger:hover {
+  background: rgba(239, 68, 68, 0.1);
+  color: var(--destructive);
+}
+
+@media (max-width: 640px) {
+  .app-header-inner {
+    padding: 0 1rem;
+  }
+
+  .app-header-actions {
+    display: none;
+  }
+
+  .app-mobile-toggle {
+    display: flex;
+  }
+
+  .app-mobile-menu {
+    display: flex;
+  }
+}

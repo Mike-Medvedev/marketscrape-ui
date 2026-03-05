@@ -202,3 +202,34 @@
 .identity-retry-btn {
   margin-top: 0.5rem;
 }
+
+@media (max-width: 640px) {
+  .identity-content {
+    flex-direction: column;
+    height: 100%;
+    flex: 1;
+  }
+
+  .identity-browser {
+    flex: 1;
+    min-height: 0;
+    padding: 1rem;
+  }
+
+  .identity-logs {
+    width: 100%;
+    max-height: 120px;
+    border-left: none;
+    border-top: 1px solid var(--border);
+  }
+
+  .identity-header {
+    padding: 0.75rem 1rem;
+  }
+
+  .identity-modal-body {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+}

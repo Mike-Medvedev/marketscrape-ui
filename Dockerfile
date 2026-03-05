@@ -2,10 +2,6 @@ FROM node:22-alpine AS build
 
 WORKDIR /app
 
-ARG VITE_API_URL
-ARG VITE_ENV=production
-ARG VITE_GOOGLE_MAPS_API_KEY
-
 COPY package.json package-lock.json openapi.json ./
 RUN npm ci
 
