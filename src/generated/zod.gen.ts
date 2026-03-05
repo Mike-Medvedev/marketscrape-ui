@@ -2,6 +2,39 @@
 
 import * as z from 'zod';
 
+export const zPostScrapeData = z.object({
+    body: z.object({
+        query: z.string().optional(),
+        locationId: z.string().optional(),
+        latitude: z.number().nullish(),
+        longitude: z.number().nullish(),
+        radiusKm: z.number().nullish(),
+        minPrice: z.number().nullish(),
+        pageCount: z.number().nullish(),
+        pageDelayMs: z.number().nullish(),
+        listingFetchDelayMs: z.number().nullish()
+    }).optional().default({}),
+    path: z.never().optional(),
+    query: z.never().optional()
+});
+
+/**
+ * Success
+ */
+export const zPostScrapeResponse = z.object({
+    success: z.literal(true),
+    data: z.object({
+        listings: z.array(z.object({
+            id: z.string(),
+            url: z.string(),
+            price: z.string(),
+            title: z.string(),
+            location: z.record(z.string(), z.unknown()),
+            primaryPhotoUri: z.string()
+        }))
+    })
+});
+
 export const zGetSearchesData = z.object({
     body: z.never().optional(),
     path: z.never().optional(),
@@ -38,7 +71,8 @@ export const zGetSearchesResponse = z.object({
         status: z.enum([
             'running',
             'refresh',
-            'error'
+            'error',
+            'needs_attention'
         ]),
         lastRun: z.iso.datetime().nullable()
     }))
@@ -101,7 +135,8 @@ export const zCreateSearchResponse = z.object({
         status: z.enum([
             'running',
             'refresh',
-            'error'
+            'error',
+            'needs_attention'
         ]),
         lastRun: z.iso.datetime().nullable()
     })
@@ -161,7 +196,8 @@ export const zGetSearchByIdResponse = z.object({
         status: z.enum([
             'running',
             'refresh',
-            'error'
+            'error',
+            'needs_attention'
         ]),
         lastRun: z.iso.datetime().nullable()
     })
@@ -226,41 +262,33 @@ export const zUpdateSearchResponse = z.object({
         status: z.enum([
             'running',
             'refresh',
-            'error'
+            'error',
+            'needs_attention'
         ]),
         lastRun: z.iso.datetime().nullable()
     })
 });
 
-export const zPostScrapeData = z.object({
-    body: z.object({
-        query: z.string().optional(),
-        locationId: z.string().optional(),
-        latitude: z.number().nullish(),
-        longitude: z.number().nullish(),
-        radiusKm: z.number().nullish(),
-        minPrice: z.number().nullish(),
-        pageCount: z.number().nullish(),
-        pageDelayMs: z.number().nullish(),
-        listingFetchDelayMs: z.number().nullish()
-    }).optional().default({}),
+export const zWebhookAnalyzedListingsData = z.object({
+    body: z.never().optional(),
     path: z.never().optional(),
     query: z.never().optional()
 });
 
-/**
- * Success
- */
-export const zPostScrapeResponse = z.object({
-    success: z.literal(true),
-    data: z.object({
-        listings: z.array(z.object({
-            id: z.string(),
-            url: z.string(),
-            price: z.string(),
-            title: z.string(),
-            location: z.record(z.string(), z.unknown()),
-            primaryPhotoUri: z.string()
-        }))
-    })
+export const zWebhookNeedsLoginData = z.object({
+    body: z.never().optional(),
+    path: z.never().optional(),
+    query: z.never().optional()
+});
+
+export const zWebhookRefreshData = z.object({
+    body: z.never().optional(),
+    path: z.never().optional(),
+    query: z.never().optional()
+});
+
+export const zBeginIdentitySyncData = z.object({
+    body: z.never().optional(),
+    path: z.never().optional(),
+    query: z.never().optional()
 });

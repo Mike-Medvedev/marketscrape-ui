@@ -4,8 +4,25 @@ import { type DefaultError, queryOptions, type UseMutationOptions } from '@tanst
 import type { AxiosError } from 'axios';
 
 import { client } from '../client.gen';
-import { createSearch, deleteSearch, getSearchById, getSearches, type Options, postScrape, updateSearch } from '../sdk.gen';
-import type { CreateSearchData, CreateSearchResponse, DeleteSearchData, DeleteSearchError, DeleteSearchResponse, GetSearchByIdData, GetSearchByIdError, GetSearchByIdResponse, GetSearchesData, GetSearchesError, GetSearchesResponse, PostScrapeData, PostScrapeResponse, UpdateSearchData, UpdateSearchError, UpdateSearchResponse } from '../types.gen';
+import { beginIdentitySync, createSearch, deleteSearch, getSearchById, getSearches, type Options, postScrape, updateSearch, webhookAnalyzedListings, webhookNeedsLogin, webhookRefresh } from '../sdk.gen';
+import type { BeginIdentitySyncData, CreateSearchData, CreateSearchResponse, DeleteSearchData, DeleteSearchError, DeleteSearchResponse, GetSearchByIdData, GetSearchByIdError, GetSearchByIdResponse, GetSearchesData, GetSearchesError, GetSearchesResponse, PostScrapeData, PostScrapeResponse, UpdateSearchData, UpdateSearchError, UpdateSearchResponse, WebhookAnalyzedListingsData, WebhookNeedsLoginData, WebhookRefreshData } from '../types.gen';
+
+/**
+ * Searches Marketplace and returns listings
+ */
+export const postScrapeMutation = (options?: Partial<Options<PostScrapeData>>): UseMutationOptions<PostScrapeResponse, AxiosError<DefaultError>, Options<PostScrapeData>> => {
+    const mutationOptions: UseMutationOptions<PostScrapeResponse, AxiosError<DefaultError>, Options<PostScrapeData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await postScrape({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
 
 export type QueryKey<TOptions extends Options> = [
     Pick<TOptions, 'baseURL' | 'body' | 'headers' | 'path' | 'query'> & {
@@ -128,12 +145,12 @@ export const updateSearchMutation = (options?: Partial<Options<UpdateSearchData>
 };
 
 /**
- * Searches Marketplace and returns listings
+ * Receive analyzed listings from Roboflow
  */
-export const postScrapeMutation = (options?: Partial<Options<PostScrapeData>>): UseMutationOptions<PostScrapeResponse, AxiosError<DefaultError>, Options<PostScrapeData>> => {
-    const mutationOptions: UseMutationOptions<PostScrapeResponse, AxiosError<DefaultError>, Options<PostScrapeData>> = {
+export const webhookAnalyzedListingsMutation = (options?: Partial<Options<WebhookAnalyzedListingsData>>): UseMutationOptions<unknown, AxiosError<DefaultError>, Options<WebhookAnalyzedListingsData>> => {
+    const mutationOptions: UseMutationOptions<unknown, AxiosError<DefaultError>, Options<WebhookAnalyzedListingsData>> = {
         mutationFn: async (fnOptions) => {
-            const { data } = await postScrape({
+            const { data } = await webhookAnalyzedListings({
                 ...options,
                 ...fnOptions,
                 throwOnError: true
@@ -143,3 +160,55 @@ export const postScrapeMutation = (options?: Partial<Options<PostScrapeData>>): 
     };
     return mutationOptions;
 };
+
+/**
+ * Playwright container signals that human login is required
+ */
+export const webhookNeedsLoginMutation = (options?: Partial<Options<WebhookNeedsLoginData>>): UseMutationOptions<unknown, AxiosError<DefaultError>, Options<WebhookNeedsLoginData>> => {
+    const mutationOptions: UseMutationOptions<unknown, AxiosError<DefaultError>, Options<WebhookNeedsLoginData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await webhookNeedsLogin({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
+/**
+ * Refresh Facebook session data
+ */
+export const webhookRefreshMutation = (options?: Partial<Options<WebhookRefreshData>>): UseMutationOptions<unknown, AxiosError<DefaultError>, Options<WebhookRefreshData>> => {
+    const mutationOptions: UseMutationOptions<unknown, AxiosError<DefaultError>, Options<WebhookRefreshData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await webhookRefresh({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
+export const beginIdentitySyncQueryKey = (options?: Options<BeginIdentitySyncData>) => createQueryKey('beginIdentitySync', options);
+
+/**
+ * Start identity sync via SSE — spins up ACI Playwright container and streams status
+ */
+export const beginIdentitySyncOptions = (options?: Options<BeginIdentitySyncData>) => queryOptions<unknown, AxiosError<DefaultError>, unknown, ReturnType<typeof beginIdentitySyncQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await beginIdentitySync({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: beginIdentitySyncQueryKey(options)
+});
