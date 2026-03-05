@@ -8,9 +8,11 @@ import '@mantine/core/styles.css'
 import '@mantine/notifications/styles.css'
 import '@/index.css'
 import '@/errors/ApiErrorAction.css'
+import '@/infra/auth-interceptor'
 import { theme } from '@/theme/theme'
 import { queryClient } from '@/infra/tanstack.client'
 import { settings } from '@/settings'
+import { AuthProvider } from '@/features/auth/components/AuthProvider'
 import { Router } from '@/router'
 
 createRoot(document.getElementById('root')!).render(
@@ -19,7 +21,9 @@ createRoot(document.getElementById('root')!).render(
       <QueryClientProvider client={queryClient}>
         <MantineProvider theme={theme} defaultColorScheme="dark">
           <Notifications position="top-right" autoClose={4000} />
-          <Router />
+          <AuthProvider>
+            <Router />
+          </AuthProvider>
         </MantineProvider>
       </QueryClientProvider>
     </APIProvider>

@@ -51,6 +51,31 @@ const errorCodeRegistry: Record<string, ErrorEntry> = {
       onClick: requestIdentitySync,
     },
   },
+  INVALID_CREDENTIALS: {
+    title: "Login Failed",
+    message: "Invalid email or password.",
+    severity: "error",
+  },
+  USER_ALREADY_EXISTS: {
+    title: "Signup Failed",
+    message: "An account with this email already exists.",
+    severity: "error",
+  },
+  EMAIL_NOT_VERIFIED: {
+    title: "Email Not Verified",
+    message: "Check your inbox for the verification link.",
+    severity: "warning",
+  },
+  VERIFICATION_TOKEN_EXPIRED: {
+    title: "Link Expired",
+    message: "This verification link has expired. Please sign up again.",
+    severity: "error",
+  },
+  UNAUTHORIZED: {
+    title: "Unauthorized",
+    message: "Your session has expired. Please log in again.",
+    severity: "error",
+  },
 };
 
 const defaultError: ErrorEntry = {

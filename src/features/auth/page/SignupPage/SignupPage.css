@@ -1,0 +1,20 @@
+.signup-success {
+  text-align: center;
+}
+
+.signup-success-icon {
+  width: 4rem;
+  height: 4rem;
+  background: rgba(250, 204, 21, 0.1);
+  border-radius: 9999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1.5rem;
+  color: var(--primary);
+}
+
+.signup-success-text {
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+}
