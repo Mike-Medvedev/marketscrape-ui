@@ -21,7 +21,9 @@
   color: var(--muted-foreground);
   font-size: 0.875rem;
   cursor: pointer;
-  transition: border-color 0.2s, color 0.2s;
+  transition:
+    border-color 0.2s,
+    color 0.2s;
   font-family: inherit;
 }
 
@@ -63,7 +65,9 @@
   font-size: 0.875rem;
   font-weight: 600;
   cursor: pointer;
-  transition: opacity 0.2s, transform 0.1s;
+  transition:
+    opacity 0.2s,
+    transform 0.1s;
   font-family: inherit;
   white-space: nowrap;
 }

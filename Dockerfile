@@ -7,10 +7,6 @@ RUN npm ci --ignore-scripts
 
 COPY . .
 
-ARG VITE_API_URL
-ARG VITE_ENV=production
-ARG VITE_GOOGLE_MAPS_API_KEY
-
 RUN npm run build
 
 FROM nginx:stable-alpine

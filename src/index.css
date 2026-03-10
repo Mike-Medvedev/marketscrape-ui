@@ -30,6 +30,14 @@
   box-sizing: border-box;
 }
 
+/* Consistent yellow focus ring for all focusable elements */
+button:focus-visible,
+a:focus-visible,
+[tabindex]:not([tabindex="-1"]):focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
 body {
   margin: 0;
   background-color: var(--background);
