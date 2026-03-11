@@ -108,7 +108,7 @@ export function SearchForm({ existingSearch }: SearchFormProps) {
       const payload = {
         query: values.query,
         location: values.location,
-        minPrice: values.minPrice ? Number(values.minPrice) : null,
+        minPrice: values.minPrice ? Number(values.minPrice) : undefined,
         maxPrice: values.maxPrice ? Number(values.maxPrice) : null,
         dateListed: values.dateListed,
         frequency: values.frequency,
