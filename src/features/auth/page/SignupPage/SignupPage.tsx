@@ -8,23 +8,24 @@ import {
   Text,
   Alert,
   Stack,
+  Divider,
 } from '@mantine/core'
 import { useForm } from '@mantine/form'
 import { zod4Resolver } from 'mantine-form-zod-resolver'
-import { IconAlertCircle, IconMailCheck } from '@tabler/icons-react'
+import {
+  IconAlertCircle,
+  IconMailCheck,
+  IconBrandGoogle,
+  IconBrandGithub,
+} from '@tabler/icons-react'
 import { signupSchema, type SignupPayload } from '@/features/auth/auth.types'
 import { useAuth } from '@/features/auth/hooks/auth.hook'
-import { useAuthError } from '@/features/auth/hooks/auth-error.hook'
 import { AuthPageLayout } from '@/features/auth/components/AuthPageLayout/AuthPageLayout'
 import './SignupPage.css'
 
-const SIGNUP_ERROR_MAP: Record<string, string> = {
-  USER_ALREADY_EXISTS: 'An account with this email already exists.',
-}
-
 export function SignupPage() {
-  const { signup } = useAuth()
-  const { error, clear, handleError } = useAuthError()
+  const { signup, signInWithOAuth } = useAuth()
+  const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
   const [emailSent, setEmailSent] = useState(false)
 
@@ -35,15 +36,24 @@ export function SignupPage() {
   })
 
   const handleSubmit = async (values: SignupPayload) => {
-    clear()
+    setError(null)
     setLoading(true)
     try {
       await signup(values.email, values.password)
       setEmailSent(true)
     } catch (err) {
-      handleError(err, SIGNUP_ERROR_MAP, 'Something went wrong. Please try again.')
+      setError(err instanceof Error ? err.message : 'Something went wrong. Please try again.')
     } finally {
       setLoading(false)
+    }
+  }
+
+  const handleOAuth = async (provider: 'google' | 'github') => {
+    setError(null)
+    try {
+      await signInWithOAuth(provider)
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Something went wrong. Please try again.')
     }
   }
 
@@ -91,6 +101,27 @@ export function SignupPage() {
             {error}
           </Alert>
         )}
+
+        <Stack gap="sm" className="auth-oauth-buttons">
+          <Button
+            variant="default"
+            fullWidth
+            leftSection={<IconBrandGoogle size={18} />}
+            onClick={() => handleOAuth('google')}
+          >
+            Continue with Google
+          </Button>
+          <Button
+            variant="default"
+            fullWidth
+            leftSection={<IconBrandGithub size={18} />}
+            onClick={() => handleOAuth('github')}
+          >
+            Continue with GitHub
+          </Button>
+        </Stack>
+
+        <Divider label="or" labelPosition="center" className="auth-divider" />
 
         <form onSubmit={form.onSubmit(handleSubmit)}>
           <Stack gap="md">

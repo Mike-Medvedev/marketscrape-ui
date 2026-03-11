@@ -1,1 +1,7 @@
-/* Page-specific styles (shared auth-card styles live in AuthPageLayout.css) */
+.auth-oauth-buttons {
+  margin-bottom: 0.25rem;
+}
+
+.auth-divider {
+  margin: 1rem 0;
+}

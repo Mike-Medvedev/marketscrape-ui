@@ -21,7 +21,7 @@ interface SearchCardProps {
   onViewResults: (id: string) => void;
 }
 
-const FREQUENCY_LABELS: Record<ActiveSearch["settings"]["frequency"], string> = {
+const FREQUENCY_LABELS: Record<ActiveSearch["frequency"], string> = {
   every_1h: "Every hour",
   every_2h: "Every 2 hours",
   every_6h: "Every 6 hours",
@@ -54,9 +54,9 @@ export function SearchCard({ search, onDelete, onEdit, onViewResults }: SearchCa
   const config = statusConfig[search.status];
 
   const dateLabel =
-    search.criteria.dateListed === "24h"
+    search.dateListed === "24h"
       ? "Last 24h"
-      : search.criteria.dateListed === "7d"
+      : search.dateListed === "7d"
         ? "Last 7 days"
         : "Last 30 days";
 
@@ -64,18 +64,18 @@ export function SearchCard({ search, onDelete, onEdit, onViewResults }: SearchCa
     <div className="search-card">
       <div className="search-card-header">
         <div className="search-card-info">
-          <h3 className="search-card-title">{search.criteria.query}</h3>
+          <h3 className="search-card-title">{search.query}</h3>
           <p className="search-card-subtitle">
-            {search.criteria.location}
-            {(search.criteria.minPrice || search.criteria.maxPrice) && (
+            {search.location}
+            {(search.minPrice != null || search.maxPrice != null) && (
               <>
                 {" \u2022 "}
-                {search.criteria.minPrice
-                  ? `$${search.criteria.minPrice}`
+                {search.minPrice != null
+                  ? `$${search.minPrice}`
                   : "Any"}
                 {" - "}
-                {search.criteria.maxPrice
-                  ? `$${search.criteria.maxPrice}`
+                {search.maxPrice != null
+                  ? `$${search.maxPrice}`
                   : "Any"}
               </>
             )}
@@ -122,12 +122,12 @@ export function SearchCard({ search, onDelete, onEdit, onViewResults }: SearchCa
       <div className="search-card-details">
         <div className="search-card-detail">
           <p className="detail-label">Frequency</p>
-          <p className="detail-value">{FREQUENCY_LABELS[search.settings.frequency]}</p>
+          <p className="detail-value">{FREQUENCY_LABELS[search.frequency]}</p>
         </div>
         <div className="search-card-detail">
           <p className="detail-label">Listings</p>
           <p className="detail-value">
-            {search.settings.listingsPerCheck} per check
+            {search.listingsPerCheck} per check
           </p>
         </div>
         <div className="search-card-detail">
@@ -137,7 +137,7 @@ export function SearchCard({ search, onDelete, onEdit, onViewResults }: SearchCa
         <div className="search-card-detail">
           <p className="detail-label">Notification</p>
           <p className="detail-value detail-value--capitalize">
-            {search.settings.notificationType}
+            {search.notificationType}
           </p>
         </div>
       </div>

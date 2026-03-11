@@ -4,8 +4,8 @@ import { type DefaultError, queryOptions, type UseMutationOptions } from '@tanst
 import type { AxiosError } from 'axios';
 
 import { client } from '../client.gen';
-import { beginIdentitySync, createSearch, deleteSearch, getMe, getSearchById, getSearches, login, logout, type Options, postScrape, signup, updateSearch, verifyEmail, webhookAnalyzedListings, webhookContainerExited, webhookNeedsLogin, webhookRefresh } from '../sdk.gen';
-import type { BeginIdentitySyncData, CreateSearchData, CreateSearchResponse, DeleteSearchData, DeleteSearchError, DeleteSearchResponse, GetMeData, GetMeError, GetMeResponse, GetSearchByIdData, GetSearchByIdError, GetSearchByIdResponse, GetSearchesData, GetSearchesError, GetSearchesResponse, LoginData, LoginError, LoginResponse, LogoutData, LogoutError, LogoutResponse, PostScrapeData, PostScrapeResponse, SignupData, SignupError, SignupResponse, UpdateSearchData, UpdateSearchError, UpdateSearchResponse, VerifyEmailData, VerifyEmailError, VerifyEmailResponse, WebhookAnalyzedListingsData, WebhookContainerExitedData, WebhookNeedsLoginData, WebhookRefreshData } from '../types.gen';
+import { beginIdentitySync, createSearch, deleteSearch, getMe, getSearchById, getSearches, getUserProfile, login, logout, type Options, postScrape, signup, updateSearch, updateUserProfile, verifyEmail, webhookAnalyzedListings, webhookContainerExited, webhookNeedsLogin, webhookRefresh } from '../sdk.gen';
+import type { BeginIdentitySyncData, CreateSearchData, CreateSearchResponse, DeleteSearchData, DeleteSearchError, DeleteSearchResponse, GetMeData, GetMeError, GetMeResponse, GetSearchByIdData, GetSearchByIdError, GetSearchByIdResponse, GetSearchesData, GetSearchesError, GetSearchesResponse, GetUserProfileData, GetUserProfileError, GetUserProfileResponse, LoginData, LoginError, LoginResponse, LogoutData, LogoutError, LogoutResponse, PostScrapeData, PostScrapeResponse, SignupData, SignupError, SignupResponse, UpdateSearchData, UpdateSearchError, UpdateSearchResponse, UpdateUserProfileData, UpdateUserProfileError, UpdateUserProfileResponse, VerifyEmailData, VerifyEmailError, VerifyEmailResponse, WebhookAnalyzedListingsData, WebhookContainerExitedData, WebhookNeedsLoginData, WebhookRefreshData } from '../types.gen';
 
 /**
  * Create a new account and send verification email
@@ -221,6 +221,41 @@ export const updateSearchMutation = (options?: Partial<Options<UpdateSearchData>
     const mutationOptions: UseMutationOptions<UpdateSearchResponse, AxiosError<UpdateSearchError>, Options<UpdateSearchData>> = {
         mutationFn: async (fnOptions) => {
             const { data } = await updateSearch({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
+export const getUserProfileQueryKey = (options?: Options<GetUserProfileData>) => createQueryKey('getUserProfile', options);
+
+/**
+ * Get the authenticated user's profile
+ */
+export const getUserProfileOptions = (options?: Options<GetUserProfileData>) => queryOptions<GetUserProfileResponse, AxiosError<GetUserProfileError>, GetUserProfileResponse, ReturnType<typeof getUserProfileQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await getUserProfile({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getUserProfileQueryKey(options)
+});
+
+/**
+ * Update the authenticated user's profile
+ */
+export const updateUserProfileMutation = (options?: Partial<Options<UpdateUserProfileData>>): UseMutationOptions<UpdateUserProfileResponse, AxiosError<UpdateUserProfileError>, Options<UpdateUserProfileData>> => {
+    const mutationOptions: UseMutationOptions<UpdateUserProfileResponse, AxiosError<UpdateUserProfileError>, Options<UpdateUserProfileData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await updateUserProfile({
                 ...options,
                 ...fnOptions,
                 throwOnError: true

@@ -1,4 +1,5 @@
 import { z } from 'zod/v4'
+import type { User } from '@supabase/supabase-js'
 
 export const loginSchema = z.object({
   email: z.email('Please enter a valid email address'),
@@ -20,44 +21,8 @@ export const signupSchema = z
 
 export type SignupPayload = z.infer<typeof signupSchema>
 
-const authResponseSchema = z.object({
-  success: z.literal(true),
-  data: z.object({
-    sessionToken: z.string(),
-    email: z.string(),
-  }),
-})
-
-export type AuthResponse = z.infer<typeof authResponseSchema>
-
-export function parseAuthResponse(data: unknown): AuthResponse {
-  return authResponseSchema.parse(data)
-}
-
-const meResponseSchema = z.object({
-  success: z.literal(true),
-  data: z.object({
-    email: z.string(),
-  }),
-})
-
-export type MeResponse = z.infer<typeof meResponseSchema>
-
-export function parseMeResponse(data: unknown): MeResponse {
-  return meResponseSchema.parse(data)
-}
-
-export const apiErrorSchema = z.object({
-  success: z.literal(false),
-  error: z.object({
-    code: z.string(),
-    message: z.string(),
-  }),
-})
-
-export type ApiError = z.infer<typeof apiErrorSchema>
-
 export interface AuthState {
   status: 'loading' | 'authenticated' | 'unauthenticated'
+  user: User | null
   email: string | null
 }

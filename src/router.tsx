@@ -6,7 +6,6 @@ import { ResultsPage } from '@/features/search/page/ResultsPage/ResultsPage'
 import { FacebookAuthPage } from '@/features/auth/page/FacebookAuthPage/FacebookAuthPage'
 import { LoginPage } from '@/features/auth/page/LoginPage/LoginPage'
 import { SignupPage } from '@/features/auth/page/SignupPage/SignupPage'
-import { VerifyPage } from '@/features/auth/page/VerifyPage/VerifyPage'
 import { ProtectedRoute } from '@/features/auth/components/ProtectedRoute'
 import { GuestRoute } from '@/features/auth/components/GuestRoute'
 
@@ -24,14 +23,6 @@ const router = createBrowserRouter([
     element: (
       <GuestRoute>
         <SignupPage />
-      </GuestRoute>
-    ),
-  },
-  {
-    path: '/verify',
-    element: (
-      <GuestRoute>
-        <VerifyPage />
       </GuestRoute>
     ),
   },

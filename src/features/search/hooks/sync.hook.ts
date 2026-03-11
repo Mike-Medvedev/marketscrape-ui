@@ -2,7 +2,7 @@ import { useState, useRef, useCallback, useEffect } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { getSearchesQueryKey } from "@/generated/@tanstack/react-query.gen";
 import { settings } from "@/settings";
-import { getToken } from "@/infra/auth-token";
+import { supabase } from "@/infra/supabase.client";
 import { toast } from "@/utils/toast.utils";
 import { syncSSEEventSchema } from "@/features/search/search.types";
 import type { SyncState } from "@/features/search/search.types";
@@ -49,7 +49,7 @@ export function useIdentitySync({ onDismiss }: UseIdentitySyncOptions = {}) {
     setLogs([]);
   }, [closeEventSource]);
 
-  const startSync = useCallback(() => {
+  const startSync = useCallback(async () => {
     closeEventSource();
     if (dismissTimerRef.current) {
       clearTimeout(dismissTimerRef.current);
@@ -61,7 +61,8 @@ export function useIdentitySync({ onDismiss }: UseIdentitySyncOptions = {}) {
     setErrorMessage(null);
     setLogs(["Connecting to sync service..."]);
 
-    const token = getToken();
+    const { data } = await supabase.auth.getSession();
+    const token = data.session?.access_token;
     const url = new URL(`${settings.env.VITE_API_URL}/api/v1/sync`);
     if (token) {
       url.searchParams.set("token", token);

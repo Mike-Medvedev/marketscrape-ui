@@ -38,7 +38,7 @@ export function useCreateSearch() {
     ...createSearchMutation(),
     onSuccess: async (data) => {
       await queryClient.invalidateQueries({ queryKey: getSearchesQueryKey() });
-      toast.success({ message: `Search for "${data.data.criteria.query}" created` });
+      toast.success({ message: `Search for "${data.data.query}" created` });
     },
     onError: (error) => {
       notifyApiError(error, "Failed to create search. Please try again.");
@@ -57,7 +57,7 @@ export function useUpdateSearch() {
           queryKey: getSearchByIdQueryKey({ path: { id: variables.path!.id } }),
         }),
       ]);
-      toast.success({ message: `Search for "${data.data.criteria.query}" updated` });
+      toast.success({ message: `Search for "${data.data.query}" updated` });
     },
     onError: (error) => {
       notifyApiError(error, "Failed to update search. Please try again.");

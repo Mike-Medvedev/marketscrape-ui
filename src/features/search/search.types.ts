@@ -7,12 +7,10 @@ import type {
 } from "@/generated/types.gen";
 
 export type ActiveSearch = GetSearchesResponse['data'][number];
-export type SearchCriteria = ActiveSearch["criteria"];
-export type MonitoringSettings = ActiveSearch["settings"];
 export type SearchStatus = ActiveSearch["status"];
-export type DateListedOption = SearchCriteria["dateListed"];
-export type FrequencyOption = MonitoringSettings["frequency"];
-export type NotificationType = MonitoringSettings["notificationType"];
+export type DateListedOption = ActiveSearch["dateListed"];
+export type FrequencyOption = ActiveSearch["frequency"];
+export type NotificationType = ActiveSearch["notificationType"];
 export type CreateSearchPayload = NonNullable<CreateSearchData["body"]>;
 export type UpdateSearchPayload = NonNullable<UpdateSearchData["body"]>;
 export type Listing = PostScrapeResponse["data"]["listings"][number];
@@ -29,20 +27,19 @@ export const frequencySchema = z.enum([
 
 export const notificationTypeSchema = z.enum(["email", "sms", "webhook"]);
 
-export const searchCriteriaSchema = z.object({
+export const searchFormSchema = z.object({
   query: z.string().min(1),
   location: z.string().min(1),
   minPrice: z.string(),
   maxPrice: z.string(),
   dateListed: dateListedSchema,
-});
-
-export const monitoringSettingsSchema = z.object({
   frequency: frequencySchema,
   listingsPerCheck: z.number().int().min(1).max(10),
   notificationType: notificationTypeSchema,
   notificationTarget: z.string().min(1, "Notification target is required"),
 });
+
+export type SearchFormValues = z.infer<typeof searchFormSchema>;
 
 export type SyncSSEEvent =
   | { status: "already_synced" }

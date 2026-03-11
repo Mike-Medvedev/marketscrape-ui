@@ -299,26 +299,25 @@ export type GetSearchesResponses = {
     success: true;
     data: Array<{
       id: string;
-      criteria: {
-        query: string;
-        location: string;
-        minPrice: string;
-        maxPrice: string;
-        dateListed: "24h" | "7d" | "30d";
-      };
-      settings: {
-        frequency:
-          | "every_1h"
-          | "every_2h"
-          | "every_6h"
-          | "every_12h"
-          | "every_24h";
-        listingsPerCheck: number;
-        notificationType: "email" | "sms" | "webhook";
-        notificationTarget: string;
-      };
+      userId: string;
+      query: string;
+      location: string;
+      minPrice: number | null;
+      maxPrice: number | null;
+      dateListed: "24h" | "7d" | "30d";
+      frequency:
+        | "every_1h"
+        | "every_2h"
+        | "every_6h"
+        | "every_12h"
+        | "every_24h";
+      listingsPerCheck: number;
+      notificationType: "email" | "sms" | "webhook";
+      notificationTarget: string;
       status: "running" | "refresh" | "error" | "needs_attention";
       lastRun: string | null;
+      createdAt: string;
+      updatedAt: string;
       isScheduled: boolean;
       nextRunAt: string | null;
     }>;
@@ -333,24 +332,20 @@ export type CreateSearchData = {
    * Request body
    */
   body?: {
-    criteria: {
-      query: string;
-      location: string;
-      minPrice: string;
-      maxPrice: string;
-      dateListed: "24h" | "7d" | "30d";
-    };
-    settings: {
-      frequency:
-        | "every_1h"
-        | "every_2h"
-        | "every_6h"
-        | "every_12h"
-        | "every_24h";
-      listingsPerCheck: number;
-      notificationType: "email" | "sms" | "webhook";
-      notificationTarget: string;
-    };
+    query: string;
+    location: string;
+    minPrice: number | null;
+    maxPrice: number | null;
+    dateListed: "24h" | "7d" | "30d";
+    frequency:
+      | "every_1h"
+      | "every_2h"
+      | "every_6h"
+      | "every_12h"
+      | "every_24h";
+    listingsPerCheck: number;
+    notificationType: "email" | "sms" | "webhook";
+    notificationTarget: string;
   };
   path?: never;
   query?: never;
@@ -365,26 +360,25 @@ export type CreateSearchResponses = {
     success: true;
     data: {
       id: string;
-      criteria: {
-        query: string;
-        location: string;
-        minPrice: string;
-        maxPrice: string;
-        dateListed: "24h" | "7d" | "30d";
-      };
-      settings: {
-        frequency:
-          | "every_1h"
-          | "every_2h"
-          | "every_6h"
-          | "every_12h"
-          | "every_24h";
-        listingsPerCheck: number;
-        notificationType: "email" | "sms" | "webhook";
-        notificationTarget: string;
-      };
+      userId: string;
+      query: string;
+      location: string;
+      minPrice: number | null;
+      maxPrice: number | null;
+      dateListed: "24h" | "7d" | "30d";
+      frequency:
+        | "every_1h"
+        | "every_2h"
+        | "every_6h"
+        | "every_12h"
+        | "every_24h";
+      listingsPerCheck: number;
+      notificationType: "email" | "sms" | "webhook";
+      notificationTarget: string;
       status: "running" | "refresh" | "error" | "needs_attention";
       lastRun: string | null;
+      createdAt: string;
+      updatedAt: string;
       isScheduled: boolean;
       nextRunAt: string | null;
     };
@@ -465,26 +459,25 @@ export type GetSearchByIdResponses = {
     success: true;
     data: {
       id: string;
-      criteria: {
-        query: string;
-        location: string;
-        minPrice: string;
-        maxPrice: string;
-        dateListed: "24h" | "7d" | "30d";
-      };
-      settings: {
-        frequency:
-          | "every_1h"
-          | "every_2h"
-          | "every_6h"
-          | "every_12h"
-          | "every_24h";
-        listingsPerCheck: number;
-        notificationType: "email" | "sms" | "webhook";
-        notificationTarget: string;
-      };
+      userId: string;
+      query: string;
+      location: string;
+      minPrice: number | null;
+      maxPrice: number | null;
+      dateListed: "24h" | "7d" | "30d";
+      frequency:
+        | "every_1h"
+        | "every_2h"
+        | "every_6h"
+        | "every_12h"
+        | "every_24h";
+      listingsPerCheck: number;
+      notificationType: "email" | "sms" | "webhook";
+      notificationTarget: string;
       status: "running" | "refresh" | "error" | "needs_attention";
       lastRun: string | null;
+      createdAt: string;
+      updatedAt: string;
       isScheduled: boolean;
       nextRunAt: string | null;
     };
@@ -499,24 +492,21 @@ export type UpdateSearchData = {
    * Request body
    */
   body?: {
-    criteria: {
-      query: string;
-      location: string;
-      minPrice: string;
-      maxPrice: string;
-      dateListed: "24h" | "7d" | "30d";
-    };
-    settings: {
-      frequency:
-        | "every_1h"
-        | "every_2h"
-        | "every_6h"
-        | "every_12h"
-        | "every_24h";
-      listingsPerCheck: number;
-      notificationType: "email" | "sms" | "webhook";
-      notificationTarget: string;
-    };
+    query?: string;
+    location?: string;
+    minPrice?: number | null;
+    maxPrice?: number | null;
+    dateListed?: "24h" | "7d" | "30d";
+    frequency?:
+      | "every_1h"
+      | "every_2h"
+      | "every_6h"
+      | "every_12h"
+      | "every_24h";
+    listingsPerCheck?: number;
+    notificationType?: "email" | "sms" | "webhook";
+    notificationTarget?: string;
+    status?: "running" | "refresh" | "error" | "needs_attention";
   };
   path: {
     id: string;
@@ -549,26 +539,25 @@ export type UpdateSearchResponses = {
     success: true;
     data: {
       id: string;
-      criteria: {
-        query: string;
-        location: string;
-        minPrice: string;
-        maxPrice: string;
-        dateListed: "24h" | "7d" | "30d";
-      };
-      settings: {
-        frequency:
-          | "every_1h"
-          | "every_2h"
-          | "every_6h"
-          | "every_12h"
-          | "every_24h";
-        listingsPerCheck: number;
-        notificationType: "email" | "sms" | "webhook";
-        notificationTarget: string;
-      };
+      userId: string;
+      query: string;
+      location: string;
+      minPrice: number | null;
+      maxPrice: number | null;
+      dateListed: "24h" | "7d" | "30d";
+      frequency:
+        | "every_1h"
+        | "every_2h"
+        | "every_6h"
+        | "every_12h"
+        | "every_24h";
+      listingsPerCheck: number;
+      notificationType: "email" | "sms" | "webhook";
+      notificationTarget: string;
       status: "running" | "refresh" | "error" | "needs_attention";
       lastRun: string | null;
+      createdAt: string;
+      updatedAt: string;
       isScheduled: boolean;
       nextRunAt: string | null;
     };
@@ -577,6 +566,107 @@ export type UpdateSearchResponses = {
 
 export type UpdateSearchResponse =
   UpdateSearchResponses[keyof UpdateSearchResponses];
+
+export type GetUserProfileData = {
+  body?: never;
+  path?: never;
+  query?: never;
+  url: "/api/v1/users/me";
+};
+
+export type GetUserProfileErrors = {
+  /**
+   * Unauthorized
+   */
+  401: {
+    success: false;
+    error: {
+      code: string;
+      message: string;
+      details?: unknown;
+    };
+  };
+};
+
+export type GetUserProfileError =
+  GetUserProfileErrors[keyof GetUserProfileErrors];
+
+export type GetUserProfileResponses = {
+  /**
+   * Success
+   */
+  200: {
+    success: true;
+    data: {
+      id: string;
+      firstName: string | null;
+      lastName: string | null;
+      phone: string | null;
+      email: string;
+      stripeCustomerId: string | null;
+      createdAt: string;
+      updatedAt: string;
+      isPremium: boolean;
+    };
+  };
+};
+
+export type GetUserProfileResponse =
+  GetUserProfileResponses[keyof GetUserProfileResponses];
+
+export type UpdateUserProfileData = {
+  /**
+   * Request body
+   */
+  body?: {
+    firstName?: string;
+    lastName?: string;
+    phone?: string;
+  };
+  path?: never;
+  query?: never;
+  url: "/api/v1/users/me";
+};
+
+export type UpdateUserProfileErrors = {
+  /**
+   * Unauthorized
+   */
+  401: {
+    success: false;
+    error: {
+      code: string;
+      message: string;
+      details?: unknown;
+    };
+  };
+};
+
+export type UpdateUserProfileError =
+  UpdateUserProfileErrors[keyof UpdateUserProfileErrors];
+
+export type UpdateUserProfileResponses = {
+  /**
+   * Success
+   */
+  200: {
+    success: true;
+    data: {
+      id: string;
+      firstName: string | null;
+      lastName: string | null;
+      phone: string | null;
+      email: string;
+      stripeCustomerId: string | null;
+      createdAt: string;
+      updatedAt: string;
+      isPremium: boolean;
+    };
+  };
+};
+
+export type UpdateUserProfileResponse =
+  UpdateUserProfileResponses[keyof UpdateUserProfileResponses];
 
 export type WebhookAnalyzedListingsData = {
   body?: never;

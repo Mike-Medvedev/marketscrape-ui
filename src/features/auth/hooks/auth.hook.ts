@@ -6,14 +6,15 @@ import {
   useCallback,
   useMemo,
 } from 'react'
-import { setToken, clearToken, getToken } from '@/infra/auth-token'
+import type { Provider } from '@supabase/supabase-js'
+import { supabase } from '@/infra/supabase.client'
 import * as authService from '@/features/auth/service/auth.service'
 import type { AuthState } from '@/features/auth/auth.types'
 
 interface AuthContextValue extends AuthState {
   login: (email: string, password: string) => Promise<void>
   signup: (email: string, password: string) => Promise<void>
-  verify: (token: string) => Promise<void>
+  signInWithOAuth: (provider: Provider) => Promise<void>
   logout: () => Promise<void>
 }
 
@@ -32,54 +33,58 @@ export { AuthContext }
 export function useAuthProvider(): AuthContextValue {
   const [state, setState] = useState<AuthState>({
     status: 'loading',
+    user: null,
     email: null,
   })
 
   useEffect(() => {
-    const token = getToken()
-    if (!token) {
-      setState({ status: 'unauthenticated', email: null })
-      return
-    }
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session?.user) {
+        setState({
+          status: 'authenticated',
+          user: session.user,
+          email: session.user.email ?? null,
+        })
+      } else {
+        setState({ status: 'unauthenticated', user: null, email: null })
+      }
+    })
 
-    authService
-      .getMe()
-      .then((res) => {
-        setState({ status: 'authenticated', email: res.data.email })
-      })
-      .catch(() => {
-        clearToken()
-        setState({ status: 'unauthenticated', email: null })
-      })
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      (_event, session) => {
+        if (session?.user) {
+          setState({
+            status: 'authenticated',
+            user: session.user,
+            email: session.user.email ?? null,
+          })
+        } else {
+          setState({ status: 'unauthenticated', user: null, email: null })
+        }
+      },
+    )
+
+    return () => subscription.unsubscribe()
   }, [])
 
   const login = useCallback(async (email: string, password: string) => {
-    const res = await authService.login(email, password)
-    setToken(res.data.sessionToken)
-    setState({ status: 'authenticated', email: res.data.email })
+    await authService.login(email, password)
   }, [])
 
   const signup = useCallback(async (email: string, password: string) => {
     await authService.signup(email, password)
   }, [])
 
-  const verify = useCallback(async (token: string) => {
-    const res = await authService.verify(token)
-    setToken(res.data.sessionToken)
-    setState({ status: 'authenticated', email: res.data.email })
+  const signInWithOAuth = useCallback(async (provider: Provider) => {
+    await authService.signInWithOAuth(provider)
   }, [])
 
   const logout = useCallback(async () => {
-    try {
-      await authService.logout()
-    } finally {
-      clearToken()
-      setState({ status: 'unauthenticated', email: null })
-    }
+    await authService.logout()
   }, [])
 
   return useMemo(
-    () => ({ ...state, login, signup, verify, logout }),
-    [state, login, signup, verify, logout],
+    () => ({ ...state, login, signup, signInWithOAuth, logout }),
+    [state, login, signup, signInWithOAuth, logout],
   )
 }

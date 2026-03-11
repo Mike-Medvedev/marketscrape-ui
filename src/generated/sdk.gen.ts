@@ -2,8 +2,8 @@
 
 import type { Client, Options as Options2, TDataShape } from './client';
 import { client } from './client.gen';
-import type { BeginIdentitySyncData, CreateSearchData, CreateSearchResponses, DeleteSearchData, DeleteSearchErrors, DeleteSearchResponses, GetMeData, GetMeErrors, GetMeResponses, GetSearchByIdData, GetSearchByIdErrors, GetSearchByIdResponses, GetSearchesData, GetSearchesErrors, GetSearchesResponses, LoginData, LoginErrors, LoginResponses, LogoutData, LogoutErrors, LogoutResponses, PostScrapeData, PostScrapeResponses, SignupData, SignupErrors, SignupResponses, UpdateSearchData, UpdateSearchErrors, UpdateSearchResponses, VerifyEmailData, VerifyEmailErrors, VerifyEmailResponses, WebhookAnalyzedListingsData, WebhookContainerExitedData, WebhookNeedsLoginData, WebhookRefreshData } from './types.gen';
-import { zBeginIdentitySyncData, zCreateSearchData, zCreateSearchResponse, zDeleteSearchData, zDeleteSearchResponse, zGetMeData, zGetMeResponse, zGetSearchByIdData, zGetSearchByIdResponse, zGetSearchesData, zGetSearchesResponse, zLoginData, zLoginResponse, zLogoutData, zLogoutResponse, zPostScrapeData, zPostScrapeResponse, zSignupData, zSignupResponse, zUpdateSearchData, zUpdateSearchResponse, zVerifyEmailData, zVerifyEmailResponse, zWebhookAnalyzedListingsData, zWebhookContainerExitedData, zWebhookNeedsLoginData, zWebhookRefreshData } from './zod.gen';
+import type { BeginIdentitySyncData, CreateSearchData, CreateSearchResponses, DeleteSearchData, DeleteSearchErrors, DeleteSearchResponses, GetMeData, GetMeErrors, GetMeResponses, GetSearchByIdData, GetSearchByIdErrors, GetSearchByIdResponses, GetSearchesData, GetSearchesErrors, GetSearchesResponses, GetUserProfileData, GetUserProfileErrors, GetUserProfileResponses, LoginData, LoginErrors, LoginResponses, LogoutData, LogoutErrors, LogoutResponses, PostScrapeData, PostScrapeResponses, SignupData, SignupErrors, SignupResponses, UpdateSearchData, UpdateSearchErrors, UpdateSearchResponses, UpdateUserProfileData, UpdateUserProfileErrors, UpdateUserProfileResponses, VerifyEmailData, VerifyEmailErrors, VerifyEmailResponses, WebhookAnalyzedListingsData, WebhookContainerExitedData, WebhookNeedsLoginData, WebhookRefreshData } from './types.gen';
+import { zBeginIdentitySyncData, zCreateSearchData, zCreateSearchResponse, zDeleteSearchData, zDeleteSearchResponse, zGetMeData, zGetMeResponse, zGetSearchByIdData, zGetSearchByIdResponse, zGetSearchesData, zGetSearchesResponse, zGetUserProfileData, zGetUserProfileResponse, zLoginData, zLoginResponse, zLogoutData, zLogoutResponse, zPostScrapeData, zPostScrapeResponse, zSignupData, zSignupResponse, zUpdateSearchData, zUpdateSearchResponse, zUpdateUserProfileData, zUpdateUserProfileResponse, zVerifyEmailData, zVerifyEmailResponse, zWebhookAnalyzedListingsData, zWebhookContainerExitedData, zWebhookNeedsLoginData, zWebhookRefreshData } from './zod.gen';
 
 export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends boolean = boolean> = Options2<TData, ThrowOnError> & {
     /**
@@ -158,7 +158,7 @@ export const getSearchById = <ThrowOnError extends boolean = false>(options: Opt
 /**
  * Update a saved search
  */
-export const updateSearch = <ThrowOnError extends boolean = false>(options: Options<UpdateSearchData, ThrowOnError>) => (options.client ?? client).put<UpdateSearchResponses, UpdateSearchErrors, ThrowOnError>({
+export const updateSearch = <ThrowOnError extends boolean = false>(options: Options<UpdateSearchData, ThrowOnError>) => (options.client ?? client).patch<UpdateSearchResponses, UpdateSearchErrors, ThrowOnError>({
     requestValidator: async (data) => await zUpdateSearchData.parseAsync(data),
     responseType: 'json',
     responseValidator: async (data) => await zUpdateSearchResponse.parseAsync(data),
@@ -168,6 +168,34 @@ export const updateSearch = <ThrowOnError extends boolean = false>(options: Opti
     headers: {
         'Content-Type': 'application/json',
         ...options.headers
+    }
+});
+
+/**
+ * Get the authenticated user's profile
+ */
+export const getUserProfile = <ThrowOnError extends boolean = false>(options?: Options<GetUserProfileData, ThrowOnError>) => (options?.client ?? client).get<GetUserProfileResponses, GetUserProfileErrors, ThrowOnError>({
+    requestValidator: async (data) => await zGetUserProfileData.parseAsync(data),
+    responseType: 'json',
+    responseValidator: async (data) => await zGetUserProfileResponse.parseAsync(data),
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/users/me',
+    ...options
+});
+
+/**
+ * Update the authenticated user's profile
+ */
+export const updateUserProfile = <ThrowOnError extends boolean = false>(options?: Options<UpdateUserProfileData, ThrowOnError>) => (options?.client ?? client).patch<UpdateUserProfileResponses, UpdateUserProfileErrors, ThrowOnError>({
+    requestValidator: async (data) => await zUpdateUserProfileData.parseAsync(data),
+    responseType: 'json',
+    responseValidator: async (data) => await zUpdateUserProfileResponse.parseAsync(data),
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/users/me',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options?.headers
     }
 });
 

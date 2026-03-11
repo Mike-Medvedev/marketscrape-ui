@@ -145,33 +145,30 @@ export const zGetSearchesResponse = z.object({
     success: z.literal(true),
     data: z.array(z.object({
         id: z.uuid(),
-        criteria: z.object({
-            query: z.string(),
-            location: z.string(),
-            minPrice: z.string(),
-            maxPrice: z.string(),
-            dateListed: z.enum([
-                '24h',
-                '7d',
-                '30d'
-            ])
-        }),
-        settings: z.object({
-            frequency: z.enum([
-                'every_1h',
-                'every_2h',
-                'every_6h',
-                'every_12h',
-                'every_24h'
-            ]),
-            listingsPerCheck: z.int().gte(1),
-            notificationType: z.enum([
-                'email',
-                'sms',
-                'webhook'
-            ]),
-            notificationTarget: z.string().min(1)
-        }),
+        userId: z.uuid(),
+        query: z.string(),
+        location: z.string(),
+        minPrice: z.number().nullable(),
+        maxPrice: z.number().nullable(),
+        dateListed: z.enum([
+            '24h',
+            '7d',
+            '30d'
+        ]),
+        frequency: z.enum([
+            'every_1h',
+            'every_2h',
+            'every_6h',
+            'every_12h',
+            'every_24h'
+        ]),
+        listingsPerCheck: z.int().gte(1),
+        notificationType: z.enum([
+            'email',
+            'sms',
+            'webhook'
+        ]),
+        notificationTarget: z.string().min(1),
         status: z.enum([
             'running',
             'refresh',
@@ -179,6 +176,8 @@ export const zGetSearchesResponse = z.object({
             'needs_attention'
         ]),
         lastRun: z.iso.datetime().nullable(),
+        createdAt: z.iso.datetime(),
+        updatedAt: z.iso.datetime(),
         isScheduled: z.boolean(),
         nextRunAt: z.iso.datetime().nullable()
     }))
@@ -186,33 +185,29 @@ export const zGetSearchesResponse = z.object({
 
 export const zCreateSearchData = z.object({
     body: z.object({
-        criteria: z.object({
-            query: z.string(),
-            location: z.string(),
-            minPrice: z.string(),
-            maxPrice: z.string(),
-            dateListed: z.enum([
-                '24h',
-                '7d',
-                '30d'
-            ])
-        }),
-        settings: z.object({
-            frequency: z.enum([
-                'every_1h',
-                'every_2h',
-                'every_6h',
-                'every_12h',
-                'every_24h'
-            ]),
-            listingsPerCheck: z.int().gte(1),
-            notificationType: z.enum([
-                'email',
-                'sms',
-                'webhook'
-            ]),
-            notificationTarget: z.string().min(1)
-        })
+        query: z.string(),
+        location: z.string(),
+        minPrice: z.number().nullable(),
+        maxPrice: z.number().nullable(),
+        dateListed: z.enum([
+            '24h',
+            '7d',
+            '30d'
+        ]),
+        frequency: z.enum([
+            'every_1h',
+            'every_2h',
+            'every_6h',
+            'every_12h',
+            'every_24h'
+        ]),
+        listingsPerCheck: z.int().gte(1),
+        notificationType: z.enum([
+            'email',
+            'sms',
+            'webhook'
+        ]),
+        notificationTarget: z.string().min(1)
     }).optional(),
     path: z.never().optional(),
     query: z.never().optional()
@@ -225,33 +220,30 @@ export const zCreateSearchResponse = z.object({
     success: z.literal(true),
     data: z.object({
         id: z.uuid(),
-        criteria: z.object({
-            query: z.string(),
-            location: z.string(),
-            minPrice: z.string(),
-            maxPrice: z.string(),
-            dateListed: z.enum([
-                '24h',
-                '7d',
-                '30d'
-            ])
-        }),
-        settings: z.object({
-            frequency: z.enum([
-                'every_1h',
-                'every_2h',
-                'every_6h',
-                'every_12h',
-                'every_24h'
-            ]),
-            listingsPerCheck: z.int().gte(1),
-            notificationType: z.enum([
-                'email',
-                'sms',
-                'webhook'
-            ]),
-            notificationTarget: z.string().min(1)
-        }),
+        userId: z.uuid(),
+        query: z.string(),
+        location: z.string(),
+        minPrice: z.number().nullable(),
+        maxPrice: z.number().nullable(),
+        dateListed: z.enum([
+            '24h',
+            '7d',
+            '30d'
+        ]),
+        frequency: z.enum([
+            'every_1h',
+            'every_2h',
+            'every_6h',
+            'every_12h',
+            'every_24h'
+        ]),
+        listingsPerCheck: z.int().gte(1),
+        notificationType: z.enum([
+            'email',
+            'sms',
+            'webhook'
+        ]),
+        notificationTarget: z.string().min(1),
         status: z.enum([
             'running',
             'refresh',
@@ -259,6 +251,8 @@ export const zCreateSearchResponse = z.object({
             'needs_attention'
         ]),
         lastRun: z.iso.datetime().nullable(),
+        createdAt: z.iso.datetime(),
+        updatedAt: z.iso.datetime(),
         isScheduled: z.boolean(),
         nextRunAt: z.iso.datetime().nullable()
     })
@@ -295,33 +289,30 @@ export const zGetSearchByIdResponse = z.object({
     success: z.literal(true),
     data: z.object({
         id: z.uuid(),
-        criteria: z.object({
-            query: z.string(),
-            location: z.string(),
-            minPrice: z.string(),
-            maxPrice: z.string(),
-            dateListed: z.enum([
-                '24h',
-                '7d',
-                '30d'
-            ])
-        }),
-        settings: z.object({
-            frequency: z.enum([
-                'every_1h',
-                'every_2h',
-                'every_6h',
-                'every_12h',
-                'every_24h'
-            ]),
-            listingsPerCheck: z.int().gte(1),
-            notificationType: z.enum([
-                'email',
-                'sms',
-                'webhook'
-            ]),
-            notificationTarget: z.string().min(1)
-        }),
+        userId: z.uuid(),
+        query: z.string(),
+        location: z.string(),
+        minPrice: z.number().nullable(),
+        maxPrice: z.number().nullable(),
+        dateListed: z.enum([
+            '24h',
+            '7d',
+            '30d'
+        ]),
+        frequency: z.enum([
+            'every_1h',
+            'every_2h',
+            'every_6h',
+            'every_12h',
+            'every_24h'
+        ]),
+        listingsPerCheck: z.int().gte(1),
+        notificationType: z.enum([
+            'email',
+            'sms',
+            'webhook'
+        ]),
+        notificationTarget: z.string().min(1),
         status: z.enum([
             'running',
             'refresh',
@@ -329,6 +320,8 @@ export const zGetSearchByIdResponse = z.object({
             'needs_attention'
         ]),
         lastRun: z.iso.datetime().nullable(),
+        createdAt: z.iso.datetime(),
+        updatedAt: z.iso.datetime(),
         isScheduled: z.boolean(),
         nextRunAt: z.iso.datetime().nullable()
     })
@@ -336,33 +329,35 @@ export const zGetSearchByIdResponse = z.object({
 
 export const zUpdateSearchData = z.object({
     body: z.object({
-        criteria: z.object({
-            query: z.string(),
-            location: z.string(),
-            minPrice: z.string(),
-            maxPrice: z.string(),
-            dateListed: z.enum([
-                '24h',
-                '7d',
-                '30d'
-            ])
-        }),
-        settings: z.object({
-            frequency: z.enum([
-                'every_1h',
-                'every_2h',
-                'every_6h',
-                'every_12h',
-                'every_24h'
-            ]),
-            listingsPerCheck: z.int().gte(1),
-            notificationType: z.enum([
-                'email',
-                'sms',
-                'webhook'
-            ]),
-            notificationTarget: z.string().min(1)
-        })
+        query: z.string().optional(),
+        location: z.string().optional(),
+        minPrice: z.number().nullable().optional(),
+        maxPrice: z.number().nullable().optional(),
+        dateListed: z.enum([
+            '24h',
+            '7d',
+            '30d'
+        ]).optional(),
+        frequency: z.enum([
+            'every_1h',
+            'every_2h',
+            'every_6h',
+            'every_12h',
+            'every_24h'
+        ]).optional(),
+        listingsPerCheck: z.int().gte(1).optional(),
+        notificationType: z.enum([
+            'email',
+            'sms',
+            'webhook'
+        ]).optional(),
+        notificationTarget: z.string().min(1).optional(),
+        status: z.enum([
+            'running',
+            'refresh',
+            'error',
+            'needs_attention'
+        ]).optional()
     }).optional(),
     path: z.object({
         id: z.uuid()
@@ -377,33 +372,30 @@ export const zUpdateSearchResponse = z.object({
     success: z.literal(true),
     data: z.object({
         id: z.uuid(),
-        criteria: z.object({
-            query: z.string(),
-            location: z.string(),
-            minPrice: z.string(),
-            maxPrice: z.string(),
-            dateListed: z.enum([
-                '24h',
-                '7d',
-                '30d'
-            ])
-        }),
-        settings: z.object({
-            frequency: z.enum([
-                'every_1h',
-                'every_2h',
-                'every_6h',
-                'every_12h',
-                'every_24h'
-            ]),
-            listingsPerCheck: z.int().gte(1),
-            notificationType: z.enum([
-                'email',
-                'sms',
-                'webhook'
-            ]),
-            notificationTarget: z.string().min(1)
-        }),
+        userId: z.uuid(),
+        query: z.string(),
+        location: z.string(),
+        minPrice: z.number().nullable(),
+        maxPrice: z.number().nullable(),
+        dateListed: z.enum([
+            '24h',
+            '7d',
+            '30d'
+        ]),
+        frequency: z.enum([
+            'every_1h',
+            'every_2h',
+            'every_6h',
+            'every_12h',
+            'every_24h'
+        ]),
+        listingsPerCheck: z.int().gte(1),
+        notificationType: z.enum([
+            'email',
+            'sms',
+            'webhook'
+        ]),
+        notificationTarget: z.string().min(1),
         status: z.enum([
             'running',
             'refresh',
@@ -411,8 +403,62 @@ export const zUpdateSearchResponse = z.object({
             'needs_attention'
         ]),
         lastRun: z.iso.datetime().nullable(),
+        createdAt: z.iso.datetime(),
+        updatedAt: z.iso.datetime(),
         isScheduled: z.boolean(),
         nextRunAt: z.iso.datetime().nullable()
+    })
+});
+
+export const zGetUserProfileData = z.object({
+    body: z.never().optional(),
+    path: z.never().optional(),
+    query: z.never().optional()
+});
+
+/**
+ * Success
+ */
+export const zGetUserProfileResponse = z.object({
+    success: z.literal(true),
+    data: z.object({
+        id: z.uuid(),
+        firstName: z.string().nullable(),
+        lastName: z.string().nullable(),
+        phone: z.string().nullable(),
+        email: z.string(),
+        stripeCustomerId: z.string().nullable(),
+        createdAt: z.iso.datetime(),
+        updatedAt: z.iso.datetime(),
+        isPremium: z.boolean()
+    })
+});
+
+export const zUpdateUserProfileData = z.object({
+    body: z.object({
+        firstName: z.string().optional(),
+        lastName: z.string().optional(),
+        phone: z.string().optional()
+    }).optional(),
+    path: z.never().optional(),
+    query: z.never().optional()
+});
+
+/**
+ * Success
+ */
+export const zUpdateUserProfileResponse = z.object({
+    success: z.literal(true),
+    data: z.object({
+        id: z.uuid(),
+        firstName: z.string().nullable(),
+        lastName: z.string().nullable(),
+        phone: z.string().nullable(),
+        email: z.string(),
+        stripeCustomerId: z.string().nullable(),
+        createdAt: z.iso.datetime(),
+        updatedAt: z.iso.datetime(),
+        isPremium: z.boolean()
     })
 });
 

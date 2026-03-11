@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router";
 import {
   Container,
@@ -14,20 +14,19 @@ import {
 } from "@mantine/core";
 import { InfoTooltip } from "@/theme/components/InfoTooltip/InfoTooltip";
 import { LocationAutocomplete } from "@/theme/components/LocationAutocomplete/LocationAutocomplete";
-import { useForm } from "@mantine/form";
+import { useForm, type FormValidateInput } from "@mantine/form";
 import { zod4Resolver } from "mantine-form-zod-resolver";
 import { IconArrowLeft, IconArrowRight } from "@tabler/icons-react";
 import {
-  searchCriteriaSchema,
-  monitoringSettingsSchema,
-  type SearchCriteria,
-  type MonitoringSettings,
+  searchFormSchema,
+  type SearchFormValues,
 } from "@/features/search/search.types";
 import type { ActiveSearch } from "@/features/search/search.types";
 import {
   useCreateSearch,
   useUpdateSearch,
 } from "@/features/search/hooks/search.hook";
+import { useAuth } from "@/features/auth/hooks/auth.hook";
 import "@/features/search/page/NewSearchPage/NewSearchPage.css";
 
 const DATE_LISTED_OPTIONS = [
@@ -56,6 +55,7 @@ interface SearchFormProps {
 
 export function SearchForm({ existingSearch }: SearchFormProps) {
   const navigate = useNavigate();
+  const { email } = useAuth();
   const isEditing = !!existingSearch;
 
   const createMutation = useCreateSearch();
@@ -63,41 +63,58 @@ export function SearchForm({ existingSearch }: SearchFormProps) {
 
   const [step, setStep] = useState(0);
 
-  const criteriaForm = useForm<SearchCriteria>({
+  const form = useForm<SearchFormValues>({
     mode: "controlled",
     initialValues: {
-      query: existingSearch?.criteria.query ?? "",
-      location: existingSearch?.criteria.location ?? "",
-      minPrice: existingSearch?.criteria.minPrice ?? "",
-      maxPrice: existingSearch?.criteria.maxPrice ?? "",
-      dateListed: existingSearch?.criteria.dateListed ?? "7d",
+      query: existingSearch?.query ?? "",
+      location: existingSearch?.location ?? "",
+      minPrice: existingSearch?.minPrice != null ? String(existingSearch.minPrice) : "",
+      maxPrice: existingSearch?.maxPrice != null ? String(existingSearch.maxPrice) : "",
+      dateListed: existingSearch?.dateListed ?? "7d",
+      frequency: existingSearch?.frequency ?? "every_1h",
+      listingsPerCheck: existingSearch?.listingsPerCheck ?? 1,
+      notificationType: existingSearch?.notificationType ?? "email",
+      notificationTarget: existingSearch?.notificationTarget
+        ?? (existingSearch ? "" : email ?? ""),
     },
-    validate: zod4Resolver(searchCriteriaSchema),
+    validate: zod4Resolver(searchFormSchema) as FormValidateInput<SearchFormValues>,
   });
 
-  const settingsForm = useForm<MonitoringSettings>({
-    mode: "controlled",
-    initialValues: {
-      frequency: existingSearch?.settings.frequency ?? "every_1h",
-      listingsPerCheck: existingSearch?.settings.listingsPerCheck ?? 1,
-      notificationType: existingSearch?.settings.notificationType ?? "email",
-      notificationTarget: existingSearch?.settings.notificationTarget ?? "",
-    },
-    validate: zod4Resolver(monitoringSettingsSchema),
-  });
+  const previousTypeRef = useRef(form.values.notificationType);
+
+  useEffect(() => {
+    const currentType = form.values.notificationType;
+    if (previousTypeRef.current !== currentType) {
+      if (currentType === "email") {
+        form.setFieldValue("notificationTarget", email ?? "");
+      } else {
+        form.setFieldValue("notificationTarget", "");
+      }
+      previousTypeRef.current = currentType;
+    }
+  }, [form.values.notificationType, email]);
 
   const handleNext = () => {
     if (step === 0) {
-      const result = criteriaForm.validate();
-      if (result.hasErrors) return;
+      const result = form.validateField("query");
+      const locResult = form.validateField("location");
+      if (result.hasError || locResult.hasError) return;
       setStep(1);
     } else {
-      const result = settingsForm.validate();
+      const result = form.validate();
       if (result.hasErrors) return;
 
+      const values = form.values;
       const payload = {
-        criteria: criteriaForm.values,
-        settings: settingsForm.values,
+        query: values.query,
+        location: values.location,
+        minPrice: values.minPrice ? Number(values.minPrice) : null,
+        maxPrice: values.maxPrice ? Number(values.maxPrice) : null,
+        dateListed: values.dateListed,
+        frequency: values.frequency,
+        listingsPerCheck: values.listingsPerCheck,
+        notificationType: values.notificationType,
+        notificationTarget: values.notificationTarget,
       };
 
       if (isEditing && existingSearch) {
@@ -143,14 +160,14 @@ export function SearchForm({ existingSearch }: SearchFormProps) {
             <TextInput
               label="Search Query"
               placeholder="e.g., Fender Stratocaster"
-              key={criteriaForm.key("query")}
-              {...criteriaForm.getInputProps("query")}
+              key={form.key("query")}
+              {...form.getInputProps("query")}
             />
             <LocationAutocomplete
               label="Location"
               placeholder="e.g., San Francisco, CA"
-              key={criteriaForm.key("location")}
-              {...criteriaForm.getInputProps("location")}
+              key={form.key("location")}
+              {...form.getInputProps("location")}
             />
             <Group grow>
               <TextInput
@@ -164,8 +181,8 @@ export function SearchForm({ existingSearch }: SearchFormProps) {
                 }
                 type="number"
                 placeholder="No minimum"
-                key={criteriaForm.key("minPrice")}
-                {...criteriaForm.getInputProps("minPrice")}
+                key={form.key("minPrice")}
+                {...form.getInputProps("minPrice")}
               />
               <TextInput
                 label={
@@ -178,15 +195,15 @@ export function SearchForm({ existingSearch }: SearchFormProps) {
                 }
                 type="number"
                 placeholder="No maximum"
-                key={criteriaForm.key("maxPrice")}
-                {...criteriaForm.getInputProps("maxPrice")}
+                key={form.key("maxPrice")}
+                {...form.getInputProps("maxPrice")}
               />
             </Group>
             <Select
               label="Date Listed"
               data={DATE_LISTED_OPTIONS}
-              key={criteriaForm.key("dateListed")}
-              {...criteriaForm.getInputProps("dateListed")}
+              key={form.key("dateListed")}
+              {...form.getInputProps("dateListed")}
             />
           </Stack>
         ) : (
@@ -195,8 +212,8 @@ export function SearchForm({ existingSearch }: SearchFormProps) {
               label="Search Frequency"
               placeholder="Select frequency"
               data={FREQUENCY_OPTIONS}
-              key={settingsForm.key("frequency")}
-              {...settingsForm.getInputProps("frequency")}
+              key={form.key("frequency")}
+              {...form.getInputProps("frequency")}
             />
             <NumberInput
               label={
@@ -208,32 +225,32 @@ export function SearchForm({ existingSearch }: SearchFormProps) {
               min={1}
               max={10}
               clampBehavior="strict"
-              key={settingsForm.key("listingsPerCheck")}
-              {...settingsForm.getInputProps("listingsPerCheck")}
+              key={form.key("listingsPerCheck")}
+              {...form.getInputProps("listingsPerCheck")}
             />
             <Select
               label="Notification Type"
               data={NOTIFICATION_TYPE_OPTIONS}
-              key={settingsForm.key("notificationType")}
-              {...settingsForm.getInputProps("notificationType")}
+              key={form.key("notificationType")}
+              {...form.getInputProps("notificationType")}
             />
             <TextInput
               label={
-                settingsForm.values.notificationType === "email"
+                form.values.notificationType === "email"
                   ? "Email address"
-                  : settingsForm.values.notificationType === "sms"
+                  : form.values.notificationType === "sms"
                     ? "Phone number"
                     : "Webhook URL"
               }
               placeholder={
-                settingsForm.values.notificationType === "email"
+                form.values.notificationType === "email"
                   ? "you@example.com"
-                  : settingsForm.values.notificationType === "sms"
+                  : form.values.notificationType === "sms"
                     ? "+1 234 567 8900"
                     : "https://your-webhook.com/endpoint"
               }
-              key={settingsForm.key("notificationTarget")}
-              {...settingsForm.getInputProps("notificationTarget")}
+              key={form.key("notificationTarget")}
+              {...form.getInputProps("notificationTarget")}
             />
           </Stack>
         )}

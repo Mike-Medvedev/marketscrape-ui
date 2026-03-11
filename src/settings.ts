@@ -4,6 +4,8 @@ const envSchema = z.object({
   VITE_API_URL: z.string().url(),
   VITE_ENV: z.enum(['development', 'staging', 'production']).default('development'),
   VITE_GOOGLE_MAPS_API_KEY: z.string().min(1),
+  VITE_SUPABASE_URL: z.string().url(),
+  VITE_SUPABASE_ANON_KEY: z.string().min(1),
 })
 
 const parsed = envSchema.safeParse(import.meta.env)

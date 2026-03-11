@@ -1,24 +1,18 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router'
-import { TextInput, PasswordInput, Button, Title, Text, Alert, Stack } from '@mantine/core'
+import { TextInput, PasswordInput, Button, Title, Text, Alert, Stack, Divider } from '@mantine/core'
 import { useForm } from '@mantine/form'
 import { zod4Resolver } from 'mantine-form-zod-resolver'
-import { IconAlertCircle } from '@tabler/icons-react'
+import { IconAlertCircle, IconBrandGoogle, IconBrandGithub } from '@tabler/icons-react'
 import { loginSchema, type LoginPayload } from '@/features/auth/auth.types'
 import { useAuth } from '@/features/auth/hooks/auth.hook'
-import { useAuthError } from '@/features/auth/hooks/auth-error.hook'
 import { AuthPageLayout } from '@/features/auth/components/AuthPageLayout/AuthPageLayout'
 import './LoginPage.css'
 
-const LOGIN_ERROR_MAP: Record<string, string> = {
-  INVALID_CREDENTIALS: 'Invalid email or password.',
-  EMAIL_NOT_VERIFIED: 'Check your inbox for the verification link.',
-}
-
 export function LoginPage() {
   const navigate = useNavigate()
-  const { login } = useAuth()
-  const { error, clear, handleError } = useAuthError()
+  const { login, signInWithOAuth } = useAuth()
+  const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
 
   const form = useForm<LoginPayload>({
@@ -28,15 +22,24 @@ export function LoginPage() {
   })
 
   const handleSubmit = async (values: LoginPayload) => {
-    clear()
+    setError(null)
     setLoading(true)
     try {
       await login(values.email, values.password)
       navigate('/', { replace: true })
     } catch (err) {
-      handleError(err, LOGIN_ERROR_MAP, 'Something went wrong. Please try again.')
+      setError(err instanceof Error ? err.message : 'Something went wrong. Please try again.')
     } finally {
       setLoading(false)
+    }
+  }
+
+  const handleOAuth = async (provider: 'google' | 'github') => {
+    setError(null)
+    try {
+      await signInWithOAuth(provider)
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Something went wrong. Please try again.')
     }
   }
 
@@ -60,6 +63,27 @@ export function LoginPage() {
             {error}
           </Alert>
         )}
+
+        <Stack gap="sm" className="auth-oauth-buttons">
+          <Button
+            variant="default"
+            fullWidth
+            leftSection={<IconBrandGoogle size={18} />}
+            onClick={() => handleOAuth('google')}
+          >
+            Continue with Google
+          </Button>
+          <Button
+            variant="default"
+            fullWidth
+            leftSection={<IconBrandGithub size={18} />}
+            onClick={() => handleOAuth('github')}
+          >
+            Continue with GitHub
+          </Button>
+        </Stack>
+
+        <Divider label="or" labelPosition="center" className="auth-divider" />
 
         <form onSubmit={form.onSubmit(handleSubmit)}>
           <Stack gap="md">

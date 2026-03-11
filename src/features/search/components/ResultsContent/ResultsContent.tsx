@@ -20,15 +20,13 @@ export function ResultsContent() {
   const handleExecute = () => {
     if (!search) return;
 
-    const minPrice = Number(search.criteria.minPrice);
-
     executeMutation.mutate({
       body: {
-        query: search.criteria.query,
-        location: search.criteria.location,
-        ...(minPrice > 0 && { minPrice }),
-        ...(search.settings.listingsPerCheck > 0 && {
-          pageCount: search.settings.listingsPerCheck,
+        query: search.query,
+        location: search.location,
+        ...(search.minPrice != null && search.minPrice > 0 && { minPrice: search.minPrice }),
+        ...(search.listingsPerCheck > 0 && {
+          pageCount: search.listingsPerCheck,
         }),
       },
     });
@@ -46,19 +44,19 @@ export function ResultsContent() {
 
         <div className="results-header-info">
           <Title order={2} className="results-title">
-            {search?.criteria.query}
+            {search?.query}
           </Title>
           <Text size="sm" className="results-subtitle">
-            {search?.criteria.location}
-            {(search?.criteria.minPrice || search?.criteria.maxPrice) && (
+            {search?.location}
+            {(search?.minPrice != null || search?.maxPrice != null) && (
               <>
                 {" \u2022 "}
-                {search?.criteria.minPrice
-                  ? `$${search.criteria.minPrice}`
+                {search?.minPrice != null
+                  ? `$${search.minPrice}`
                   : "Any"}
                 {" - "}
-                {search?.criteria.maxPrice
-                  ? `$${search.criteria.maxPrice}`
+                {search?.maxPrice != null
+                  ? `$${search.maxPrice}`
                   : "Any"}
               </>
             )}
