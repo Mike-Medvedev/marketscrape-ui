@@ -2,8 +2,8 @@
 
 import type { Client, Options as Options2, TDataShape } from './client';
 import { client } from './client.gen';
-import type { BeginIdentitySyncData, CreateSearchData, CreateSearchResponses, DeleteSearchData, DeleteSearchErrors, DeleteSearchResponses, GetMeData, GetMeErrors, GetMeResponses, GetSearchByIdData, GetSearchByIdErrors, GetSearchByIdResponses, GetSearchesData, GetSearchesErrors, GetSearchesResponses, LoginData, LoginErrors, LoginResponses, LogoutData, LogoutErrors, LogoutResponses, PostScrapeData, PostScrapeResponses, SignupData, SignupErrors, SignupResponses, UpdateSearchData, UpdateSearchErrors, UpdateSearchResponses, VerifyEmailData, VerifyEmailErrors, VerifyEmailResponses, WebhookAnalyzedListingsData, WebhookContainerExitedData, WebhookNeedsLoginData, WebhookRefreshData } from './types.gen';
-import { zBeginIdentitySyncData, zCreateSearchData, zCreateSearchResponse, zDeleteSearchData, zDeleteSearchResponse, zGetMeData, zGetMeResponse, zGetSearchByIdData, zGetSearchByIdResponse, zGetSearchesData, zGetSearchesResponse, zLoginData, zLoginResponse, zLogoutData, zLogoutResponse, zPostScrapeData, zPostScrapeResponse, zSignupData, zSignupResponse, zUpdateSearchData, zUpdateSearchResponse, zVerifyEmailData, zVerifyEmailResponse, zWebhookAnalyzedListingsData, zWebhookContainerExitedData, zWebhookNeedsLoginData, zWebhookRefreshData } from './zod.gen';
+import type { BeginIdentitySyncData, CreateSearchData, CreateSearchResponses, DeleteSearchData, DeleteSearchErrors, DeleteSearchResponses, GetMeData, GetMeErrors, GetMeResponses, GetSearchByIdData, GetSearchByIdErrors, GetSearchByIdResponses, GetSearchesData, GetSearchesErrors, GetSearchesResponses, GetSyncContextData, PostScrapeData, PostScrapeResponses, UpdateMeData, UpdateMeErrors, UpdateMeResponses, UpdateSearchData, UpdateSearchErrors, UpdateSearchResponses, WebhookAnalyzedListingsData, WebhookContainerExitedData, WebhookNeedsLoginData, WebhookRefreshData } from './types.gen';
+import { zBeginIdentitySyncData, zCreateSearchData, zCreateSearchResponse, zDeleteSearchData, zDeleteSearchResponse, zGetMeData, zGetMeResponse, zGetSearchByIdData, zGetSearchByIdResponse, zGetSearchesData, zGetSearchesResponse, zGetSyncContextData, zPostScrapeData, zPostScrapeResponse, zUpdateMeData, zUpdateMeResponse, zUpdateSearchData, zUpdateSearchResponse, zWebhookAnalyzedListingsData, zWebhookContainerExitedData, zWebhookNeedsLoginData, zWebhookRefreshData } from './zod.gen';
 
 export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends boolean = boolean> = Options2<TData, ThrowOnError> & {
     /**
@@ -18,74 +18,6 @@ export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends 
      */
     meta?: Record<string, unknown>;
 };
-
-/**
- * Create a new account and send verification email
- */
-export const signup = <ThrowOnError extends boolean = false>(options?: Options<SignupData, ThrowOnError>) => (options?.client ?? client).post<SignupResponses, SignupErrors, ThrowOnError>({
-    requestValidator: async (data) => await zSignupData.parseAsync(data),
-    responseType: 'json',
-    responseValidator: async (data) => await zSignupResponse.parseAsync(data),
-    security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/api/v1/auth/signup',
-    ...options,
-    headers: {
-        'Content-Type': 'application/json',
-        ...options?.headers
-    }
-});
-
-/**
- * Authenticate with email and password
- */
-export const login = <ThrowOnError extends boolean = false>(options?: Options<LoginData, ThrowOnError>) => (options?.client ?? client).post<LoginResponses, LoginErrors, ThrowOnError>({
-    requestValidator: async (data) => await zLoginData.parseAsync(data),
-    responseType: 'json',
-    responseValidator: async (data) => await zLoginResponse.parseAsync(data),
-    security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/api/v1/auth/login',
-    ...options,
-    headers: {
-        'Content-Type': 'application/json',
-        ...options?.headers
-    }
-});
-
-/**
- * Verify email via token from verification link
- */
-export const verifyEmail = <ThrowOnError extends boolean = false>(options: Options<VerifyEmailData, ThrowOnError>) => (options.client ?? client).get<VerifyEmailResponses, VerifyEmailErrors, ThrowOnError>({
-    requestValidator: async (data) => await zVerifyEmailData.parseAsync(data),
-    responseType: 'json',
-    responseValidator: async (data) => await zVerifyEmailResponse.parseAsync(data),
-    security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/api/v1/auth/verify',
-    ...options
-});
-
-/**
- * Invalidate current session
- */
-export const logout = <ThrowOnError extends boolean = false>(options?: Options<LogoutData, ThrowOnError>) => (options?.client ?? client).post<LogoutResponses, LogoutErrors, ThrowOnError>({
-    requestValidator: async (data) => await zLogoutData.parseAsync(data),
-    responseType: 'json',
-    responseValidator: async (data) => await zLogoutResponse.parseAsync(data),
-    security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/api/v1/auth/logout',
-    ...options
-});
-
-/**
- * Get the current authenticated user
- */
-export const getMe = <ThrowOnError extends boolean = false>(options?: Options<GetMeData, ThrowOnError>) => (options?.client ?? client).get<GetMeResponses, GetMeErrors, ThrowOnError>({
-    requestValidator: async (data) => await zGetMeData.parseAsync(data),
-    responseType: 'json',
-    responseValidator: async (data) => await zGetMeResponse.parseAsync(data),
-    security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/api/v1/auth/me',
-    ...options
-});
 
 /**
  * Searches Marketplace and returns listings
@@ -104,7 +36,7 @@ export const postScrape = <ThrowOnError extends boolean = false>(options?: Optio
 });
 
 /**
- * List all saved searches
+ * List all saved searches for the authenticated user
  */
 export const getSearches = <ThrowOnError extends boolean = false>(options?: Options<GetSearchesData, ThrowOnError>) => (options?.client ?? client).get<GetSearchesResponses, GetSearchesErrors, ThrowOnError>({
     requestValidator: async (data) => await zGetSearchesData.parseAsync(data),
@@ -172,6 +104,34 @@ export const updateSearch = <ThrowOnError extends boolean = false>(options: Opti
 });
 
 /**
+ * Get the authenticated user's profile
+ */
+export const getMe = <ThrowOnError extends boolean = false>(options?: Options<GetMeData, ThrowOnError>) => (options?.client ?? client).get<GetMeResponses, GetMeErrors, ThrowOnError>({
+    requestValidator: async (data) => await zGetMeData.parseAsync(data),
+    responseType: 'json',
+    responseValidator: async (data) => await zGetMeResponse.parseAsync(data),
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/users/me',
+    ...options
+});
+
+/**
+ * Update the authenticated user's profile
+ */
+export const updateMe = <ThrowOnError extends boolean = false>(options?: Options<UpdateMeData, ThrowOnError>) => (options?.client ?? client).patch<UpdateMeResponses, UpdateMeErrors, ThrowOnError>({
+    requestValidator: async (data) => await zUpdateMeData.parseAsync(data),
+    responseType: 'json',
+    responseValidator: async (data) => await zUpdateMeResponse.parseAsync(data),
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/users/me',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options?.headers
+    }
+});
+
+/**
  * Receive analyzed listings from Roboflow
  */
 export const webhookAnalyzedListings = <ThrowOnError extends boolean = false>(options?: Options<WebhookAnalyzedListingsData, ThrowOnError>) => (options?.client ?? client).post<unknown, unknown, ThrowOnError>({
@@ -202,12 +162,22 @@ export const webhookContainerExited = <ThrowOnError extends boolean = false>(opt
 });
 
 /**
- * Refresh Facebook session data
+ * Refresh Facebook session data (includes userId from Playwright or Redis)
  */
 export const webhookRefresh = <ThrowOnError extends boolean = false>(options?: Options<WebhookRefreshData, ThrowOnError>) => (options?.client ?? client).post<unknown, unknown, ThrowOnError>({
     requestValidator: async (data) => await zWebhookRefreshData.parseAsync(data),
     security: [{ scheme: 'bearer', type: 'http' }],
     url: '/webhook/refresh',
+    ...options
+});
+
+/**
+ * Get the active sync context (userId) for the Playwright container
+ */
+export const getSyncContext = <ThrowOnError extends boolean = false>(options?: Options<GetSyncContextData, ThrowOnError>) => (options?.client ?? client).get<unknown, unknown, ThrowOnError>({
+    requestValidator: async (data) => await zGetSyncContextData.parseAsync(data),
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/webhook/sync-context',
     ...options
 });
 

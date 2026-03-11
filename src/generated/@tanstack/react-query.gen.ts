@@ -4,33 +4,16 @@ import { type DefaultError, queryOptions, type UseMutationOptions } from '@tanst
 import type { AxiosError } from 'axios';
 
 import { client } from '../client.gen';
-import { beginIdentitySync, createSearch, deleteSearch, getMe, getSearchById, getSearches, login, logout, type Options, postScrape, signup, updateSearch, verifyEmail, webhookAnalyzedListings, webhookContainerExited, webhookNeedsLogin, webhookRefresh } from '../sdk.gen';
-import type { BeginIdentitySyncData, CreateSearchData, CreateSearchResponse, DeleteSearchData, DeleteSearchError, DeleteSearchResponse, GetMeData, GetMeError, GetMeResponse, GetSearchByIdData, GetSearchByIdError, GetSearchByIdResponse, GetSearchesData, GetSearchesError, GetSearchesResponse, LoginData, LoginError, LoginResponse, LogoutData, LogoutError, LogoutResponse, PostScrapeData, PostScrapeResponse, SignupData, SignupError, SignupResponse, UpdateSearchData, UpdateSearchError, UpdateSearchResponse, VerifyEmailData, VerifyEmailError, VerifyEmailResponse, WebhookAnalyzedListingsData, WebhookContainerExitedData, WebhookNeedsLoginData, WebhookRefreshData } from '../types.gen';
+import { beginIdentitySync, createSearch, deleteSearch, getMe, getSearchById, getSearches, getSyncContext, type Options, postScrape, updateMe, updateSearch, webhookAnalyzedListings, webhookContainerExited, webhookNeedsLogin, webhookRefresh } from '../sdk.gen';
+import type { BeginIdentitySyncData, CreateSearchData, CreateSearchResponse, DeleteSearchData, DeleteSearchError, DeleteSearchResponse, GetMeData, GetMeError, GetMeResponse, GetSearchByIdData, GetSearchByIdError, GetSearchByIdResponse, GetSearchesData, GetSearchesError, GetSearchesResponse, GetSyncContextData, PostScrapeData, PostScrapeResponse, UpdateMeData, UpdateMeError, UpdateMeResponse, UpdateSearchData, UpdateSearchError, UpdateSearchResponse, WebhookAnalyzedListingsData, WebhookContainerExitedData, WebhookNeedsLoginData, WebhookRefreshData } from '../types.gen';
 
 /**
- * Create a new account and send verification email
+ * Searches Marketplace and returns listings
  */
-export const signupMutation = (options?: Partial<Options<SignupData>>): UseMutationOptions<SignupResponse, AxiosError<SignupError>, Options<SignupData>> => {
-    const mutationOptions: UseMutationOptions<SignupResponse, AxiosError<SignupError>, Options<SignupData>> = {
+export const postScrapeMutation = (options?: Partial<Options<PostScrapeData>>): UseMutationOptions<PostScrapeResponse, AxiosError<DefaultError>, Options<PostScrapeData>> => {
+    const mutationOptions: UseMutationOptions<PostScrapeResponse, AxiosError<DefaultError>, Options<PostScrapeData>> = {
         mutationFn: async (fnOptions) => {
-            const { data } = await signup({
-                ...options,
-                ...fnOptions,
-                throwOnError: true
-            });
-            return data;
-        }
-    };
-    return mutationOptions;
-};
-
-/**
- * Authenticate with email and password
- */
-export const loginMutation = (options?: Partial<Options<LoginData>>): UseMutationOptions<LoginResponse, AxiosError<LoginError>, Options<LoginData>> => {
-    const mutationOptions: UseMutationOptions<LoginResponse, AxiosError<LoginError>, Options<LoginData>> = {
-        mutationFn: async (fnOptions) => {
-            const { data } = await login({
+            const { data } = await postScrape({
                 ...options,
                 ...fnOptions,
                 throwOnError: true
@@ -74,80 +57,10 @@ const createQueryKey = <TOptions extends Options>(id: string, options?: TOptions
     return [params];
 };
 
-export const verifyEmailQueryKey = (options: Options<VerifyEmailData>) => createQueryKey('verifyEmail', options);
-
-/**
- * Verify email via token from verification link
- */
-export const verifyEmailOptions = (options: Options<VerifyEmailData>) => queryOptions<VerifyEmailResponse, AxiosError<VerifyEmailError>, VerifyEmailResponse, ReturnType<typeof verifyEmailQueryKey>>({
-    queryFn: async ({ queryKey, signal }) => {
-        const { data } = await verifyEmail({
-            ...options,
-            ...queryKey[0],
-            signal,
-            throwOnError: true
-        });
-        return data;
-    },
-    queryKey: verifyEmailQueryKey(options)
-});
-
-/**
- * Invalidate current session
- */
-export const logoutMutation = (options?: Partial<Options<LogoutData>>): UseMutationOptions<LogoutResponse, AxiosError<LogoutError>, Options<LogoutData>> => {
-    const mutationOptions: UseMutationOptions<LogoutResponse, AxiosError<LogoutError>, Options<LogoutData>> = {
-        mutationFn: async (fnOptions) => {
-            const { data } = await logout({
-                ...options,
-                ...fnOptions,
-                throwOnError: true
-            });
-            return data;
-        }
-    };
-    return mutationOptions;
-};
-
-export const getMeQueryKey = (options?: Options<GetMeData>) => createQueryKey('getMe', options);
-
-/**
- * Get the current authenticated user
- */
-export const getMeOptions = (options?: Options<GetMeData>) => queryOptions<GetMeResponse, AxiosError<GetMeError>, GetMeResponse, ReturnType<typeof getMeQueryKey>>({
-    queryFn: async ({ queryKey, signal }) => {
-        const { data } = await getMe({
-            ...options,
-            ...queryKey[0],
-            signal,
-            throwOnError: true
-        });
-        return data;
-    },
-    queryKey: getMeQueryKey(options)
-});
-
-/**
- * Searches Marketplace and returns listings
- */
-export const postScrapeMutation = (options?: Partial<Options<PostScrapeData>>): UseMutationOptions<PostScrapeResponse, AxiosError<DefaultError>, Options<PostScrapeData>> => {
-    const mutationOptions: UseMutationOptions<PostScrapeResponse, AxiosError<DefaultError>, Options<PostScrapeData>> = {
-        mutationFn: async (fnOptions) => {
-            const { data } = await postScrape({
-                ...options,
-                ...fnOptions,
-                throwOnError: true
-            });
-            return data;
-        }
-    };
-    return mutationOptions;
-};
-
 export const getSearchesQueryKey = (options?: Options<GetSearchesData>) => createQueryKey('getSearches', options);
 
 /**
- * List all saved searches
+ * List all saved searches for the authenticated user
  */
 export const getSearchesOptions = (options?: Options<GetSearchesData>) => queryOptions<GetSearchesResponse, AxiosError<GetSearchesError>, GetSearchesResponse, ReturnType<typeof getSearchesQueryKey>>({
     queryFn: async ({ queryKey, signal }) => {
@@ -231,6 +144,41 @@ export const updateSearchMutation = (options?: Partial<Options<UpdateSearchData>
     return mutationOptions;
 };
 
+export const getMeQueryKey = (options?: Options<GetMeData>) => createQueryKey('getMe', options);
+
+/**
+ * Get the authenticated user's profile
+ */
+export const getMeOptions = (options?: Options<GetMeData>) => queryOptions<GetMeResponse, AxiosError<GetMeError>, GetMeResponse, ReturnType<typeof getMeQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await getMe({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getMeQueryKey(options)
+});
+
+/**
+ * Update the authenticated user's profile
+ */
+export const updateMeMutation = (options?: Partial<Options<UpdateMeData>>): UseMutationOptions<UpdateMeResponse, AxiosError<UpdateMeError>, Options<UpdateMeData>> => {
+    const mutationOptions: UseMutationOptions<UpdateMeResponse, AxiosError<UpdateMeError>, Options<UpdateMeData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await updateMe({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
 /**
  * Receive analyzed listings from Roboflow
  */
@@ -283,7 +231,7 @@ export const webhookContainerExitedMutation = (options?: Partial<Options<Webhook
 };
 
 /**
- * Refresh Facebook session data
+ * Refresh Facebook session data (includes userId from Playwright or Redis)
  */
 export const webhookRefreshMutation = (options?: Partial<Options<WebhookRefreshData>>): UseMutationOptions<unknown, AxiosError<DefaultError>, Options<WebhookRefreshData>> => {
     const mutationOptions: UseMutationOptions<unknown, AxiosError<DefaultError>, Options<WebhookRefreshData>> = {
@@ -298,6 +246,24 @@ export const webhookRefreshMutation = (options?: Partial<Options<WebhookRefreshD
     };
     return mutationOptions;
 };
+
+export const getSyncContextQueryKey = (options?: Options<GetSyncContextData>) => createQueryKey('getSyncContext', options);
+
+/**
+ * Get the active sync context (userId) for the Playwright container
+ */
+export const getSyncContextOptions = (options?: Options<GetSyncContextData>) => queryOptions<unknown, AxiosError<DefaultError>, unknown, ReturnType<typeof getSyncContextQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await getSyncContext({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getSyncContextQueryKey(options)
+});
 
 export const beginIdentitySyncQueryKey = (options?: Options<BeginIdentitySyncData>) => createQueryKey('beginIdentitySync', options);
 
