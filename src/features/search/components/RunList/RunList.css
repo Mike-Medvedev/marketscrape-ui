@@ -1,0 +1,113 @@
+.run-list {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.run-list-heading {
+  margin: 0 0 0.5rem;
+  padding: 0 0.75rem;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--muted-foreground);
+  font-family: var(--mantine-font-family-monospace);
+}
+
+.run-list-items {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  overflow-y: auto;
+  max-height: calc(100vh - 220px);
+}
+
+.run-list-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  padding: 0.625rem 0.75rem;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: var(--mantine-radius-md);
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+  text-align: left;
+  width: 100%;
+  font-family: inherit;
+}
+
+.run-list-item:hover {
+  background: rgba(255, 255, 255, 0.03);
+  border-color: var(--border);
+}
+
+.run-list-item--active {
+  background: rgba(250, 204, 21, 0.06);
+  border-color: rgba(250, 204, 21, 0.25);
+}
+
+.run-list-item--active:hover {
+  background: rgba(250, 204, 21, 0.08);
+  border-color: rgba(250, 204, 21, 0.35);
+}
+
+.run-list-item-date {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--foreground);
+}
+
+.run-list-item-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.run-list-item-count {
+  font-size: 0.75rem;
+  color: var(--muted-foreground);
+  font-family: var(--mantine-font-family-monospace);
+}
+
+.run-list-item-relative {
+  font-size: 0.6875rem;
+  color: var(--muted-foreground);
+}
+
+.run-list-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  padding: 3rem 1rem;
+}
+
+.run-list-empty-text {
+  margin: 0;
+  font-size: 0.8125rem;
+  color: var(--muted-foreground);
+}
+
+/* Mobile: horizontal scroll strip */
+@media (max-width: 768px) {
+  .run-list-items {
+    flex-direction: row;
+    overflow-x: auto;
+    overflow-y: visible;
+    max-height: none;
+    gap: 0.5rem;
+    padding-bottom: 0.25rem;
+  }
+
+  .run-list-item {
+    flex-shrink: 0;
+    min-width: 10rem;
+  }
+}

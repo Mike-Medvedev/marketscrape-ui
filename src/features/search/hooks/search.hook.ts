@@ -3,6 +3,7 @@ import {
   useQuery,
   useMutation,
   useQueryClient,
+  queryOptions,
 } from "@tanstack/react-query";
 import {
   getSearchesOptions,
@@ -16,8 +17,32 @@ import {
 } from "@/generated/@tanstack/react-query.gen";
 import type { Options } from "@/generated/sdk.gen";
 import type { UpdateSearchData } from "@/generated/types.gen";
+import {
+  getSearchRuns,
+  getSearchRunResults,
+} from "@/features/search/service/search.service";
 import { toast } from "@/utils/toast.utils";
 import { notifyApiError } from "@/errors/api-errors";
+
+export const searchRunsQueryKey = (searchId: string) =>
+  ["searchRuns", searchId] as const;
+
+export const searchRunResultsQueryKey = (searchId: string, runId: string) =>
+  ["searchRunResults", searchId, runId] as const;
+
+export const searchRunsOptions = (searchId: string) =>
+  queryOptions({
+    queryKey: searchRunsQueryKey(searchId),
+    queryFn: () => getSearchRuns(searchId),
+  });
+
+export const searchRunResultsOptions = (searchId: string, runId: string) =>
+  queryOptions({
+    queryKey: searchRunResultsQueryKey(searchId, runId),
+    queryFn: () => getSearchRunResults(searchId, runId),
+    staleTime: Infinity,
+    gcTime: 30 * 60 * 1000,
+  });
 
 export function useSearches() {
   return useSuspenseQuery({
@@ -79,15 +104,32 @@ export function useDeleteSearch() {
   });
 }
 
-export function useExecuteSearch() {
+export function useExecuteSearch(searchId?: string) {
+  const queryClient = useQueryClient();
   return useMutation({
     ...postScrapeMutation(),
-    onSuccess: (data) => {
+    onSuccess: async (data) => {
       const count = data.data.listings.length;
       toast.success({ message: `Found ${count} listing${count !== 1 ? "s" : ""}` });
+      if (searchId) {
+        await queryClient.invalidateQueries({
+          queryKey: searchRunsQueryKey(searchId),
+        });
+      }
     },
     onError: (error) => {
       notifyApiError(error, "Failed to execute search. Please try again.");
     },
+  });
+}
+
+export function useSearchRuns(searchId: string) {
+  return useSuspenseQuery(searchRunsOptions(searchId));
+}
+
+export function useSearchRunResults(searchId: string, runId: string | null) {
+  return useQuery({
+    ...searchRunResultsOptions(searchId, runId ?? ""),
+    enabled: !!runId,
   });
 }

@@ -6,6 +6,8 @@ import { ResultsPage } from '@/features/search/page/ResultsPage/ResultsPage'
 import { FacebookAuthPage } from '@/features/auth/page/FacebookAuthPage/FacebookAuthPage'
 import { LoginPage } from '@/features/auth/page/LoginPage/LoginPage'
 import { SignupPage } from '@/features/auth/page/SignupPage/SignupPage'
+import { SettingsPage } from '@/features/settings/page/SettingsPage/SettingsPage'
+import { NotFoundPage } from '@/features/not-found/page/NotFoundPage/NotFoundPage'
 import { ProtectedRoute } from '@/features/auth/components/ProtectedRoute'
 import { GuestRoute } from '@/features/auth/components/GuestRoute'
 
@@ -38,8 +40,14 @@ const router = createBrowserRouter([
       { path: 'new', element: <NewSearchPage /> },
       { path: 'edit/:id', element: <NewSearchPage /> },
       { path: 'results/:id', element: <ResultsPage /> },
+      { path: 'settings', element: <SettingsPage /> },
       { path: 'auth/facebook', element: <FacebookAuthPage /> },
+      { path: '*', element: <NotFoundPage /> },
     ],
+  },
+  {
+    path: '*',
+    element: <NotFoundPage />,
   },
 ])
 

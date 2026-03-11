@@ -6,8 +6,10 @@ import {
   useCallback,
   useMemo,
 } from 'react'
+import { useQuery } from '@tanstack/react-query'
 import type { Provider } from '@supabase/supabase-js'
 import { supabase } from '@/infra/supabase.client'
+import { getMeOptions } from '@/generated/@tanstack/react-query.gen'
 import * as authService from '@/features/auth/service/auth.service'
 import type { AuthState } from '@/features/auth/auth.types'
 
@@ -29,6 +31,14 @@ export function useAuth(): AuthContextValue {
 }
 
 export { AuthContext }
+
+export function useMe() {
+  const { status } = useAuth()
+  return useQuery({
+    ...getMeOptions(),
+    enabled: status === 'authenticated',
+  })
+}
 
 export function useAuthProvider(): AuthContextValue {
   const [state, setState] = useState<AuthState>({

@@ -1,22 +1,46 @@
 import { type ReactNode, useState, useCallback } from 'react'
 import { useNavigate } from 'react-router'
-import { AppShell } from '@mantine/core'
-import { IconSearch, IconRefresh, IconLogout, IconMenu2, IconX } from '@tabler/icons-react'
+import { AppShell, Avatar, Menu } from '@mantine/core'
+import {
+  IconSearch,
+  IconRefresh,
+  IconLogout,
+  IconMenu2,
+  IconX,
+  IconSettings,
+  IconUser,
+} from '@tabler/icons-react'
 import { IdentityAbsorber } from '@/features/search/components/IdentityAbsorber/IdentityAbsorber'
 import {
   requestIdentitySync,
   useIdentitySyncListener,
 } from '@/utils/identity-sync.utils'
-import { useAuth } from '@/features/auth/hooks/auth.hook'
+import { useAuth, useMe } from '@/features/auth/hooks/auth.hook'
 import './AppLayout.css'
 
 interface AppLayoutProps {
   children: ReactNode
 }
 
+function getUserInitials(
+  firstName: string | null,
+  lastName: string | null,
+  email: string | null,
+): string {
+  if (firstName && lastName) {
+    return `${firstName[0]}${lastName[0]}`.toUpperCase()
+  }
+  if (firstName) return firstName[0].toUpperCase()
+  if (email) return email[0].toUpperCase()
+  return ''
+}
+
 export function AppLayout({ children }: AppLayoutProps) {
   const navigate = useNavigate()
-  const { logout } = useAuth()
+  const { logout, email } = useAuth()
+  const { data: meResponse } = useMe()
+  const me = meResponse?.data
+
   const [showSyncModal, setShowSyncModal] = useState(false)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
@@ -35,6 +59,12 @@ export function AppLayout({ children }: AppLayoutProps) {
     setMobileMenuOpen(false)
   }, [])
 
+  const initials = getUserInitials(
+    me?.firstName ?? null,
+    me?.lastName ?? null,
+    email,
+  )
+
   return (
     <AppShell header={{ height: 60 }}>
       <AppShell.Header className="app-header">
@@ -50,19 +80,44 @@ export function AppLayout({ children }: AppLayoutProps) {
           </button>
 
           <div className="app-header-actions">
-            <button
-              onClick={requestIdentitySync}
-              disabled={showSyncModal}
-              className={`app-sync-button${showSyncModal ? ' app-sync-button--disabled' : ''}`}
-            >
-              <IconRefresh size={16} />
-              <span>Sync</span>
-            </button>
+            <Menu shadow="md" width={200} position="bottom-end">
+              <Menu.Target>
+                <button className="app-avatar-button" aria-label="User menu">
+                  <Avatar
+                    size="sm"
+                    radius="xl"
+                    color="yellow"
+                    className="app-avatar"
+                  >
+                    {initials || <IconUser size={16} />}
+                  </Avatar>
+                </button>
+              </Menu.Target>
 
-            <button onClick={handleLogout} className="app-logout-button">
-              <IconLogout size={16} />
-              <span>Logout</span>
-            </button>
+              <Menu.Dropdown className="app-menu-dropdown">
+                <Menu.Item
+                  leftSection={<IconSettings size={16} />}
+                  onClick={() => navigate('/settings')}
+                >
+                  Settings
+                </Menu.Item>
+                <Menu.Item
+                  leftSection={<IconRefresh size={16} />}
+                  disabled={showSyncModal}
+                  onClick={requestIdentitySync}
+                >
+                  Sync Identity
+                </Menu.Item>
+                <Menu.Divider />
+                <Menu.Item
+                  leftSection={<IconLogout size={16} />}
+                  color="red"
+                  onClick={handleLogout}
+                >
+                  Logout
+                </Menu.Item>
+              </Menu.Dropdown>
+            </Menu>
           </div>
 
           <button
@@ -79,6 +134,14 @@ export function AppLayout({ children }: AppLayoutProps) {
         <>
           <div className="app-mobile-backdrop" onClick={closeMobileMenu} />
           <div className="app-mobile-menu">
+            <button
+              onClick={() => { navigate('/settings'); closeMobileMenu() }}
+              className="app-mobile-menu-item"
+            >
+              <IconSettings size={18} />
+              <span>Settings</span>
+            </button>
+
             <button
               onClick={() => { requestIdentitySync(); closeMobileMenu() }}
               disabled={showSyncModal}

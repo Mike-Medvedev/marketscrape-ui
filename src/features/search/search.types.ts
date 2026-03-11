@@ -68,3 +68,39 @@ export const syncSSEEventSchema = z.discriminatedUnion("status", [
   z.object({ status: z.literal("timeout") }),
   z.object({ status: z.literal("error"), message: z.string() }),
 ]);
+
+export const searchRunSchema = z.object({
+  id: z.string(),
+  searchId: z.string(),
+  listingCount: z.number(),
+  executedAt: z.string(),
+});
+
+export type SearchRun = z.infer<typeof searchRunSchema>;
+
+export const listingSchema = z.object({
+  id: z.string(),
+  url: z.string(),
+  price: z.string(),
+  title: z.string(),
+  location: z.record(z.string(), z.unknown()).nullable(),
+  primaryPhotoUri: z.string(),
+});
+
+export const searchRunResultSchema = z.object({
+  runId: z.string(),
+  executedAt: z.string(),
+  listings: z.array(listingSchema),
+});
+
+export type SearchRunResult = z.infer<typeof searchRunResultSchema>;
+
+export const searchRunsResponseSchema = z.object({
+  success: z.literal(true),
+  data: z.array(searchRunSchema),
+});
+
+export const searchRunResultResponseSchema = z.object({
+  success: z.literal(true),
+  data: searchRunResultSchema,
+});

@@ -53,55 +53,36 @@
   letter-spacing: -0.025em;
 }
 
-.app-sync-button {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.4375rem 0.875rem;
-  background: transparent;
-  border: 1px solid var(--border);
-  border-radius: var(--mantine-radius-md);
-  color: var(--muted-foreground);
-  font-size: 0.8125rem;
-  font-family: var(--mantine-font-family-monospace);
-  cursor: pointer;
-  transition: border-color 0.2s, color 0.2s;
-}
-
-.app-sync-button:hover:not(:disabled) {
-  border-color: var(--primary);
-  color: var(--primary);
-}
-
-.app-sync-button--disabled {
-  opacity: 0.4;
-  cursor: not-allowed;
-}
-
 .app-header-actions {
   display: flex;
   align-items: center;
   gap: 0.5rem;
 }
 
-.app-logout-button {
+.app-avatar-button {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  padding: 0.4375rem 0.875rem;
-  background: transparent;
-  border: 1px solid var(--border);
-  border-radius: var(--mantine-radius-md);
-  color: var(--muted-foreground);
-  font-size: 0.8125rem;
-  font-family: var(--mantine-font-family-monospace);
+  justify-content: center;
+  background: none;
+  border: 2px solid transparent;
+  border-radius: 9999px;
   cursor: pointer;
-  transition: border-color 0.2s, color 0.2s;
+  padding: 2px;
+  transition: border-color 0.2s;
 }
 
-.app-logout-button:hover {
-  border-color: var(--destructive);
-  color: var(--destructive);
+.app-avatar-button:hover {
+  border-color: var(--primary);
+}
+
+.app-avatar {
+  font-weight: 600;
+  font-size: 0.75rem;
+}
+
+.app-menu-dropdown {
+  background: var(--popover);
+  border: 1px solid var(--border);
 }
 
 /* Mobile hamburger toggle — hidden on desktop */

@@ -1,25 +1,46 @@
-import { useNavigate, useParams } from "react-router";
-import { Container, Loader, Text, Title } from "@mantine/core";
-import { IconArrowLeft, IconPlayerPlay, IconSearch } from "@tabler/icons-react";
-import { ListingCard } from "@/features/search/components/ListingCard/ListingCard";
+import { useState, useEffect } from 'react'
+import { useNavigate, useParams } from 'react-router'
+import { Container, Loader, Text, Title } from '@mantine/core'
+import { IconArrowLeft, IconPlayerPlay, IconSearch } from '@tabler/icons-react'
+import { RunList } from '@/features/search/components/RunList/RunList'
+import { RunListings } from '@/features/search/components/RunListings/RunListings'
 import {
   useSearch,
+  useSearchRuns,
   useExecuteSearch,
-} from "@/features/search/hooks/search.hook";
-import "./ResultsContent.css";
+} from '@/features/search/hooks/search.hook'
+import './ResultsContent.css'
 
 export function ResultsContent() {
-  const { id } = useParams();
-  const navigate = useNavigate();
-  const { data: searchResponse, isLoading: searchLoading } = useSearch(id);
-  const search = searchResponse?.data;
-  const executeMutation = useExecuteSearch();
+  const { id } = useParams<{ id: string }>()
+  const { data: searchResponse, isLoading: searchLoading } = useSearch(id)
+  const search = searchResponse?.data
 
-  const listings = executeMutation.data?.data.listings ?? [];
+  if (searchLoading || !search || !id) return null
+
+  return <ResultsContentInner searchId={id} />
+}
+
+interface ResultsContentInnerProps {
+  searchId: string
+}
+
+function ResultsContentInner({ searchId }: ResultsContentInnerProps) {
+  const navigate = useNavigate()
+  const { data: searchResponse } = useSearch(searchId)
+  const search = searchResponse!.data
+  const { data: runs } = useSearchRuns(searchId)
+  const executeMutation = useExecuteSearch(searchId)
+
+  const [selectedRunId, setSelectedRunId] = useState<string | null>(null)
+
+  useEffect(() => {
+    if (runs.length > 0 && !selectedRunId) {
+      setSelectedRunId(runs[0].id)
+    }
+  }, [runs, selectedRunId])
 
   const handleExecute = () => {
-    if (!search) return;
-
     executeMutation.mutate({
       body: {
         query: search.query,
@@ -29,35 +50,29 @@ export function ResultsContent() {
           pageCount: search.listingsPerCheck,
         }),
       },
-    });
-  };
-
-  if (searchLoading) return null;
+    })
+  }
 
   return (
     <Container size="xl" className="results-container">
       <div className="results-header">
-        <button className="results-back-button" onClick={() => navigate("/")}>
+        <button className="results-back-button" onClick={() => navigate('/')}>
           <IconArrowLeft size={18} />
           <span>Back</span>
         </button>
 
         <div className="results-header-info">
           <Title order={2} className="results-title">
-            {search?.query}
+            {search.query}
           </Title>
           <Text size="sm" className="results-subtitle">
-            {search?.location}
-            {(search?.minPrice != null || search?.maxPrice != null) && (
+            {search.location}
+            {(search.minPrice != null || search.maxPrice != null) && (
               <>
-                {" \u2022 "}
-                {search?.minPrice != null
-                  ? `$${search.minPrice}`
-                  : "Any"}
-                {" - "}
-                {search?.maxPrice != null
-                  ? `$${search.maxPrice}`
-                  : "Any"}
+                {' \u2022 '}
+                {search.minPrice != null ? `$${search.minPrice}` : 'Any'}
+                {' - '}
+                {search.maxPrice != null ? `$${search.maxPrice}` : 'Any'}
               </>
             )}
           </Text>
@@ -74,53 +89,41 @@ export function ResultsContent() {
             <IconPlayerPlay size={16} />
           )}
           <span>
-            {executeMutation.isPending ? "Searching..." : "Execute Search"}
+            {executeMutation.isPending ? 'Searching...' : 'Execute Search'}
           </span>
         </button>
       </div>
 
-      {executeMutation.isPending && listings.length === 0 ? (
-        <div className="results-loading">
-          <div className="results-loading-spinner">
-            <Loader size={32} color="yellow" />
-          </div>
-          <Title order={4} className="results-loading-title">
-            Searching marketplace...
-          </Title>
-          <Text size="sm" c="dimmed">
-            This may take a moment
-          </Text>
-        </div>
-      ) : listings.length > 0 ? (
-        <>
-          <Text size="sm" c="dimmed" className="results-count">
-            {listings.length} listing{listings.length !== 1 ? "s" : ""} found
-          </Text>
-          <div className="results-grid">
-            {listings.map((listing) => (
-              <ListingCard key={listing.id} listing={listing} />
-            ))}
-          </div>
-        </>
-      ) : (
+      {runs.length === 0 && !executeMutation.isPending ? (
         <div className="results-empty">
           <div className="results-empty-icon">
             <IconSearch size={32} color="var(--muted-foreground)" />
           </div>
           <Title order={3} className="results-empty-title">
-            {executeMutation.isIdle ? "Ready to search" : "No listings found"}
+            No runs yet
           </Title>
           <Text size="sm" c="dimmed" className="results-empty-text">
-            {executeMutation.isIdle
-              ? "Hit execute to pull the latest marketplace listings"
-              : "Try executing the search again or adjusting your criteria"}
+            Execute a search manually or wait for the next scheduled run
           </Text>
           <button className="results-execute-button" onClick={handleExecute}>
             <IconPlayerPlay size={16} />
             <span>Execute Search</span>
           </button>
         </div>
+      ) : (
+        <div className="results-body">
+          <aside className="results-sidebar">
+            <RunList
+              runs={runs}
+              selectedRunId={selectedRunId}
+              onSelect={setSelectedRunId}
+            />
+          </aside>
+          <main className="results-main">
+            <RunListings searchId={searchId} runId={selectedRunId} />
+          </main>
+        </div>
       )}
     </Container>
-  );
+  )
 }

@@ -1,0 +1,22 @@
+.settings-page {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: calc(100vh - 60px);
+  padding: 2rem 1rem;
+}
+
+.settings-icon {
+  width: 5rem;
+  height: 5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--muted);
+  border-radius: 9999px;
+  color: var(--muted-foreground);
+}
+
+.settings-title {
+  color: var(--foreground);
+}
