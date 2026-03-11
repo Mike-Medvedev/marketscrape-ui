@@ -1,78 +1,28 @@
-import { useNavigate } from "react-router";
-import { Container, Text, Title } from "@mantine/core";
-import { IconSearch } from "@tabler/icons-react";
-import { SearchCard } from '@/features/search/components/SearchCard/SearchCard'
-import { SessionAlert } from '@/features/search/components/SessionAlert/SessionAlert'
+import { Suspense } from 'react'
+import { useNavigate } from 'react-router'
+import { Container } from '@mantine/core'
 import { NewSearchButton } from '@/features/search/components/NewSearchButton/NewSearchButton'
-import {
-  useSearches,
-  useDeleteSearch,
-} from "@/features/search/hooks/search.hook";
-import { requestIdentitySync } from "@/utils/identity-sync.utils";
+import { SearchesList } from '@/features/search/components/SearchesList'
+import { SearchesListSkeleton } from '@/features/search/components/SearchesListSkeleton'
+import { QueryErrorBoundary } from '@/theme/components/QueryErrorBoundary'
 import '@/features/search/page/DashboardPage/DashboardPage.css'
 
 export function DashboardContent() {
-  const navigate = useNavigate();
-  const { data: response } = useSearches();
-  const searches = response.data;
-  const deleteMutation = useDeleteSearch();
-
-  const hasExpiredSession = searches.some((s) => s.status === "needs_attention");
-
-  const handleDelete = (id: string) => {
-    deleteMutation.mutate({ path: { id } });
-  };
-
-  const handleEdit = (id: string) => {
-    navigate(`/edit/${id}`);
-  };
-
-  const handleViewResults = (id: string) => {
-    navigate(`/results/${id}`);
-  };
+  const navigate = useNavigate()
 
   return (
     <Container size="lg" className="dashboard-container">
       <div className="dashboard-header">
-        <NewSearchButton onClick={() => navigate("/new")}>
+        <NewSearchButton onClick={() => navigate('/new')}>
           New Search
         </NewSearchButton>
       </div>
 
-      {hasExpiredSession && (
-        <div className="dashboard-alert">
-          <SessionAlert onQuickSync={requestIdentitySync} onClose={() => {}} />
-        </div>
-      )}
-
-      {searches.length > 0 ? (
-        <div className="dashboard-grid">
-          {searches.map((search) => (
-            <SearchCard
-              key={search.id}
-              search={search}
-              onDelete={handleDelete}
-              onEdit={handleEdit}
-              onViewResults={handleViewResults}
-            />
-          ))}
-        </div>
-      ) : (
-        <div className="dashboard-empty">
-          <div className="dashboard-empty-icon">
-            <IconSearch size={32} color="var(--muted-foreground)" />
-          </div>
-          <Title order={3} className="dashboard-empty-title">
-            No active searches
-          </Title>
-          <Text size="sm" c="dimmed" className="dashboard-empty-text">
-            Create your first search to start monitoring
-          </Text>
-          <NewSearchButton onClick={() => navigate("/new")} size="large">
-            Create Search
-          </NewSearchButton>
-        </div>
-      )}
+      <QueryErrorBoundary>
+        <Suspense fallback={<SearchesListSkeleton />}>
+          <SearchesList />
+        </Suspense>
+      </QueryErrorBoundary>
     </Container>
-  );
+  )
 }
