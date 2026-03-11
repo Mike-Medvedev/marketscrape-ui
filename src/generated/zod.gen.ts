@@ -320,6 +320,58 @@ export const zUpdateSearchResponse = z.object({
     })
 });
 
+export const zGetSearchRunsData = z.object({
+    body: z.never().optional(),
+    path: z.object({
+        id: z.uuid()
+    }),
+    query: z.never().optional()
+});
+
+/**
+ * Success
+ */
+export const zGetSearchRunsResponse = z.object({
+    success: z.literal(true),
+    data: z.array(z.object({
+        id: z.uuid(),
+        searchId: z.uuid(),
+        listingCount: z.int().gte(-2147483648).lte(2147483647),
+        executedAt: z.iso.datetime()
+    }))
+});
+
+export const zGetSearchRunResultsData = z.object({
+    body: z.never().optional(),
+    path: z.object({
+        id: z.uuid(),
+        runId: z.uuid()
+    }),
+    query: z.never().optional()
+});
+
+/**
+ * Success
+ */
+export const zGetSearchRunResultsResponse = z.object({
+    success: z.literal(true),
+    data: z.object({
+        runId: z.uuid(),
+        executedAt: z.union([
+            z.string(),
+            z.iso.datetime()
+        ]),
+        listings: z.array(z.object({
+            id: z.string(),
+            url: z.string(),
+            price: z.string(),
+            title: z.string(),
+            location: z.record(z.string(), z.unknown()).nullable(),
+            primaryPhotoUri: z.string()
+        }))
+    })
+});
+
 export const zGetMeData = z.object({
     body: z.never().optional(),
     path: z.never().optional(),

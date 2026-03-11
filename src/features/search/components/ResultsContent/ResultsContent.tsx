@@ -29,7 +29,8 @@ function ResultsContentInner({ searchId }: ResultsContentInnerProps) {
   const navigate = useNavigate()
   const { data: searchResponse } = useSearch(searchId)
   const search = searchResponse!.data
-  const { data: runs } = useSearchRuns(searchId)
+  const { data: runsResponse } = useSearchRuns(searchId)
+  const runs = runsResponse.data
   const executeMutation = useExecuteSearch(searchId)
 
   const [selectedRunId, setSelectedRunId] = useState<string | null>(null)

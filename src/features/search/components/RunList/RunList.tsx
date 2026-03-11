@@ -1,7 +1,9 @@
 import { IconCalendarEvent, IconStack2 } from '@tabler/icons-react'
-import type { SearchRun } from '@/features/search/search.types'
+import type { GetSearchRunsResponse } from '@/generated/types.gen'
 import { relativeTime } from '@/utils/date.utils'
 import './RunList.css'
+
+type SearchRun = GetSearchRunsResponse['data'][number]
 
 interface RunListProps {
   runs: SearchRun[]

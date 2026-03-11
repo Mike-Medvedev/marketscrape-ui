@@ -10,7 +10,8 @@ interface RunListingsProps {
 }
 
 export function RunListings({ searchId, runId }: RunListingsProps) {
-  const { data: runResult, isLoading } = useSearchRunResults(searchId, runId)
+  const { data: runResultResponse, isLoading } = useSearchRunResults(searchId, runId)
+  const runResult = runResultResponse?.data
 
   if (!runId) {
     return (

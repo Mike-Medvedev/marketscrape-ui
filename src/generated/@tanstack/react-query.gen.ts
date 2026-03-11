@@ -4,8 +4,8 @@ import { type DefaultError, queryOptions, type UseMutationOptions } from '@tanst
 import type { AxiosError } from 'axios';
 
 import { client } from '../client.gen';
-import { beginIdentitySync, createSearch, deleteSearch, getMe, getSearchById, getSearches, getSyncContext, type Options, postScrape, updateMe, updateSearch, webhookAnalyzedListings, webhookContainerExited, webhookNeedsLogin, webhookRefresh } from '../sdk.gen';
-import type { BeginIdentitySyncData, CreateSearchData, CreateSearchResponse, DeleteSearchData, DeleteSearchError, DeleteSearchResponse, GetMeData, GetMeError, GetMeResponse, GetSearchByIdData, GetSearchByIdError, GetSearchByIdResponse, GetSearchesData, GetSearchesError, GetSearchesResponse, GetSyncContextData, PostScrapeData, PostScrapeResponse, UpdateMeData, UpdateMeError, UpdateMeResponse, UpdateSearchData, UpdateSearchError, UpdateSearchResponse, WebhookAnalyzedListingsData, WebhookContainerExitedData, WebhookNeedsLoginData, WebhookRefreshData } from '../types.gen';
+import { beginIdentitySync, createSearch, deleteSearch, getMe, getSearchById, getSearches, getSearchRunResults, getSearchRuns, getSyncContext, type Options, postScrape, updateMe, updateSearch, webhookAnalyzedListings, webhookContainerExited, webhookNeedsLogin, webhookRefresh } from '../sdk.gen';
+import type { BeginIdentitySyncData, CreateSearchData, CreateSearchResponse, DeleteSearchData, DeleteSearchError, DeleteSearchResponse, GetMeData, GetMeError, GetMeResponse, GetSearchByIdData, GetSearchByIdError, GetSearchByIdResponse, GetSearchesData, GetSearchesError, GetSearchesResponse, GetSearchRunResultsData, GetSearchRunResultsError, GetSearchRunResultsResponse, GetSearchRunsData, GetSearchRunsError, GetSearchRunsResponse, GetSyncContextData, PostScrapeData, PostScrapeResponse, UpdateMeData, UpdateMeError, UpdateMeResponse, UpdateSearchData, UpdateSearchError, UpdateSearchResponse, WebhookAnalyzedListingsData, WebhookContainerExitedData, WebhookNeedsLoginData, WebhookRefreshData } from '../types.gen';
 
 /**
  * Searches Marketplace and returns listings
@@ -143,6 +143,42 @@ export const updateSearchMutation = (options?: Partial<Options<UpdateSearchData>
     };
     return mutationOptions;
 };
+
+export const getSearchRunsQueryKey = (options: Options<GetSearchRunsData>) => createQueryKey('getSearchRuns', options);
+
+/**
+ * List all runs for a saved search, ordered by most recent first
+ */
+export const getSearchRunsOptions = (options: Options<GetSearchRunsData>) => queryOptions<GetSearchRunsResponse, AxiosError<GetSearchRunsError>, GetSearchRunsResponse, ReturnType<typeof getSearchRunsQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await getSearchRuns({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getSearchRunsQueryKey(options)
+});
+
+export const getSearchRunResultsQueryKey = (options: Options<GetSearchRunResultsData>) => createQueryKey('getSearchRunResults', options);
+
+/**
+ * Get the listing results for a specific search run (from cache)
+ */
+export const getSearchRunResultsOptions = (options: Options<GetSearchRunResultsData>) => queryOptions<GetSearchRunResultsResponse, AxiosError<GetSearchRunResultsError>, GetSearchRunResultsResponse, ReturnType<typeof getSearchRunResultsQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await getSearchRunResults({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getSearchRunResultsQueryKey(options)
+});
 
 export const getMeQueryKey = (options?: Options<GetMeData>) => createQueryKey('getMe', options);
 

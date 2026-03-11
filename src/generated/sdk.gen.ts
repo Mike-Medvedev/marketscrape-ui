@@ -2,8 +2,8 @@
 
 import type { Client, Options as Options2, TDataShape } from './client';
 import { client } from './client.gen';
-import type { BeginIdentitySyncData, CreateSearchData, CreateSearchResponses, DeleteSearchData, DeleteSearchErrors, DeleteSearchResponses, GetMeData, GetMeErrors, GetMeResponses, GetSearchByIdData, GetSearchByIdErrors, GetSearchByIdResponses, GetSearchesData, GetSearchesErrors, GetSearchesResponses, GetSyncContextData, PostScrapeData, PostScrapeResponses, UpdateMeData, UpdateMeErrors, UpdateMeResponses, UpdateSearchData, UpdateSearchErrors, UpdateSearchResponses, WebhookAnalyzedListingsData, WebhookContainerExitedData, WebhookNeedsLoginData, WebhookRefreshData } from './types.gen';
-import { zBeginIdentitySyncData, zCreateSearchData, zCreateSearchResponse, zDeleteSearchData, zDeleteSearchResponse, zGetMeData, zGetMeResponse, zGetSearchByIdData, zGetSearchByIdResponse, zGetSearchesData, zGetSearchesResponse, zGetSyncContextData, zPostScrapeData, zPostScrapeResponse, zUpdateMeData, zUpdateMeResponse, zUpdateSearchData, zUpdateSearchResponse, zWebhookAnalyzedListingsData, zWebhookContainerExitedData, zWebhookNeedsLoginData, zWebhookRefreshData } from './zod.gen';
+import type { BeginIdentitySyncData, CreateSearchData, CreateSearchResponses, DeleteSearchData, DeleteSearchErrors, DeleteSearchResponses, GetMeData, GetMeErrors, GetMeResponses, GetSearchByIdData, GetSearchByIdErrors, GetSearchByIdResponses, GetSearchesData, GetSearchesErrors, GetSearchesResponses, GetSearchRunResultsData, GetSearchRunResultsErrors, GetSearchRunResultsResponses, GetSearchRunsData, GetSearchRunsErrors, GetSearchRunsResponses, GetSyncContextData, PostScrapeData, PostScrapeResponses, UpdateMeData, UpdateMeErrors, UpdateMeResponses, UpdateSearchData, UpdateSearchErrors, UpdateSearchResponses, WebhookAnalyzedListingsData, WebhookContainerExitedData, WebhookNeedsLoginData, WebhookRefreshData } from './types.gen';
+import { zBeginIdentitySyncData, zCreateSearchData, zCreateSearchResponse, zDeleteSearchData, zDeleteSearchResponse, zGetMeData, zGetMeResponse, zGetSearchByIdData, zGetSearchByIdResponse, zGetSearchesData, zGetSearchesResponse, zGetSearchRunResultsData, zGetSearchRunResultsResponse, zGetSearchRunsData, zGetSearchRunsResponse, zGetSyncContextData, zPostScrapeData, zPostScrapeResponse, zUpdateMeData, zUpdateMeResponse, zUpdateSearchData, zUpdateSearchResponse, zWebhookAnalyzedListingsData, zWebhookContainerExitedData, zWebhookNeedsLoginData, zWebhookRefreshData } from './zod.gen';
 
 export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends boolean = boolean> = Options2<TData, ThrowOnError> & {
     /**
@@ -101,6 +101,30 @@ export const updateSearch = <ThrowOnError extends boolean = false>(options: Opti
         'Content-Type': 'application/json',
         ...options.headers
     }
+});
+
+/**
+ * List all runs for a saved search, ordered by most recent first
+ */
+export const getSearchRuns = <ThrowOnError extends boolean = false>(options: Options<GetSearchRunsData, ThrowOnError>) => (options.client ?? client).get<GetSearchRunsResponses, GetSearchRunsErrors, ThrowOnError>({
+    requestValidator: async (data) => await zGetSearchRunsData.parseAsync(data),
+    responseType: 'json',
+    responseValidator: async (data) => await zGetSearchRunsResponse.parseAsync(data),
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/searches/{id}/runs',
+    ...options
+});
+
+/**
+ * Get the listing results for a specific search run (from cache)
+ */
+export const getSearchRunResults = <ThrowOnError extends boolean = false>(options: Options<GetSearchRunResultsData, ThrowOnError>) => (options.client ?? client).get<GetSearchRunResultsResponses, GetSearchRunResultsErrors, ThrowOnError>({
+    requestValidator: async (data) => await zGetSearchRunResultsData.parseAsync(data),
+    responseType: 'json',
+    responseValidator: async (data) => await zGetSearchRunResultsResponse.parseAsync(data),
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/searches/{id}/runs/{runId}/results',
+    ...options
 });
 
 /**
