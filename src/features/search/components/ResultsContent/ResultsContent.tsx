@@ -31,7 +31,7 @@ export function ResultsContent() {
   const handleExecute = () => {
     executeMutation.mutate(
       { path: { id: id! } },
-      { onSuccess: () => setSelectedRunId(null) },
+      { onSuccess: (data) => setSelectedRunId(data.data.runId) },
     )
   }
 

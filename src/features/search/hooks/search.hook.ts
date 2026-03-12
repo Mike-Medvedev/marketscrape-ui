@@ -12,13 +12,18 @@ import {
   getSearchRunsOptions,
   getSearchRunsQueryKey,
   getSearchRunResultsOptions,
+  getSearchRunResultsQueryKey,
   createSearchMutation,
   updateSearchMutation,
   deleteSearchMutation,
   executeSearchMutation,
 } from "@/generated/@tanstack/react-query.gen";
 import type { Options } from "@/generated/sdk.gen";
-import type { UpdateSearchData } from "@/generated/types.gen";
+import type {
+  UpdateSearchData,
+  GetSearchRunsResponse,
+  GetSearchRunResultsResponse,
+} from "@/generated/types.gen";
 import { toast } from "@/utils/toast.utils";
 import { notifyApiError } from "@/errors/api-errors";
 
@@ -95,11 +100,30 @@ export function useExecuteSearch(searchId: string) {
   return useMutation({
     ...executeSearchMutation(),
     onSuccess: async (data) => {
-      const count = data.data.listings.length;
-      toast.success({ message: `Found ${count} listing${count !== 1 ? "s" : ""}` });
-      await queryClient.invalidateQueries({
-        queryKey: getSearchRunsQueryKey({ path: { id: searchId } }),
+      const { runId, executedAt, listings } = data.data;
+      const count = listings.length;
+
+      const runsQueryKey = getSearchRunsQueryKey({ path: { id: searchId } });
+      await queryClient.cancelQueries({ queryKey: runsQueryKey });
+
+      const newRun = { id: runId, searchId, listingCount: count, executedAt };
+
+      queryClient.setQueryData<GetSearchRunsResponse>(runsQueryKey, (old) => {
+        if (!old) return { success: true as const, data: [newRun] };
+        return { ...old, data: [newRun, ...old.data] };
       });
+
+      const resultsQueryKey = getSearchRunResultsQueryKey({
+        path: { id: searchId, runId },
+      });
+      queryClient.setQueryData<GetSearchRunResultsResponse>(resultsQueryKey, {
+        success: true,
+        data: { runId, executedAt, listings },
+      });
+
+      toast.success({ message: `Found ${count} listing${count !== 1 ? "s" : ""}` });
+
+      queryClient.invalidateQueries({ queryKey: runsQueryKey });
     },
     onError: (error) => {
       notifyApiError(error, "Failed to execute search. Please try again.");
