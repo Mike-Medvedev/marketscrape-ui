@@ -21,6 +21,8 @@ export function ResultsContent() {
 
   const [selectedRunId, setSelectedRunId] = useState<string | null>(null)
 
+  const hasRuns = runs.length > 0
+
   const currentSelectedRunId =
     selectedRunId && runs.some((run) => run.id === selectedRunId)
       ? selectedRunId
@@ -35,7 +37,7 @@ export function ResultsContent() {
 
   return (
     <Container size="xl" className="results-container">
-      <div className="results-header">
+      <div className={`results-header${hasRuns ? '' : ' results-header--empty'}`}>
         <div className="results-header-info">
           <Title order={2} className="results-title">
             {search.query}
@@ -69,32 +71,32 @@ export function ResultsContent() {
         </button>
       </div>
 
-      <div className="results-body">
-        <aside className="results-sidebar">
-          <RunList
-            runs={runs}
-            selectedRunId={currentSelectedRunId}
-            onSelect={setSelectedRunId}
-          />
-        </aside>
-        <main className="results-main">
-          {runs.length === 0 && !executeMutation.isPending ? (
-            <div className="results-empty">
-              <div className="results-empty-icon">
-                <IconSearch size={32} color="var(--muted-foreground)" />
-              </div>
-              <Title order={3} className="results-empty-title">
-                No runs yet
-              </Title>
-              <Text size="sm" c="dimmed" className="results-empty-text">
-                Hit "Execute Search" above to run your first search
-              </Text>
-            </div>
-          ) : (
+      {hasRuns ? (
+        <div className="results-body">
+          <aside className="results-sidebar">
+            <RunList
+              runs={runs}
+              selectedRunId={currentSelectedRunId}
+              onSelect={setSelectedRunId}
+            />
+          </aside>
+          <main className="results-main">
             <RunListings searchId={id!} runId={currentSelectedRunId} />
-          )}
-        </main>
-      </div>
+          </main>
+        </div>
+      ) : (
+        <div className="results-empty">
+          <div className="results-empty-icon">
+            <IconSearch size={32} color="var(--muted-foreground)" />
+          </div>
+          <Title order={3} className="results-empty-title">
+            No runs yet
+          </Title>
+          <Text size="sm" c="dimmed" className="results-empty-text">
+            Hit the button above to run your first search
+          </Text>
+        </div>
+      )}
     </Container>
   )
 }
