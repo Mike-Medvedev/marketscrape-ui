@@ -56,6 +56,7 @@ export type SyncState =
   | "starting"
   | "auto_login"
   | "vnc"
+  | "vnc_error"
   | "success"
   | "timeout"
   | "error";

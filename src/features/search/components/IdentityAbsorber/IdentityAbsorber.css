@@ -156,11 +156,39 @@
   width: 100%;
   height: 100%;
   display: flex;
+  position: relative;
 }
 
 .identity-vnc-screen {
   width: 100%;
   height: 100%;
+}
+
+.identity-vnc-screen--connecting {
+  opacity: 0;
+}
+
+.identity-vnc-connecting {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  z-index: 1;
+}
+
+.identity-spinner--small {
+  width: 2.5rem;
+  height: 2.5rem;
+}
+
+.identity-terminal-hint {
+  font-size: 0.75rem;
+  color: rgba(153, 153, 153, 0.7);
+  margin: 0;
+  max-width: 300px;
 }
 
 .identity-browser:has(.identity-vnc-container) {

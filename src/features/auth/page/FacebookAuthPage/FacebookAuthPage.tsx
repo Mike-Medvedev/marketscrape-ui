@@ -1,13 +1,10 @@
 import { Container, Title, Text } from '@mantine/core'
 import { IconDeviceDesktop } from '@tabler/icons-react'
-import { BackButton } from '@/theme/components/BackButton/BackButton'
 import './FacebookAuthPage.css'
 
 export function FacebookAuthPage() {
   return (
     <Container size="md" className="fb-auth-container">
-      <BackButton label="Back to Dashboard" />
-
       <div className="fb-auth-heading">
         <Title order={1} className="fb-auth-title">Facebook Authentication</Title>
         <Text c="dimmed">Log in to Facebook to enable automated searches</Text>

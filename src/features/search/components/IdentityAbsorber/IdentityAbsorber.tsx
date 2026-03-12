@@ -1,13 +1,14 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 import {
   IconX,
   IconCircleCheck,
   IconAlertTriangle,
   IconAlertCircle,
+  IconPlugConnectedX,
 } from "@tabler/icons-react";
 import { Modal, ActionIcon, Button, Text } from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
-import { VncScreen } from "react-vnc";
+import { VncScreen, type VncScreenHandle } from "react-vnc";
 import { useIdentitySync } from "@/features/search/hooks/sync.hook";
 import "./IdentityAbsorber.css";
 
@@ -31,6 +32,7 @@ export function IdentityAbsorber({ isOpen, onClose }: IdentityAbsorberProps) {
     retry,
     reset,
     abort,
+    handleVncError,
   } = useIdentitySync({ onDismiss: onClose });
 
   useEffect(() => {
@@ -60,7 +62,7 @@ export function IdentityAbsorber({ isOpen, onClose }: IdentityAbsorberProps) {
   const shimmerClass =
     syncState === "success"
       ? "identity-shimmer identity-shimmer--success"
-      : syncState === "error" || syncState === "timeout"
+      : syncState === "error" || syncState === "timeout" || syncState === "vnc_error"
         ? "identity-shimmer identity-shimmer--error"
         : syncState === "vnc"
           ? "identity-shimmer identity-shimmer--hidden"
@@ -103,6 +105,7 @@ export function IdentityAbsorber({ isOpen, onClose }: IdentityAbsorberProps) {
               vncUrl={vncUrl}
               errorMessage={errorMessage}
               onRetry={retry}
+              onVncError={handleVncError}
             />
           </div>
 
@@ -166,6 +169,7 @@ interface BrowserPanelProps {
   vncUrl: string | null;
   errorMessage: string | null;
   onRetry: () => void;
+  onVncError: (reason: string) => void;
 }
 
 function BrowserPanel({
@@ -173,6 +177,7 @@ function BrowserPanel({
   vncUrl,
   errorMessage,
   onRetry,
+  onVncError,
 }: BrowserPanelProps) {
   switch (syncState) {
     case "starting":
@@ -197,15 +202,27 @@ function BrowserPanel({
 
     case "vnc":
       return vncUrl ? (
-        <div className="identity-vnc-container">
-          <VncScreen
-            url={vncUrl}
-            scaleViewport
-            background="#000000"
-            className="identity-vnc-screen"
-          />
-        </div>
+        <VncPanel url={vncUrl} onVncError={onVncError} />
       ) : null;
+
+    case "vnc_error":
+      return (
+        <div className="identity-terminal">
+          <div className="identity-terminal-icon identity-terminal-icon--error">
+            <IconPlugConnectedX size={32} color="var(--status-error)" />
+          </div>
+          <h3 className="identity-terminal-title">Connection Lost</h3>
+          <p className="identity-terminal-desc">
+            {errorMessage ?? "Could not connect to the remote browser."}
+          </p>
+          <p className="identity-terminal-hint">
+            The remote session may have ended or the connection was refused.
+          </p>
+          <Button onClick={onRetry} color="amber" className="identity-retry-btn">
+            Reconnect
+          </Button>
+        </div>
+      );
 
     case "success":
       return (
@@ -259,4 +276,68 @@ function BrowserPanel({
     default:
       return null;
   }
+}
+
+interface VncPanelProps {
+  url: string;
+  onVncError: (reason: string) => void;
+}
+
+function VncPanel({ url, onVncError }: VncPanelProps) {
+  const vncRef = useRef<VncScreenHandle>(null);
+  const [connected, setConnected] = useState(false);
+  const errorFiredRef = useRef(false);
+
+  const handleConnect = useCallback(() => {
+    setConnected(true);
+    errorFiredRef.current = false;
+  }, []);
+
+  const handleDisconnect = useCallback(
+    (event: CustomEvent<{ clean: boolean }> | undefined) => {
+      if (errorFiredRef.current) return;
+
+      const clean = event?.detail?.clean ?? false;
+      if (!clean) {
+        errorFiredRef.current = true;
+        const reason = connected
+          ? "The remote browser disconnected unexpectedly."
+          : "Could not establish a connection to the remote browser.";
+        onVncError(reason);
+      }
+    },
+    [connected, onVncError],
+  );
+
+  const handleSecurityFailure = useCallback(
+    (event: CustomEvent<{ status: number; reason: string }> | undefined) => {
+      if (errorFiredRef.current) return;
+      errorFiredRef.current = true;
+      const reason = event?.detail?.reason ?? "Security handshake failed";
+      onVncError(`Security failure: ${reason}`);
+    },
+    [onVncError],
+  );
+
+  return (
+    <div className="identity-vnc-container">
+      {!connected && (
+        <div className="identity-vnc-connecting">
+          <div className="identity-spinner identity-spinner--small" />
+          <p className="identity-loading-text">Connecting to remote browser...</p>
+        </div>
+      )}
+      <VncScreen
+        ref={vncRef}
+        url={url}
+        scaleViewport
+        background="#000000"
+        className={`identity-vnc-screen ${connected ? "" : "identity-vnc-screen--connecting"}`}
+        retryDuration={0}
+        onConnect={handleConnect}
+        onDisconnect={handleDisconnect}
+        onSecurityFailure={handleSecurityFailure}
+      />
+    </div>
+  );
 }

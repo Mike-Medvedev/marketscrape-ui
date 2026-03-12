@@ -85,6 +85,12 @@
   border: 1px solid var(--border);
 }
 
+.app-back-bar {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 1rem 1.5rem 0;
+}
+
 /* Mobile hamburger toggle — hidden on desktop */
 .app-mobile-toggle {
   display: none;
@@ -160,6 +166,10 @@
 @media (max-width: 640px) {
   .app-header-inner {
     padding: 0 1rem;
+  }
+
+  .app-back-bar {
+    padding: 0.75rem 1rem 0;
   }
 
   .app-header-actions {

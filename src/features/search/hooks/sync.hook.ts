@@ -183,6 +183,15 @@ export function useIdentitySync({ onDismiss }: UseIdentitySyncOptions = {}) {
     };
   }, [closeEventSource]);
 
+  const handleVncError = useCallback(
+    (reason: string) => {
+      setSyncState("vnc_error");
+      setErrorMessage(reason);
+      appendLog(`VNC error: ${reason}`);
+    },
+    [appendLog],
+  );
+
   const isSyncing =
     syncState === "starting" ||
     syncState === "auto_login" ||
@@ -192,6 +201,7 @@ export function useIdentitySync({ onDismiss }: UseIdentitySyncOptions = {}) {
     syncState === "idle" ||
     syncState === "success" ||
     syncState === "timeout" ||
+    syncState === "vnc_error" ||
     syncState === "error";
 
   return {
@@ -206,5 +216,6 @@ export function useIdentitySync({ onDismiss }: UseIdentitySyncOptions = {}) {
     retry,
     reset,
     abort,
+    handleVncError,
   };
 }

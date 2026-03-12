@@ -1,12 +1,10 @@
 import { Container, Title, Text, Stack } from '@mantine/core'
 import { IconSettings } from '@tabler/icons-react'
-import { BackButton } from '@/theme/components/BackButton/BackButton'
 import './SettingsPage.css'
 
 export function SettingsPage() {
   return (
     <Container size="sm" className="settings-page">
-      <BackButton />
       <div className="settings-content">
         <Stack align="center" gap="md">
           <div className="settings-icon">

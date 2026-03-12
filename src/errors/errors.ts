@@ -27,3 +27,20 @@ export class ValidationError extends ApplicationError {
     super(message, 'VALIDATION_ERROR', 400, details)
   }
 }
+
+export class VncConnectionError extends ApplicationError {
+  constructor(
+    message: string,
+    public url: string,
+    options?: { cause?: unknown },
+  ) {
+    super(message, 'VNC_CONNECTION_ERROR', 502, { url })
+    if (options?.cause) this.cause = options.cause
+  }
+}
+
+export class VncDisconnectedError extends ApplicationError {
+  constructor(message: string = 'VNC session ended unexpectedly') {
+    super(message, 'VNC_DISCONNECTED', 503)
+  }
+}

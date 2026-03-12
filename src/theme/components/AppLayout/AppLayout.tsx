@@ -1,5 +1,5 @@
 import { type ReactNode, useState, useCallback } from 'react'
-import { useNavigate } from 'react-router'
+import { useNavigate, useLocation } from 'react-router'
 import { AppShell, Avatar, Menu } from '@mantine/core'
 import {
   IconSearch,
@@ -11,6 +11,7 @@ import {
 } from '@tabler/icons-react'
 import { IdentityAbsorber } from '@/features/search/components/IdentityAbsorber/IdentityAbsorber'
 import { SyncStatusPill } from '@/theme/components/SyncStatusPill/SyncStatusPill'
+import { BackButton } from '@/theme/components/BackButton/BackButton'
 import { useIdentitySyncListener } from '@/utils/identity-sync.utils'
 import { useSessionStatus } from '@/features/search/hooks/session.hook'
 import { useAuth, useMe } from '@/features/auth/hooks/auth.hook'
@@ -35,10 +36,12 @@ function getUserInitials(
 
 export function AppLayout({ children }: AppLayoutProps) {
   const navigate = useNavigate()
+  const location = useLocation()
   const { logout, email } = useAuth()
   const { data: meResponse } = useMe()
   const me = meResponse?.data
 
+  const isIndex = location.pathname === '/'
   const { status: sessionStatus, isFetching, refetch } = useSessionStatus()
 
   const [showSyncModal, setShowSyncModal] = useState(false)
@@ -166,7 +169,14 @@ export function AppLayout({ children }: AppLayoutProps) {
         </>
       )}
 
-      <AppShell.Main>{children}</AppShell.Main>
+      <AppShell.Main>
+        {!isIndex && (
+          <div className="app-back-bar">
+            <BackButton />
+          </div>
+        )}
+        {children}
+      </AppShell.Main>
 
       <IdentityAbsorber
         isOpen={showSyncModal}
