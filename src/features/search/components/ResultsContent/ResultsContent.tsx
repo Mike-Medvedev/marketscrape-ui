@@ -27,16 +27,10 @@ export function ResultsContent() {
       : runs[0]?.id ?? null
 
   const handleExecute = () => {
-    executeMutation.mutate({
-      body: {
-        query: search.query,
-        location: search.location,
-        ...(search.minPrice != null && search.minPrice > 0 && { minPrice: search.minPrice }),
-        ...(search.listingsPerCheck > 0 && {
-          pageCount: search.listingsPerCheck,
-        }),
-      },
-    })
+    executeMutation.mutate(
+      { path: { id: id! } },
+      { onSuccess: () => setSelectedRunId(null) },
+    )
   }
 
   return (

@@ -2,8 +2,8 @@
 
 import type { Client, Options as Options2, TDataShape } from './client';
 import { client } from './client.gen';
-import type { AbortSyncData, BeginIdentitySyncData, CreateSearchData, CreateSearchResponses, DeleteSearchData, DeleteSearchErrors, DeleteSearchResponses, GetMeData, GetMeErrors, GetMeResponses, GetSearchByIdData, GetSearchByIdErrors, GetSearchByIdResponses, GetSearchesData, GetSearchesErrors, GetSearchesResponses, GetSearchEventsData, GetSearchEventsErrors, GetSearchRunResultsData, GetSearchRunResultsErrors, GetSearchRunResultsResponses, GetSearchRunsData, GetSearchRunsErrors, GetSearchRunsResponses, GetSessionStatusData, GetSessionStatusErrors, GetSessionStatusResponses, GetSyncContextData, PostScrapeData, PostScrapeResponses, UpdateMeData, UpdateMeErrors, UpdateMeResponses, UpdateSearchData, UpdateSearchErrors, UpdateSearchResponses, WebhookAnalyzedListingsData, WebhookContainerExitedData, WebhookNeedsLoginData, WebhookRefreshData } from './types.gen';
-import { zAbortSyncData, zBeginIdentitySyncData, zCreateSearchData, zCreateSearchResponse, zDeleteSearchData, zDeleteSearchResponse, zGetMeData, zGetMeResponse, zGetSearchByIdData, zGetSearchByIdResponse, zGetSearchesData, zGetSearchesResponse, zGetSearchEventsData, zGetSearchRunResultsData, zGetSearchRunResultsResponse, zGetSearchRunsData, zGetSearchRunsResponse, zGetSessionStatusData, zGetSessionStatusResponse, zGetSyncContextData, zPostScrapeData, zPostScrapeResponse, zUpdateMeData, zUpdateMeResponse, zUpdateSearchData, zUpdateSearchResponse, zWebhookAnalyzedListingsData, zWebhookContainerExitedData, zWebhookNeedsLoginData, zWebhookRefreshData } from './zod.gen';
+import type { AbortSyncData, BeginIdentitySyncData, CreateSearchData, CreateSearchResponses, DeleteSearchData, DeleteSearchErrors, DeleteSearchResponses, ExecuteSearchData, ExecuteSearchErrors, ExecuteSearchResponses, GetMeData, GetMeErrors, GetMeResponses, GetSearchByIdData, GetSearchByIdErrors, GetSearchByIdResponses, GetSearchesData, GetSearchesErrors, GetSearchesResponses, GetSearchEventsData, GetSearchEventsErrors, GetSearchRunResultsData, GetSearchRunResultsErrors, GetSearchRunResultsResponses, GetSearchRunsData, GetSearchRunsErrors, GetSearchRunsResponses, GetSessionStatusData, GetSessionStatusErrors, GetSessionStatusResponses, GetSyncContextData, PostScrapeData, PostScrapeResponses, UpdateMeData, UpdateMeErrors, UpdateMeResponses, UpdateSearchData, UpdateSearchErrors, UpdateSearchResponses, WebhookAnalyzedListingsData, WebhookContainerExitedData, WebhookNeedsLoginData, WebhookRefreshData } from './types.gen';
+import { zAbortSyncData, zBeginIdentitySyncData, zCreateSearchData, zCreateSearchResponse, zDeleteSearchData, zDeleteSearchResponse, zExecuteSearchData, zExecuteSearchResponse, zGetMeData, zGetMeResponse, zGetSearchByIdData, zGetSearchByIdResponse, zGetSearchesData, zGetSearchesResponse, zGetSearchEventsData, zGetSearchRunResultsData, zGetSearchRunResultsResponse, zGetSearchRunsData, zGetSearchRunsResponse, zGetSessionStatusData, zGetSessionStatusResponse, zGetSyncContextData, zPostScrapeData, zPostScrapeResponse, zUpdateMeData, zUpdateMeResponse, zUpdateSearchData, zUpdateSearchResponse, zWebhookAnalyzedListingsData, zWebhookContainerExitedData, zWebhookNeedsLoginData, zWebhookRefreshData } from './zod.gen';
 
 export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends boolean = boolean> = Options2<TData, ThrowOnError> & {
     /**
@@ -101,6 +101,18 @@ export const updateSearch = <ThrowOnError extends boolean = false>(options: Opti
         'Content-Type': 'application/json',
         ...options.headers
     }
+});
+
+/**
+ * Manually execute a saved search, creating a run with stored results
+ */
+export const executeSearch = <ThrowOnError extends boolean = false>(options: Options<ExecuteSearchData, ThrowOnError>) => (options.client ?? client).post<ExecuteSearchResponses, ExecuteSearchErrors, ThrowOnError>({
+    requestValidator: async (data) => await zExecuteSearchData.parseAsync(data),
+    responseType: 'json',
+    responseValidator: async (data) => await zExecuteSearchResponse.parseAsync(data),
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/searches/{id}/execute',
+    ...options
 });
 
 /**

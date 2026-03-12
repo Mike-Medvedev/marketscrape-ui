@@ -4,8 +4,8 @@ import { type DefaultError, queryOptions, type UseMutationOptions } from '@tanst
 import type { AxiosError } from 'axios';
 
 import { client } from '../client.gen';
-import { abortSync, beginIdentitySync, createSearch, deleteSearch, getMe, getSearchById, getSearches, getSearchEvents, getSearchRunResults, getSearchRuns, getSessionStatus, getSyncContext, type Options, postScrape, updateMe, updateSearch, webhookAnalyzedListings, webhookContainerExited, webhookNeedsLogin, webhookRefresh } from '../sdk.gen';
-import type { AbortSyncData, BeginIdentitySyncData, CreateSearchData, CreateSearchResponse, DeleteSearchData, DeleteSearchError, DeleteSearchResponse, GetMeData, GetMeError, GetMeResponse, GetSearchByIdData, GetSearchByIdError, GetSearchByIdResponse, GetSearchesData, GetSearchesError, GetSearchesResponse, GetSearchEventsData, GetSearchEventsError, GetSearchRunResultsData, GetSearchRunResultsError, GetSearchRunResultsResponse, GetSearchRunsData, GetSearchRunsError, GetSearchRunsResponse, GetSessionStatusData, GetSessionStatusError, GetSessionStatusResponse, GetSyncContextData, PostScrapeData, PostScrapeResponse, UpdateMeData, UpdateMeError, UpdateMeResponse, UpdateSearchData, UpdateSearchError, UpdateSearchResponse, WebhookAnalyzedListingsData, WebhookContainerExitedData, WebhookNeedsLoginData, WebhookRefreshData } from '../types.gen';
+import { abortSync, beginIdentitySync, createSearch, deleteSearch, executeSearch, getMe, getSearchById, getSearches, getSearchEvents, getSearchRunResults, getSearchRuns, getSessionStatus, getSyncContext, type Options, postScrape, updateMe, updateSearch, webhookAnalyzedListings, webhookContainerExited, webhookNeedsLogin, webhookRefresh } from '../sdk.gen';
+import type { AbortSyncData, BeginIdentitySyncData, CreateSearchData, CreateSearchResponse, DeleteSearchData, DeleteSearchError, DeleteSearchResponse, ExecuteSearchData, ExecuteSearchError, ExecuteSearchResponse, GetMeData, GetMeError, GetMeResponse, GetSearchByIdData, GetSearchByIdError, GetSearchByIdResponse, GetSearchesData, GetSearchesError, GetSearchesResponse, GetSearchEventsData, GetSearchEventsError, GetSearchRunResultsData, GetSearchRunResultsError, GetSearchRunResultsResponse, GetSearchRunsData, GetSearchRunsError, GetSearchRunsResponse, GetSessionStatusData, GetSessionStatusError, GetSessionStatusResponse, GetSyncContextData, PostScrapeData, PostScrapeResponse, UpdateMeData, UpdateMeError, UpdateMeResponse, UpdateSearchData, UpdateSearchError, UpdateSearchResponse, WebhookAnalyzedListingsData, WebhookContainerExitedData, WebhookNeedsLoginData, WebhookRefreshData } from '../types.gen';
 
 /**
  * Searches Marketplace and returns listings
@@ -134,6 +134,23 @@ export const updateSearchMutation = (options?: Partial<Options<UpdateSearchData>
     const mutationOptions: UseMutationOptions<UpdateSearchResponse, AxiosError<UpdateSearchError>, Options<UpdateSearchData>> = {
         mutationFn: async (fnOptions) => {
             const { data } = await updateSearch({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
+/**
+ * Manually execute a saved search, creating a run with stored results
+ */
+export const executeSearchMutation = (options?: Partial<Options<ExecuteSearchData>>): UseMutationOptions<ExecuteSearchResponse, AxiosError<ExecuteSearchError>, Options<ExecuteSearchData>> => {
+    const mutationOptions: UseMutationOptions<ExecuteSearchResponse, AxiosError<ExecuteSearchError>, Options<ExecuteSearchData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await executeSearch({
                 ...options,
                 ...fnOptions,
                 throwOnError: true

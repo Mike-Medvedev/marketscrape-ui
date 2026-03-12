@@ -308,6 +308,55 @@ export type UpdateSearchResponses = {
 
 export type UpdateSearchResponse = UpdateSearchResponses[keyof UpdateSearchResponses];
 
+export type ExecuteSearchData = {
+    body?: never;
+    path: {
+        id: string;
+    };
+    query?: never;
+    url: '/api/v1/searches/{id}/execute';
+};
+
+export type ExecuteSearchErrors = {
+    /**
+     * Not Found
+     */
+    404: {
+        success: false;
+        statusCode: number;
+        name: string;
+        message: string;
+        detail?: unknown;
+    };
+};
+
+export type ExecuteSearchError = ExecuteSearchErrors[keyof ExecuteSearchErrors];
+
+export type ExecuteSearchResponses = {
+    /**
+     * Success
+     */
+    200: {
+        success: true;
+        data: {
+            runId: string;
+            executedAt: string;
+            listings: Array<{
+                id: string;
+                url: string;
+                price: string;
+                title: string;
+                location: {
+                    [key: string]: unknown;
+                } | null;
+                primaryPhotoUri: string;
+            }>;
+        };
+    };
+};
+
+export type ExecuteSearchResponse = ExecuteSearchResponses[keyof ExecuteSearchResponses];
+
 export type GetSearchEventsData = {
     body?: never;
     path: {

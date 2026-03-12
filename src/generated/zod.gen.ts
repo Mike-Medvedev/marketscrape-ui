@@ -320,6 +320,36 @@ export const zUpdateSearchResponse = z.object({
     })
 });
 
+export const zExecuteSearchData = z.object({
+    body: z.never().optional(),
+    path: z.object({
+        id: z.uuid()
+    }),
+    query: z.never().optional()
+});
+
+/**
+ * Success
+ */
+export const zExecuteSearchResponse = z.object({
+    success: z.literal(true),
+    data: z.object({
+        runId: z.uuid(),
+        executedAt: z.union([
+            z.string(),
+            z.iso.datetime()
+        ]),
+        listings: z.array(z.object({
+            id: z.string(),
+            url: z.string(),
+            price: z.string(),
+            title: z.string(),
+            location: z.record(z.string(), z.unknown()).nullable(),
+            primaryPhotoUri: z.string()
+        }))
+    })
+});
+
 export const zGetSearchEventsData = z.object({
     body: z.never().optional(),
     path: z.object({

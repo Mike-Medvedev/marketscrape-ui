@@ -15,7 +15,7 @@ import {
   createSearchMutation,
   updateSearchMutation,
   deleteSearchMutation,
-  postScrapeMutation,
+  executeSearchMutation,
 } from "@/generated/@tanstack/react-query.gen";
 import type { Options } from "@/generated/sdk.gen";
 import type { UpdateSearchData } from "@/generated/types.gen";
@@ -90,18 +90,16 @@ export function useDeleteSearch() {
   });
 }
 
-export function useExecuteSearch(searchId?: string) {
+export function useExecuteSearch(searchId: string) {
   const queryClient = useQueryClient();
   return useMutation({
-    ...postScrapeMutation(),
+    ...executeSearchMutation(),
     onSuccess: async (data) => {
       const count = data.data.listings.length;
       toast.success({ message: `Found ${count} listing${count !== 1 ? "s" : ""}` });
-      if (searchId) {
-        await queryClient.invalidateQueries({
-          queryKey: getSearchRunsQueryKey({ path: { id: searchId } }),
-        });
-      }
+      await queryClient.invalidateQueries({
+        queryKey: getSearchRunsQueryKey({ path: { id: searchId } }),
+      });
     },
     onError: (error) => {
       notifyApiError(error, "Failed to execute search. Please try again.");
