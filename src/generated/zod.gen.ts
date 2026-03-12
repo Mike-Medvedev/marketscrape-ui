@@ -79,6 +79,7 @@ export const zGetSearchesResponse = z.object({
             'webhook'
         ]),
         notificationTarget: z.string(),
+        prompt: z.string().nullable(),
         status: z.enum([
             'running',
             'refresh',
@@ -117,7 +118,8 @@ export const zCreateSearchData = z.object({
             'sms',
             'webhook'
         ]),
-        notificationTarget: z.string().min(1)
+        notificationTarget: z.string().min(1),
+        prompt: z.string().nullish()
     }).optional(),
     path: z.never().optional(),
     query: z.never().optional()
@@ -154,6 +156,7 @@ export const zCreateSearchResponse = z.object({
             'webhook'
         ]),
         notificationTarget: z.string(),
+        prompt: z.string().nullable(),
         status: z.enum([
             'running',
             'refresh',
@@ -223,6 +226,7 @@ export const zGetSearchByIdResponse = z.object({
             'webhook'
         ]),
         notificationTarget: z.string(),
+        prompt: z.string().nullable(),
         status: z.enum([
             'running',
             'refresh',
@@ -262,6 +266,7 @@ export const zUpdateSearchData = z.object({
             'webhook'
         ]).optional(),
         notificationTarget: z.string().optional(),
+        prompt: z.string().nullish(),
         status: z.enum([
             'running',
             'refresh',
@@ -306,6 +311,7 @@ export const zUpdateSearchResponse = z.object({
             'webhook'
         ]),
         notificationTarget: z.string(),
+        prompt: z.string().nullable(),
         status: z.enum([
             'running',
             'refresh',

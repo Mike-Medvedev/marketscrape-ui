@@ -33,6 +33,7 @@ export const searchFormSchema = z.object({
   minPrice: z.string(),
   maxPrice: z.string(),
   dateListed: dateListedSchema,
+  prompt: z.string(),
   frequency: frequencySchema,
   listingsPerCheck: z.number().int().min(1).max(10),
   notificationType: notificationTypeSchema,

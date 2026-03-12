@@ -88,6 +88,7 @@ export type GetSearchesResponses = {
             listingsPerCheck: number;
             notificationType: 'email' | 'sms' | 'webhook';
             notificationTarget: string;
+            prompt: string | null;
             status: 'running' | 'refresh' | 'error' | 'needs_attention';
             lastRun: string | null;
             createdAt: string;
@@ -114,6 +115,7 @@ export type CreateSearchData = {
         listingsPerCheck?: number;
         notificationType: 'email' | 'sms' | 'webhook';
         notificationTarget: string;
+        prompt?: string | null;
     };
     path?: never;
     query?: never;
@@ -138,6 +140,7 @@ export type CreateSearchResponses = {
             listingsPerCheck: number;
             notificationType: 'email' | 'sms' | 'webhook';
             notificationTarget: string;
+            prompt: string | null;
             status: 'running' | 'refresh' | 'error' | 'needs_attention';
             lastRun: string | null;
             createdAt: string;
@@ -228,6 +231,7 @@ export type GetSearchByIdResponses = {
             listingsPerCheck: number;
             notificationType: 'email' | 'sms' | 'webhook';
             notificationTarget: string;
+            prompt: string | null;
             status: 'running' | 'refresh' | 'error' | 'needs_attention';
             lastRun: string | null;
             createdAt: string;
@@ -254,6 +258,7 @@ export type UpdateSearchData = {
         listingsPerCheck?: number;
         notificationType?: 'email' | 'sms' | 'webhook';
         notificationTarget?: string;
+        prompt?: string | null;
         status?: 'running' | 'refresh' | 'error' | 'needs_attention';
     };
     path: {
@@ -296,6 +301,7 @@ export type UpdateSearchResponses = {
             listingsPerCheck: number;
             notificationType: 'email' | 'sms' | 'webhook';
             notificationTarget: string;
+            prompt: string | null;
             status: 'running' | 'refresh' | 'error' | 'needs_attention';
             lastRun: string | null;
             createdAt: string;

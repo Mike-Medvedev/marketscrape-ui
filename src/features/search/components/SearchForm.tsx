@@ -4,6 +4,7 @@ import {
   Container,
   Button,
   TextInput,
+  Textarea,
   NumberInput,
   Select,
   Stepper,
@@ -16,7 +17,11 @@ import { InfoTooltip } from "@/theme/components/InfoTooltip/InfoTooltip";
 import { LocationAutocomplete } from "@/theme/components/LocationAutocomplete/LocationAutocomplete";
 import { useForm, type FormValidateInput } from "@mantine/form";
 import { zod4Resolver } from "mantine-form-zod-resolver";
-import { IconArrowLeft, IconArrowRight } from "@tabler/icons-react";
+import {
+  IconArrowLeft,
+  IconArrowRight,
+  IconSparkles,
+} from "@tabler/icons-react";
 import {
   searchFormSchema,
   type SearchFormValues,
@@ -49,6 +54,12 @@ const NOTIFICATION_TYPE_OPTIONS = [
   { value: "webhook", label: "Webhook" },
 ];
 
+const STEP_TITLES = [
+  "Search Criteria",
+  "AI Filter",
+  "Schedule & Alerts",
+] as const;
+
 interface SearchFormProps {
   existingSearch?: ActiveSearch;
 }
@@ -71,6 +82,7 @@ export function SearchForm({ existingSearch }: SearchFormProps) {
       minPrice: existingSearch?.minPrice != null ? String(existingSearch.minPrice) : "",
       maxPrice: existingSearch?.maxPrice != null ? String(existingSearch.maxPrice) : "",
       dateListed: existingSearch?.dateListed ?? "7d",
+      prompt: existingSearch?.prompt ?? "",
       frequency: existingSearch?.frequency ?? "every_1h",
       listingsPerCheck: existingSearch?.listingsPerCheck ?? 1,
       notificationType: existingSearch?.notificationType ?? "email",
@@ -98,10 +110,12 @@ export function SearchForm({ existingSearch }: SearchFormProps) {
 
   const handleNext = () => {
     if (step === 0) {
-      const result = form.validateField("query");
+      const queryResult = form.validateField("query");
       const locResult = form.validateField("location");
-      if (result.hasError || locResult.hasError) return;
+      if (queryResult.hasError || locResult.hasError) return;
       setStep(1);
+    } else if (step === 1) {
+      setStep(2);
     } else {
       const result = form.validate();
       if (result.hasErrors) return;
@@ -113,6 +127,7 @@ export function SearchForm({ existingSearch }: SearchFormProps) {
         minPrice: values.minPrice ? Number(values.minPrice) : undefined,
         maxPrice: values.maxPrice ? Number(values.maxPrice) : null,
         dateListed: values.dateListed,
+        prompt: values.prompt || null,
         frequency: values.frequency,
         listingsPerCheck: values.listingsPerCheck,
         notificationType: values.notificationType,
@@ -134,30 +149,32 @@ export function SearchForm({ existingSearch }: SearchFormProps) {
   };
 
   const handleBack = () => {
-    if (step === 1) {
-      setStep(0);
+    if (step > 0) {
+      setStep(step - 1);
     } else {
       navigate("/");
     }
   };
 
   const isMutating = createMutation.isPending || updateMutation.isPending;
+  const isLastStep = step === 2;
 
   return (
     <Container size="sm" className="new-search-container">
       <div className="new-search-stepper">
         <Stepper active={step} color="amber" size="sm">
           <Stepper.Step label="Search Criteria" />
+          <Stepper.Step label="AI Filter" />
           <Stepper.Step label="Schedule & Alerts" />
         </Stepper>
       </div>
 
       <Title order={1} className="new-search-title">
-        {step === 0 ? "Search Criteria" : "Schedule & Alerts"}
+        {STEP_TITLES[step]}
       </Title>
 
       <div className="new-search-form-card">
-        {step === 0 ? (
+        {step === 0 && (
           <Stack gap="lg">
             <TextInput
               label="Search Query"
@@ -208,7 +225,37 @@ export function SearchForm({ existingSearch }: SearchFormProps) {
               {...form.getInputProps("dateListed")}
             />
           </Stack>
-        ) : (
+        )}
+
+        {step === 1 && (
+          <Stack gap="lg">
+            <div>
+              <Group gap="xs" mb="xs">
+                <IconSparkles size={16} color="var(--primary)" />
+                <Text size="sm" fw={500}>
+                  AI-Powered Filtering
+                </Text>
+                <Text span size="xs" c="dimmed">
+                  (optional)
+                </Text>
+              </Group>
+              <Text size="sm" c="dimmed" mb="md">
+                Describe in plain English what you're looking for. AI will
+                filter out listings that don't match your criteria.
+              </Text>
+              <Textarea
+                placeholder='e.g., "Only show listings with original box and papers" or "Must be stainless steel, no gold plating"'
+                autosize
+                minRows={4}
+                maxRows={8}
+                key={form.key("prompt")}
+                {...form.getInputProps("prompt")}
+              />
+            </div>
+          </Stack>
+        )}
+
+        {step === 2 && (
           <Stack gap="lg">
             <Select
               label="Search Frequency"
@@ -271,11 +318,11 @@ export function SearchForm({ existingSearch }: SearchFormProps) {
         <Button
           onClick={handleNext}
           color="amber"
-          rightSection={step === 0 ? <IconArrowRight size={16} /> : undefined}
+          rightSection={!isLastStep ? <IconArrowRight size={16} /> : undefined}
           className="new-search-submit"
           loading={isMutating}
         >
-          {step === 0 ? "Next" : isEditing ? "Update Search" : "Create Search"}
+          {!isLastStep ? "Next" : isEditing ? "Update Search" : "Create Search"}
         </Button>
       </Group>
     </Container>
