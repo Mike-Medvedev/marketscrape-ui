@@ -4,8 +4,8 @@ import { type DefaultError, queryOptions, type UseMutationOptions } from '@tanst
 import type { AxiosError } from 'axios';
 
 import { client } from '../client.gen';
-import { abortSync, beginIdentitySync, createSearch, deleteSearch, getMe, getSearchById, getSearches, getSearchEvents, getSearchRunResults, getSearchRuns, getSyncContext, type Options, postScrape, updateMe, updateSearch, webhookAnalyzedListings, webhookContainerExited, webhookNeedsLogin, webhookRefresh } from '../sdk.gen';
-import type { AbortSyncData, BeginIdentitySyncData, CreateSearchData, CreateSearchResponse, DeleteSearchData, DeleteSearchError, DeleteSearchResponse, GetMeData, GetMeError, GetMeResponse, GetSearchByIdData, GetSearchByIdError, GetSearchByIdResponse, GetSearchesData, GetSearchesError, GetSearchesResponse, GetSearchEventsData, GetSearchEventsError, GetSearchRunResultsData, GetSearchRunResultsError, GetSearchRunResultsResponse, GetSearchRunsData, GetSearchRunsError, GetSearchRunsResponse, GetSyncContextData, PostScrapeData, PostScrapeResponse, UpdateMeData, UpdateMeError, UpdateMeResponse, UpdateSearchData, UpdateSearchError, UpdateSearchResponse, WebhookAnalyzedListingsData, WebhookContainerExitedData, WebhookNeedsLoginData, WebhookRefreshData } from '../types.gen';
+import { abortSync, beginIdentitySync, createSearch, deleteSearch, getMe, getSearchById, getSearches, getSearchEvents, getSearchRunResults, getSearchRuns, getSessionStatus, getSyncContext, type Options, postScrape, updateMe, updateSearch, webhookAnalyzedListings, webhookContainerExited, webhookNeedsLogin, webhookRefresh } from '../sdk.gen';
+import type { AbortSyncData, BeginIdentitySyncData, CreateSearchData, CreateSearchResponse, DeleteSearchData, DeleteSearchError, DeleteSearchResponse, GetMeData, GetMeError, GetMeResponse, GetSearchByIdData, GetSearchByIdError, GetSearchByIdResponse, GetSearchesData, GetSearchesError, GetSearchesResponse, GetSearchEventsData, GetSearchEventsError, GetSearchRunResultsData, GetSearchRunResultsError, GetSearchRunResultsResponse, GetSearchRunsData, GetSearchRunsError, GetSearchRunsResponse, GetSessionStatusData, GetSyncContextData, PostScrapeData, PostScrapeResponse, UpdateMeData, UpdateMeError, UpdateMeResponse, UpdateSearchData, UpdateSearchError, UpdateSearchResponse, WebhookAnalyzedListingsData, WebhookContainerExitedData, WebhookNeedsLoginData, WebhookRefreshData } from '../types.gen';
 
 /**
  * Searches Marketplace and returns listings
@@ -353,3 +353,21 @@ export const abortSyncMutation = (options?: Partial<Options<AbortSyncData>>): Us
     };
     return mutationOptions;
 };
+
+export const getSessionStatusQueryKey = (options?: Options<GetSessionStatusData>) => createQueryKey('getSessionStatus', options);
+
+/**
+ * Check whether the stored Facebook session is still valid
+ */
+export const getSessionStatusOptions = (options?: Options<GetSessionStatusData>) => queryOptions<unknown, AxiosError<DefaultError>, unknown, ReturnType<typeof getSessionStatusQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await getSessionStatus({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getSessionStatusQueryKey(options)
+});

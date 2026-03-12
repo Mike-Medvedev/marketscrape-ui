@@ -566,3 +566,10 @@ export type AbortSyncData = {
     query?: never;
     url: '/api/v1/sync/abort';
 };
+
+export type GetSessionStatusData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/v1/session/status';
+};

@@ -473,3 +473,9 @@ export const zAbortSyncData = z.object({
     path: z.never().optional(),
     query: z.never().optional()
 });
+
+export const zGetSessionStatusData = z.object({
+    body: z.never().optional(),
+    path: z.never().optional(),
+    query: z.never().optional()
+});
