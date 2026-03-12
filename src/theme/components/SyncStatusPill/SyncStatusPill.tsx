@@ -1,38 +1,47 @@
 import { Tooltip } from '@mantine/core'
+import type { SessionValidity } from '@/features/search/search.types'
 import './SyncStatusPill.css'
 
 interface SyncStatusPillProps {
-  status: 'healthy' | 'attention'
-  disabled?: boolean
+  status: SessionValidity
+  isFetching: boolean
   onClick: () => void
+  onHover: () => void
 }
 
 const config = {
-  healthy: {
-    label: 'Sync Healthy',
-    dotClass: 'sync-pill-dot--healthy',
-    tooltip: 'Session is synced',
+  valid: {
+    label: 'Session Valid',
+    dotClass: 'sync-pill-dot--valid',
+    tooltip: 'Facebook session is active',
   },
-  attention: {
-    label: 'Action Required',
-    dotClass: 'sync-pill-dot--attention',
-    tooltip: 'Click to sync your session',
+  invalid: {
+    label: 'Session Invalid',
+    dotClass: 'sync-pill-dot--invalid',
+    tooltip: 'Facebook session expired or missing',
+  },
+  unknown: {
+    label: 'Checking...',
+    dotClass: 'sync-pill-dot--unknown',
+    tooltip: 'Checking session status',
   },
 } as const
 
-export function SyncStatusPill({ status, disabled, onClick }: SyncStatusPillProps) {
-  const { label, dotClass, tooltip } = config[status]
+export function SyncStatusPill({ status, isFetching, onClick, onHover }: SyncStatusPillProps) {
+  const displayStatus = isFetching ? 'unknown' : status
+  const { label, dotClass, tooltip } = config[displayStatus]
 
   return (
     <Tooltip label={tooltip} withArrow>
       <button
         type="button"
-        className="sync-pill"
-        disabled={disabled}
+        className={`sync-pill ${isFetching ? 'sync-pill--fetching' : ''}`}
+        disabled={isFetching}
         onClick={onClick}
+        onMouseEnter={onHover}
       >
         <div className={`sync-pill-dot ${dotClass}`} />
-        <span className="sync-pill-label">{label}</span>
+        <span className="sync-pill-label">{isFetching ? 'Checking...' : label}</span>
       </button>
     </Tooltip>
   )

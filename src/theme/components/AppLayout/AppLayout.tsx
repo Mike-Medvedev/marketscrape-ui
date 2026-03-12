@@ -1,6 +1,5 @@
 import { type ReactNode, useState, useCallback } from 'react'
 import { useNavigate } from 'react-router'
-import { useQuery } from '@tanstack/react-query'
 import { AppShell, Avatar, Menu } from '@mantine/core'
 import {
   IconSearch,
@@ -10,13 +9,10 @@ import {
   IconSettings,
   IconUser,
 } from '@tabler/icons-react'
-import { getSearchesOptions } from '@/generated/@tanstack/react-query.gen'
 import { IdentityAbsorber } from '@/features/search/components/IdentityAbsorber/IdentityAbsorber'
 import { SyncStatusPill } from '@/theme/components/SyncStatusPill/SyncStatusPill'
-import {
-  requestIdentitySync,
-  useIdentitySyncListener,
-} from '@/utils/identity-sync.utils'
+import { useIdentitySyncListener } from '@/utils/identity-sync.utils'
+import { useSessionStatus } from '@/features/search/hooks/session.hook'
 import { useAuth, useMe } from '@/features/auth/hooks/auth.hook'
 import './AppLayout.css'
 
@@ -43,10 +39,7 @@ export function AppLayout({ children }: AppLayoutProps) {
   const { data: meResponse } = useMe()
   const me = meResponse?.data
 
-  const { data: searchesResponse } = useQuery({ ...getSearchesOptions() })
-  const syncStatus = searchesResponse?.data.some((s) => s.status === 'needs_attention')
-    ? 'attention' as const
-    : 'healthy' as const
+  const { status: sessionStatus, isFetching, refetch } = useSessionStatus()
 
   const [showSyncModal, setShowSyncModal] = useState(false)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
@@ -56,6 +49,10 @@ export function AppLayout({ children }: AppLayoutProps) {
   }, [])
 
   useIdentitySyncListener(handleSyncRequested)
+
+  const handleSessionCheck = useCallback(() => {
+    refetch()
+  }, [refetch])
 
   const handleLogout = useCallback(async () => {
     await logout()
@@ -88,9 +85,10 @@ export function AppLayout({ children }: AppLayoutProps) {
 
           <div className="app-header-actions">
             <SyncStatusPill
-              status={syncStatus}
-              disabled={showSyncModal}
-              onClick={requestIdentitySync}
+              status={sessionStatus}
+              isFetching={isFetching}
+              onClick={handleSessionCheck}
+              onHover={handleSessionCheck}
             />
 
             <Menu shadow="md" width={200} position="bottom-end">
@@ -142,9 +140,10 @@ export function AppLayout({ children }: AppLayoutProps) {
           <div className="app-mobile-menu">
             <div className="app-mobile-sync">
               <SyncStatusPill
-                status={syncStatus}
-                disabled={showSyncModal}
-                onClick={() => { requestIdentitySync(); closeMobileMenu() }}
+                status={sessionStatus}
+                isFetching={isFetching}
+                onClick={() => { handleSessionCheck(); closeMobileMenu() }}
+                onHover={handleSessionCheck}
               />
             </div>
 

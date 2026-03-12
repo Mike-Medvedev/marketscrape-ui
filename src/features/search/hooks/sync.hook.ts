@@ -1,6 +1,9 @@
 import { useState, useRef, useCallback, useEffect } from "react";
-import { useQueryClient } from "@tanstack/react-query";
-import { getSearchesQueryKey } from "@/generated/@tanstack/react-query.gen";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import {
+  getSearchesQueryKey,
+  abortSyncMutation,
+} from "@/generated/@tanstack/react-query.gen";
 import { settings } from "@/settings";
 import { supabase } from "@/infra/supabase.client";
 import { toast } from "@/utils/toast.utils";
@@ -154,6 +157,19 @@ export function useIdentitySync({ onDismiss }: UseIdentitySyncOptions = {}) {
     };
   }, [closeEventSource, reset, appendLog, queryClient]);
 
+  const abortMutation = useMutation({ ...abortSyncMutation() });
+
+  const abort = useCallback(async () => {
+    closeEventSource();
+    try {
+      await abortMutation.mutateAsync({});
+    } catch {
+      // Best-effort — container may already be gone
+    }
+    reset();
+    onDismissRef.current?.();
+  }, [closeEventSource, reset, abortMutation]);
+
   const retry = useCallback(() => {
     startSync();
   }, [startSync]);
@@ -185,8 +201,10 @@ export function useIdentitySync({ onDismiss }: UseIdentitySyncOptions = {}) {
     logs,
     isSyncing,
     isTerminal,
+    isAborting: abortMutation.isPending,
     startSync,
     retry,
     reset,
+    abort,
   };
 }

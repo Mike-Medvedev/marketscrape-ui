@@ -16,7 +16,10 @@ export async function signup(email: string, password: string) {
 }
 
 export async function signInWithOAuth(provider: Provider) {
-  const { error } = await supabase.auth.signInWithOAuth({ provider })
+  const { error } = await supabase.auth.signInWithOAuth({
+    provider,
+    options: { redirectTo: window.location.origin },
+  })
   if (error) throw error
 }
 

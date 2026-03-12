@@ -1,11 +1,11 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import {
   IconX,
   IconCircleCheck,
   IconAlertTriangle,
   IconAlertCircle,
 } from "@tabler/icons-react";
-import { Modal, ActionIcon, Button } from "@mantine/core";
+import { Modal, ActionIcon, Button, Text } from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
 import { VncScreen } from "react-vnc";
 import { useIdentitySync } from "@/features/search/hooks/sync.hook";
@@ -18,15 +18,19 @@ interface IdentityAbsorberProps {
 
 export function IdentityAbsorber({ isOpen, onClose }: IdentityAbsorberProps) {
   const isMobile = useMediaQuery("(max-width: 640px)");
+  const [showAbortConfirm, setShowAbortConfirm] = useState(false);
   const {
     syncState,
     vncUrl,
     errorMessage,
     logs,
+    isSyncing,
     isTerminal,
+    isAborting,
     startSync,
     retry,
     reset,
+    abort,
   } = useIdentitySync({ onDismiss: onClose });
 
   useEffect(() => {
@@ -40,6 +44,19 @@ export function IdentityAbsorber({ isOpen, onClose }: IdentityAbsorberProps) {
     onClose();
   };
 
+  const handleCloseClick = () => {
+    if (isSyncing) {
+      setShowAbortConfirm(true);
+    } else {
+      handleClose();
+    }
+  };
+
+  const handleAbortConfirm = async () => {
+    setShowAbortConfirm(false);
+    await abort();
+  };
+
   const shimmerClass =
     syncState === "success"
       ? "identity-shimmer identity-shimmer--success"
@@ -50,56 +67,97 @@ export function IdentityAbsorber({ isOpen, onClose }: IdentityAbsorberProps) {
           : "identity-shimmer";
 
   return (
-    <Modal
-      opened={isOpen}
-      onClose={handleClose}
-      size="xl"
-      withCloseButton={false}
-      centered
-      fullScreen={isMobile ?? false}
-      classNames={{
-        content: "identity-modal-content",
-        body: "identity-modal-body",
-      }}
-      closeOnClickOutside={isTerminal}
-    >
-      <div className={shimmerClass} />
+    <>
+      <Modal
+        opened={isOpen}
+        onClose={handleCloseClick}
+        size="xl"
+        withCloseButton={false}
+        centered
+        fullScreen={isMobile ?? false}
+        classNames={{
+          content: "identity-modal-content",
+          body: "identity-modal-body",
+        }}
+        closeOnClickOutside={isTerminal}
+        closeOnEscape={isTerminal}
+      >
+        <div className={shimmerClass} />
 
-      <div className="identity-header">
-        <h2 className="identity-title">Identity Sync</h2>
-        <ActionIcon
-          variant="subtle"
-          color="gray"
-          onClick={handleClose}
-          disabled={!isTerminal}
-          className="identity-close-btn"
-        >
-          <IconX size={16} />
-        </ActionIcon>
-      </div>
-
-      <div className="identity-content">
-        <div className="identity-browser">
-          <BrowserPanel
-            syncState={syncState}
-            vncUrl={vncUrl}
-            errorMessage={errorMessage}
-            onRetry={retry}
-          />
+        <div className="identity-header">
+          <h2 className="identity-title">Identity Sync</h2>
+          <ActionIcon
+            variant="subtle"
+            color={isSyncing ? "red" : "gray"}
+            onClick={handleCloseClick}
+            className={`identity-close-btn ${isSyncing ? "identity-close-btn--abort" : ""}`}
+          >
+            <IconX size={16} />
+          </ActionIcon>
         </div>
 
-        <div className="identity-logs">
-          <div className="identity-logs-inner">
-            {logs.map((log, index) => (
-              <div key={index} className="identity-log-line">
-                <span className="identity-log-prompt">&rsaquo;</span>
-                {log}
-              </div>
-            ))}
+        <div className="identity-content">
+          <div className="identity-browser">
+            <BrowserPanel
+              syncState={syncState}
+              vncUrl={vncUrl}
+              errorMessage={errorMessage}
+              onRetry={retry}
+            />
+          </div>
+
+          <div className="identity-logs">
+            <div className="identity-logs-inner">
+              {logs.map((log, index) => (
+                <div key={index} className="identity-log-line">
+                  <span className="identity-log-prompt">&rsaquo;</span>
+                  {log}
+                </div>
+              ))}
+            </div>
           </div>
         </div>
-      </div>
-    </Modal>
+      </Modal>
+
+      <Modal
+        opened={showAbortConfirm}
+        onClose={() => setShowAbortConfirm(false)}
+        centered
+        size="sm"
+        withCloseButton={false}
+        classNames={{
+          content: "identity-abort-modal-content",
+          body: "identity-abort-modal-body",
+        }}
+      >
+        <div className="identity-abort-content">
+          <div className="identity-abort-icon">
+            <IconAlertTriangle size={28} color="var(--status-error)" />
+          </div>
+          <h3 className="identity-abort-title">Abort Sync?</h3>
+          <Text size="sm" c="dimmed" className="identity-abort-desc">
+            Your Facebook session must be synced for Marketplace searches to
+            work. Aborting will cancel the current sync.
+          </Text>
+          <div className="identity-abort-actions">
+            <Button
+              variant="subtle"
+              color="gray"
+              onClick={() => setShowAbortConfirm(false)}
+            >
+              Cancel
+            </Button>
+            <Button
+              color="red"
+              onClick={handleAbortConfirm}
+              loading={isAborting}
+            >
+              Abort Sync
+            </Button>
+          </div>
+        </div>
+      </Modal>
+    </>
   );
 }
 
