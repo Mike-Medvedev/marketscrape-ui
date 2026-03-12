@@ -1,4 +1,3 @@
-import { createElement } from "react";
 import type { AxiosError } from "axios";
 import { toast } from "@/utils/toast.utils";
 import { requestIdentitySync } from "@/utils/identity-sync.utils";
@@ -103,24 +102,6 @@ function extractErrorMessage(error: unknown): string | null {
   return null;
 }
 
-function buildToastMessage(text: string, action?: ErrorAction) {
-  if (!action) return text;
-
-  return createElement(
-    "div",
-    { className: "api-error-toast" },
-    createElement("span", null, text),
-    createElement(
-      "button",
-      {
-        className: "api-error-toast-action",
-        onClick: action.onClick,
-      },
-      action.label,
-    ),
-  );
-}
-
 export function getApiErrorMessage(error: unknown, fallback?: string): string {
   const apiError = parseApiErrorBody(error);
   if (apiError) {
@@ -138,10 +119,10 @@ export function notifyApiError(error: unknown, fallback?: string) {
 
   if (apiError) {
     const entry = resolveEntry(apiError.name, apiError.message);
-    const message = buildToastMessage(entry.message, entry.action);
     toast[entry.severity]({
       title: entry.title,
-      message,
+      message: entry.message,
+      action: entry.action,
       autoClose: entry.action ? 8000 : undefined,
     });
     return;
