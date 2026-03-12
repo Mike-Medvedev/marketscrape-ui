@@ -148,12 +148,12 @@ export function SearchForm({ existingSearch }: SearchFormProps) {
       <div className="new-search-stepper">
         <Stepper active={step} color="amber" size="sm">
           <Stepper.Step label="Search Criteria" />
-          <Stepper.Step label="Monitoring" />
+          <Stepper.Step label="Schedule & Alerts" />
         </Stepper>
       </div>
 
       <Title order={1} className="new-search-title">
-        {step === 0 ? "Search Criteria" : "Monitoring Settings"}
+        {step === 0 ? "Search Criteria" : "Schedule & Alerts"}
       </Title>
 
       <div className="new-search-form-card">
