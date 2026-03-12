@@ -1,10 +1,9 @@
 import { useNavigate } from 'react-router'
-import { Button, Text, Title } from '@mantine/core'
-import { IconSearch, IconRefresh } from '@tabler/icons-react'
+import { Text, Title } from '@mantine/core'
+import { IconSearch } from '@tabler/icons-react'
 import { SearchCard } from '@/features/search/components/SearchCard/SearchCard'
 import { NewSearchButton } from '@/features/search/components/NewSearchButton/NewSearchButton'
 import { useSearches, useDeleteSearch } from '@/features/search/hooks/search.hook'
-import { requestIdentitySync } from '@/utils/identity-sync.utils'
 
 export function SearchesList() {
   const navigate = useNavigate()
@@ -29,15 +28,6 @@ export function SearchesList() {
       {searches.length > 0 ? (
         <>
           <div className="dashboard-header">
-            <Button
-              variant="outline"
-              color="gray"
-              leftSection={<IconRefresh size={16} />}
-              onClick={requestIdentitySync}
-              className="dashboard-sync-btn"
-            >
-              Sync Session
-            </Button>
             <NewSearchButton onClick={() => navigate('/new')}>
               New Search
             </NewSearchButton>
@@ -65,21 +55,9 @@ export function SearchesList() {
           <Text size="sm" c="dimmed" className="dashboard-empty-text">
             Create your first search to start monitoring
           </Text>
-          <div className="dashboard-empty-actions">
-            <NewSearchButton onClick={() => navigate('/new')} size="large">
-              Create Search
-            </NewSearchButton>
-            <Button
-              variant="outline"
-              color="gray"
-              size="lg"
-              leftSection={<IconRefresh size={20} />}
-              onClick={requestIdentitySync}
-              className="dashboard-sync-btn"
-            >
-              Sync Session
-            </Button>
-          </div>
+          <NewSearchButton onClick={() => navigate('/new')} size="large">
+            Create Search
+          </NewSearchButton>
         </div>
       )}
     </>

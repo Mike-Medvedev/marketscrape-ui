@@ -48,22 +48,6 @@
   margin-bottom: 1.5rem;
 }
 
-.dashboard-empty-actions {
-  display: flex;
-  gap: 0.75rem;
-  align-items: center;
-}
-
-.dashboard-sync-btn {
-  border-color: var(--border);
-  color: var(--muted-foreground);
-}
-
-.dashboard-sync-btn:hover {
-  border-color: var(--foreground);
-  color: var(--foreground);
-}
-
 @media (max-width: 640px) {
   .dashboard-container {
     padding-top: 1rem;

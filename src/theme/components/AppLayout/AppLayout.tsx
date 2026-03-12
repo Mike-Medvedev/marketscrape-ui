@@ -50,7 +50,7 @@ export function AppLayout({ children }: AppLayoutProps) {
 
   useIdentitySyncListener(handleSyncRequested)
 
-  const handleSessionCheck = useCallback(() => {
+  const handleRecheck = useCallback(() => {
     refetch()
   }, [refetch])
 
@@ -87,8 +87,8 @@ export function AppLayout({ children }: AppLayoutProps) {
             <SyncStatusPill
               status={sessionStatus}
               isFetching={isFetching}
-              onClick={handleSessionCheck}
-              onHover={handleSessionCheck}
+              onRecheck={handleRecheck}
+              onSyncRequest={handleSyncRequested}
             />
 
             <Menu shadow="md" width={200} position="bottom-end">
@@ -142,8 +142,8 @@ export function AppLayout({ children }: AppLayoutProps) {
               <SyncStatusPill
                 status={sessionStatus}
                 isFetching={isFetching}
-                onClick={() => { handleSessionCheck(); closeMobileMenu() }}
-                onHover={handleSessionCheck}
+                onRecheck={() => { handleRecheck(); closeMobileMenu() }}
+                onSyncRequest={() => { handleSyncRequested(); closeMobileMenu() }}
               />
             </div>
 
