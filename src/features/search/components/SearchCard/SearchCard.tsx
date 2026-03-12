@@ -6,7 +6,7 @@ import {
   IconCalendarEvent,
   IconCalendarOff,
 } from "@tabler/icons-react";
-import { ActionIcon, Tooltip } from "@mantine/core";
+import { ActionIcon, Loader, Tooltip } from "@mantine/core";
 import type { ActiveSearch } from "@/features/search/search.types";
 import { relativeTime } from "@/utils/date.utils";
 import './SearchCard.css'
@@ -16,6 +16,7 @@ interface SearchCardProps {
   onDelete: (id: string) => void;
   onEdit: (id: string) => void;
   onViewResults: (id: string) => void;
+  isDeleting?: boolean;
 }
 
 const FREQUENCY_LABELS: Record<ActiveSearch["frequency"], string> = {
@@ -26,7 +27,7 @@ const FREQUENCY_LABELS: Record<ActiveSearch["frequency"], string> = {
   every_24h: "Every 24 hours",
 };
 
-export function SearchCard({ search, onDelete, onEdit, onViewResults }: SearchCardProps) {
+export function SearchCard({ search, onDelete, onEdit, onViewResults, isDeleting }: SearchCardProps) {
   const dateLabel =
     search.dateListed === "24h"
       ? "Last 24h"
@@ -82,8 +83,9 @@ export function SearchCard({ search, onDelete, onEdit, onViewResults }: SearchCa
               color="gray"
               onClick={() => onDelete(search.id)}
               className="action-icon-delete"
+              disabled={isDeleting}
             >
-              <IconTrash size={16} />
+              {isDeleting ? <Loader size={14} color="gray" /> : <IconTrash size={16} />}
             </ActionIcon>
           </Tooltip>
         </div>

@@ -11,6 +11,10 @@ export function SearchesList() {
   const searches = response.data
   const deleteMutation = useDeleteSearch()
 
+  const deletingId = deleteMutation.isPending
+    ? (deleteMutation.variables?.path?.id ?? null)
+    : null
+
   const handleDelete = (id: string) => {
     deleteMutation.mutate({ path: { id } })
   }
@@ -40,6 +44,7 @@ export function SearchesList() {
                 onDelete={handleDelete}
                 onEdit={handleEdit}
                 onViewResults={handleViewResults}
+                isDeleting={deletingId === search.id}
               />
             ))}
           </div>

@@ -89,9 +89,19 @@ export function ResultsContent() {
               <Text size="sm" c="dimmed" className="results-empty-text">
                 Execute a search manually or wait for the next scheduled run
               </Text>
-              <button className="results-execute-button" onClick={handleExecute}>
-                <IconPlayerPlay size={16} />
-                <span>Execute Search</span>
+              <button
+                className="results-execute-button"
+                onClick={handleExecute}
+                disabled={executeMutation.isPending}
+              >
+                {executeMutation.isPending ? (
+                  <Loader size={16} color="dark" />
+                ) : (
+                  <IconPlayerPlay size={16} />
+                )}
+                <span>
+                  {executeMutation.isPending ? 'Searching...' : 'Execute Search'}
+                </span>
               </button>
             </div>
           ) : (
