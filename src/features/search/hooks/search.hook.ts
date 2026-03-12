@@ -46,6 +46,7 @@ export function useCreateSearch() {
   return useMutation({
     ...createSearchMutation(),
     onSuccess: async (data) => {
+      queryClient.removeQueries({ queryKey: getSearchesQueryKey() });
       await queryClient.invalidateQueries({ queryKey: getSearchesQueryKey() });
       toast.success({ message: `Search for "${data.data.query}" created` });
     },
@@ -60,6 +61,7 @@ export function useUpdateSearch() {
   return useMutation({
     ...updateSearchMutation(),
     onSuccess: async (data, variables: Options<UpdateSearchData>) => {
+      queryClient.removeQueries({ queryKey: getSearchesQueryKey() });
       await Promise.all([
         queryClient.invalidateQueries({ queryKey: getSearchesQueryKey() }),
         queryClient.invalidateQueries({

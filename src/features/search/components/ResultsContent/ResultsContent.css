@@ -89,7 +89,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 8rem 0;
+  padding: 6rem 2rem;
 }
 
 .results-empty-icon {

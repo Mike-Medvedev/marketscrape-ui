@@ -75,36 +75,36 @@ export function ResultsContent() {
         </button>
       </div>
 
-      {runs.length === 0 && !executeMutation.isPending ? (
-        <div className="results-empty">
-          <div className="results-empty-icon">
-            <IconSearch size={32} color="var(--muted-foreground)" />
-          </div>
-          <Title order={3} className="results-empty-title">
-            No runs yet
-          </Title>
-          <Text size="sm" c="dimmed" className="results-empty-text">
-            Execute a search manually or wait for the next scheduled run
-          </Text>
-          <button className="results-execute-button" onClick={handleExecute}>
-            <IconPlayerPlay size={16} />
-            <span>Execute Search</span>
-          </button>
-        </div>
-      ) : (
-        <div className="results-body">
-          <aside className="results-sidebar">
-            <RunList
-              runs={runs}
-              selectedRunId={currentSelectedRunId}
-              onSelect={setSelectedRunId}
-            />
-          </aside>
-          <main className="results-main">
+      <div className="results-body">
+        <aside className="results-sidebar">
+          <RunList
+            runs={runs}
+            selectedRunId={currentSelectedRunId}
+            onSelect={setSelectedRunId}
+          />
+        </aside>
+        <main className="results-main">
+          {runs.length === 0 && !executeMutation.isPending ? (
+            <div className="results-empty">
+              <div className="results-empty-icon">
+                <IconSearch size={32} color="var(--muted-foreground)" />
+              </div>
+              <Title order={3} className="results-empty-title">
+                No runs yet
+              </Title>
+              <Text size="sm" c="dimmed" className="results-empty-text">
+                Execute a search manually or wait for the next scheduled run
+              </Text>
+              <button className="results-execute-button" onClick={handleExecute}>
+                <IconPlayerPlay size={16} />
+                <span>Execute Search</span>
+              </button>
+            </div>
+          ) : (
             <RunListings searchId={id!} runId={currentSelectedRunId} />
-          </main>
-        </div>
-      )}
+          )}
+        </main>
+      </div>
     </Container>
   )
 }
