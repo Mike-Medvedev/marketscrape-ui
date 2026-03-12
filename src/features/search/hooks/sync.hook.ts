@@ -2,6 +2,7 @@ import { useState, useRef, useCallback, useEffect } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import {
   getSearchesQueryKey,
+  getSessionStatusQueryKey,
   abortSyncMutation,
 } from "@/generated/@tanstack/react-query.gen";
 import { settings } from "@/settings";
@@ -89,6 +90,7 @@ export function useIdentitySync({ onDismiss }: UseIdentitySyncOptions = {}) {
       const data = parsed.data;
       switch (data.status) {
         case "already_synced":
+          queryClient.invalidateQueries({ queryKey: getSessionStatusQueryKey() });
           toast.success({ message: "Session is already valid" });
           closeEventSource();
           reset();
@@ -117,6 +119,7 @@ export function useIdentitySync({ onDismiss }: UseIdentitySyncOptions = {}) {
           closeEventSource();
           appendLog("Identity absorbed ✓");
           queryClient.invalidateQueries({ queryKey: getSearchesQueryKey() });
+          queryClient.invalidateQueries({ queryKey: getSessionStatusQueryKey() });
           toast.success({ message: "Facebook session synced successfully" });
 
           dismissTimerRef.current = setTimeout(() => {
