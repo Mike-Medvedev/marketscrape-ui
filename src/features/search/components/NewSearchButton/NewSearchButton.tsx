@@ -1,4 +1,4 @@
-import { IconSparkles } from '@tabler/icons-react'
+import { IconPlus } from '@tabler/icons-react'
 import { Button } from '@mantine/core'
 import type { ReactNode } from 'react'
 import './NewSearchButton.css'
@@ -15,7 +15,7 @@ export function NewSearchButton({ onClick, children, size = 'default' }: NewSear
       onClick={onClick}
       color="amber"
       size={size === 'large' ? 'lg' : 'md'}
-      leftSection={<IconSparkles size={size === 'large' ? 20 : 16} className="new-search-btn-icon" />}
+      leftSection={<IconPlus size={size === 'large' ? 20 : 16} className="new-search-btn-icon" />}
       className="new-search-btn"
     >
       <span className="new-search-btn-gradient" />

@@ -6,8 +6,8 @@ export function FacebookAuthPage() {
   return (
     <Container size="md" className="fb-auth-container">
       <div className="fb-auth-heading">
-        <Title order={1} className="fb-auth-title">Facebook Authentication</Title>
-        <Text c="dimmed">Log in to Facebook to enable automated searches</Text>
+        <Title order={1} className="fb-auth-title">Marketplace Authentication</Title>
+        <Text c="dimmed">Log in to your marketplace account to enable automated searches</Text>
       </div>
 
       <div className="fb-auth-card">

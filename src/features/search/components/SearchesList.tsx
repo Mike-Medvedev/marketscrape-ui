@@ -32,6 +32,14 @@ export function SearchesList() {
       {searches.length > 0 ? (
         <>
           <div className="dashboard-header">
+            <div className="dashboard-header-info">
+              <Title order={1} className="dashboard-title">
+                Searches
+              </Title>
+              <Text size="sm" c="dimmed" className="dashboard-subtitle">
+                Monitor marketplace listings and get notified when new matches appear.
+              </Text>
+            </div>
             <NewSearchButton onClick={() => navigate('/new')}>
               New Search
             </NewSearchButton>

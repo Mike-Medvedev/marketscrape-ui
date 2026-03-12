@@ -2,16 +2,16 @@ import { createTheme } from '@mantine/core'
 import type { MantineColorsTuple } from '@mantine/core'
 
 const amber: MantineColorsTuple = [
-  '#fefce8',
-  '#fef9c3',
-  '#fef08a',
-  '#fde047',
+  '#fffbeb',
+  '#fef3c7',
+  '#fde68a',
   '#facc15',
-  '#f5c000',
-  '#e0b000',
-  '#c89e00',
-  '#a68300',
-  '#856a00',
+  '#eab308',
+  '#ca8a04',
+  '#a16207',
+  '#854d0e',
+  '#713f12',
+  '#422006',
 ]
 
 export const theme = createTheme({

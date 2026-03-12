@@ -83,7 +83,7 @@ export function AppLayout({ children }: AppLayoutProps) {
             <div className="app-logo-icon">
               <IconSearch size={20} />
             </div>
-            <span className="app-logo-text">marketscrape</span>
+            <span className="app-logo-text">MarketScrape</span>
           </button>
 
           <div className="app-header-actions">

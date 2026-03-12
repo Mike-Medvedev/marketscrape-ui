@@ -57,16 +57,14 @@ export function SearchCard({ search, onDelete, onEdit, onViewResults, isDeleting
           </p>
         </div>
         <div className="search-card-actions">
-          <Tooltip label="View listings" withArrow>
-            <ActionIcon
-              variant="subtle"
-              color="gray"
-              onClick={() => onViewResults(search.id)}
-              className="action-icon-results"
-            >
-              <IconListSearch size={16} />
-            </ActionIcon>
-          </Tooltip>
+          <button
+            type="button"
+            className="search-card-cta"
+            onClick={() => onViewResults(search.id)}
+          >
+            <IconListSearch size={14} />
+            <span>View runs</span>
+          </button>
           <Tooltip label="Edit search" withArrow>
             <ActionIcon
               variant="subtle"

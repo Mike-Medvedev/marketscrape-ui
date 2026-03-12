@@ -32,13 +32,13 @@
 .app-logo-icon {
   width: 2rem;
   height: 2rem;
-  background: var(--primary);
-  border-radius: var(--mantine-radius-sm);
+  background: radial-gradient(circle at 30% 0%, #fef9c3, #facc15 55%, #b45309 100%);
+  border-radius: 9999px;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--primary-foreground);
-  box-shadow: 0 0 12px rgba(250, 204, 21, 0.3);
+  color: var(--background);
+  box-shadow: 0 0 18px rgba(250, 204, 21, 0.4);
   transition: box-shadow 0.2s;
 }
 
@@ -47,10 +47,10 @@
 }
 
 .app-logo-text {
-  font-size: 1.25rem;
+  font-size: 1.3rem;
+  font-weight: 600;
   color: var(--foreground);
-  font-family: var(--mantine-font-family-monospace);
-  letter-spacing: -0.025em;
+  letter-spacing: -0.04em;
 }
 
 .app-header-actions {

@@ -139,8 +139,8 @@ export function IdentityAbsorber({ isOpen, onClose }: IdentityAbsorberProps) {
           </div>
           <h3 className="identity-abort-title">Abort Sync?</h3>
           <Text size="sm" c="dimmed" className="identity-abort-desc">
-            Your Facebook session must be synced for Marketplace searches to
-            work. Aborting will cancel the current sync.
+            Your marketplace session must be synced for searches to work.
+            Aborting will cancel the current sync.
           </Text>
           <div className="identity-abort-actions">
             <Button

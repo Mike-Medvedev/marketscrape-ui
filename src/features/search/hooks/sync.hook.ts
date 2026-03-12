@@ -111,16 +111,16 @@ export function useIdentitySync({ onDismiss }: UseIdentitySyncOptions = {}) {
           setVncUrl(data.novncUrl);
           setSyncState("vnc");
           appendLog("Manual login required");
-          appendLog("Please log into Facebook in the window below");
+          appendLog("Please log into the marketplace in the window below");
           break;
 
         case "synced":
           setSyncState("success");
           closeEventSource();
-          appendLog("Identity absorbed ✓");
+          appendLog("Session absorbed ✓");
           queryClient.invalidateQueries({ queryKey: getSearchesQueryKey() });
           queryClient.invalidateQueries({ queryKey: getSessionStatusQueryKey() });
-          toast.success({ message: "Facebook session synced successfully" });
+          toast.success({ message: "Session synced successfully" });
 
           dismissTimerRef.current = setTimeout(() => {
             reset();

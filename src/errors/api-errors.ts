@@ -25,7 +25,7 @@ const errorCodeRegistry: Record<string, ErrorEntry> = {
   FacebookSessionExpiredError: {
     title: "Session Expired",
     message:
-      "Your Facebook session has expired. Please re-authenticate to continue.",
+      "Your marketplace session has expired. Please re-authenticate to continue.",
     severity: "warning",
     action: {
       label: "Sync Now",
@@ -56,7 +56,7 @@ const errorCodeRegistry: Record<string, ErrorEntry> = {
   FacebookRateLimitedError: {
     title: "Rate Limited",
     message:
-      "Facebook is temporarily blocking requests. Please wait a few minutes before trying again.",
+      "The marketplace is temporarily blocking requests. Please wait a few minutes before trying again.",
     severity: "warning",
   },
 };

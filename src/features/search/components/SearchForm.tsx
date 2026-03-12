@@ -221,7 +221,7 @@ export function SearchForm({ existingSearch }: SearchFormProps) {
               label={
                 <span>
                   Pages to Fetch
-                  <InfoTooltip label="Number of pages to retrieve from Facebook Marketplace. Each page contains up to 24 listings. Max 10 pages (240 listings)." />
+                  <InfoTooltip label="Number of pages to retrieve from the marketplace. Each page contains up to 24 listings. Max 10 pages (240 listings)." />
                 </span>
               }
               min={1}

@@ -13,7 +13,7 @@ const config = {
   valid: {
     label: 'Session Active',
     dotClass: 'sync-pill-dot--valid',
-    tooltip: 'Facebook session is active — click to recheck',
+    tooltip: 'Session is active — click to recheck',
   },
   invalid: {
     label: 'Sync Required',
