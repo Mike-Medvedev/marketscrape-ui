@@ -73,6 +73,12 @@ export function useIdentitySync({ onDismiss }: UseIdentitySyncOptions = {}) {
     evtSource.onmessage = (event) => {
       const parsed = syncSSEEventSchema.safeParse(JSON.parse(event.data));
       if (!parsed.success) {
+        console.error(
+          "SSE parse error:",
+          parsed.error.issues,
+          "data:",
+          event.data,
+        );
         appendLog("Received unknown event");
         return;
       }
