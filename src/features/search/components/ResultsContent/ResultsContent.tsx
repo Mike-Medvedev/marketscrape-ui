@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { useParams } from 'react-router'
 import { Container, Loader, Text, Title } from '@mantine/core'
 import { IconPlayerPlay, IconSearch } from '@tabler/icons-react'
@@ -35,11 +35,10 @@ function ResultsContentInner({ searchId }: ResultsContentInnerProps) {
 
   const [selectedRunId, setSelectedRunId] = useState<string | null>(null)
 
-  useEffect(() => {
-    if (runs.length > 0 && !selectedRunId) {
-      setSelectedRunId(runs[0].id)
-    }
-  }, [runs, selectedRunId])
+  const currentSelectedRunId =
+    selectedRunId && runs.some((run) => run.id === selectedRunId)
+      ? selectedRunId
+      : runs[0]?.id ?? null
 
   const handleExecute = () => {
     executeMutation.mutate({
@@ -113,12 +112,12 @@ function ResultsContentInner({ searchId }: ResultsContentInnerProps) {
           <aside className="results-sidebar">
             <RunList
               runs={runs}
-              selectedRunId={selectedRunId}
+              selectedRunId={currentSelectedRunId}
               onSelect={setSelectedRunId}
             />
           </aside>
           <main className="results-main">
-            <RunListings searchId={searchId} runId={selectedRunId} />
+            <RunListings searchId={searchId} runId={currentSelectedRunId} />
           </main>
         </div>
       )}
