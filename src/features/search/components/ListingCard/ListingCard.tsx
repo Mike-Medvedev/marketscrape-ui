@@ -1,5 +1,6 @@
 import { IconMapPin, IconExternalLink } from "@tabler/icons-react";
 import type { Listing } from "@/features/search/search.types";
+import { formatPrice } from "@/utils/format.utils";
 import "./ListingCard.css";
 
 interface ListingCardProps {
@@ -26,7 +27,7 @@ export function ListingCard({ listing }: ListingCardProps) {
         </div>
       </div>
       <div className="listing-card-body">
-        <p className="listing-card-price">{listing.price}</p>
+        <p className="listing-card-price">{formatPrice(listing.price)}</p>
         <p className="listing-card-title">{listing.title}</p>
         <div className="listing-card-location">
           <IconMapPin size={12} />

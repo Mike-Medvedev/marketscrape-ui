@@ -2,6 +2,7 @@
   display: flex;
   flex-direction: column;
   min-width: 0;
+  height: 100%;
 }
 
 .run-list-heading {
@@ -20,7 +21,8 @@
   flex-direction: column;
   gap: 0.25rem;
   overflow-y: auto;
-  max-height: calc(100vh - 220px);
+  flex: 1;
+  min-height: 0;
 }
 
 .run-list-item {

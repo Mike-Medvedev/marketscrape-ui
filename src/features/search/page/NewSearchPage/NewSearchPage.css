@@ -1,23 +1,27 @@
 .new-search-container {
-  padding-top: 3rem;
+  padding-top: 2rem;
   padding-bottom: 3rem;
+  max-width: 640px;
+  margin: 0 auto;
 }
 
 .new-search-stepper {
-  margin-bottom: 1rem;
+  margin-bottom: 1.5rem;
 }
 
 .new-search-title {
   color: var(--foreground);
-  font-size: 1.875rem;
-  margin-bottom: 2rem;
+  font-size: 1.5rem;
+  letter-spacing: -0.03em;
+  margin-bottom: 1.5rem;
 }
 
 .new-search-form-card {
   background: var(--card);
   border: 1px solid var(--border);
   border-radius: var(--mantine-radius-md);
-  padding: 1.5rem;
+  padding: 1.75rem;
+  box-shadow: var(--shadow-md);
 }
 
 .new-search-submit {

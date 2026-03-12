@@ -39,7 +39,8 @@
 .run-listings-empty-icon {
   width: 4rem;
   height: 4rem;
-  background: rgba(38, 38, 38, 0.2);
+  background: var(--empty-icon-bg);
+  border: 1px solid var(--empty-icon-border);
   border-radius: 9999px;
   display: flex;
   align-items: center;
