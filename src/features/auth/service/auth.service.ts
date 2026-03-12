@@ -7,7 +7,11 @@ export async function login(email: string, password: string) {
 }
 
 export async function signup(email: string, password: string) {
-  const { error } = await supabase.auth.signUp({ email, password })
+  const { error } = await supabase.auth.signUp({
+    email,
+    password,
+    options: { emailRedirectTo: window.location.origin },
+  })
   if (error) throw error
 }
 
