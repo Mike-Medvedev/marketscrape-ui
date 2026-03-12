@@ -308,6 +308,30 @@ export type UpdateSearchResponses = {
 
 export type UpdateSearchResponse = UpdateSearchResponses[keyof UpdateSearchResponses];
 
+export type GetSearchEventsData = {
+    body?: never;
+    path: {
+        id: string;
+    };
+    query?: never;
+    url: '/api/v1/searches/{id}/events';
+};
+
+export type GetSearchEventsErrors = {
+    /**
+     * Not Found
+     */
+    404: {
+        success: false;
+        statusCode: number;
+        name: string;
+        message: string;
+        detail?: unknown;
+    };
+};
+
+export type GetSearchEventsError = GetSearchEventsErrors[keyof GetSearchEventsErrors];
+
 export type GetSearchRunsData = {
     body?: never;
     path: {
@@ -534,4 +558,11 @@ export type BeginIdentitySyncData = {
     path?: never;
     query?: never;
     url: '/api/v1/sync';
+};
+
+export type AbortSyncData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/v1/sync/abort';
 };

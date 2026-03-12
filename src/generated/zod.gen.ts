@@ -320,6 +320,14 @@ export const zUpdateSearchResponse = z.object({
     })
 });
 
+export const zGetSearchEventsData = z.object({
+    body: z.never().optional(),
+    path: z.object({
+        id: z.uuid()
+    }),
+    query: z.never().optional()
+});
+
 export const zGetSearchRunsData = z.object({
     body: z.never().optional(),
     path: z.object({
@@ -455,6 +463,12 @@ export const zGetSyncContextData = z.object({
 });
 
 export const zBeginIdentitySyncData = z.object({
+    body: z.never().optional(),
+    path: z.never().optional(),
+    query: z.never().optional()
+});
+
+export const zAbortSyncData = z.object({
     body: z.never().optional(),
     path: z.never().optional(),
     query: z.never().optional()

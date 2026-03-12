@@ -2,8 +2,8 @@
 
 import type { Client, Options as Options2, TDataShape } from './client';
 import { client } from './client.gen';
-import type { BeginIdentitySyncData, CreateSearchData, CreateSearchResponses, DeleteSearchData, DeleteSearchErrors, DeleteSearchResponses, GetMeData, GetMeErrors, GetMeResponses, GetSearchByIdData, GetSearchByIdErrors, GetSearchByIdResponses, GetSearchesData, GetSearchesErrors, GetSearchesResponses, GetSearchRunResultsData, GetSearchRunResultsErrors, GetSearchRunResultsResponses, GetSearchRunsData, GetSearchRunsErrors, GetSearchRunsResponses, GetSyncContextData, PostScrapeData, PostScrapeResponses, UpdateMeData, UpdateMeErrors, UpdateMeResponses, UpdateSearchData, UpdateSearchErrors, UpdateSearchResponses, WebhookAnalyzedListingsData, WebhookContainerExitedData, WebhookNeedsLoginData, WebhookRefreshData } from './types.gen';
-import { zBeginIdentitySyncData, zCreateSearchData, zCreateSearchResponse, zDeleteSearchData, zDeleteSearchResponse, zGetMeData, zGetMeResponse, zGetSearchByIdData, zGetSearchByIdResponse, zGetSearchesData, zGetSearchesResponse, zGetSearchRunResultsData, zGetSearchRunResultsResponse, zGetSearchRunsData, zGetSearchRunsResponse, zGetSyncContextData, zPostScrapeData, zPostScrapeResponse, zUpdateMeData, zUpdateMeResponse, zUpdateSearchData, zUpdateSearchResponse, zWebhookAnalyzedListingsData, zWebhookContainerExitedData, zWebhookNeedsLoginData, zWebhookRefreshData } from './zod.gen';
+import type { AbortSyncData, BeginIdentitySyncData, CreateSearchData, CreateSearchResponses, DeleteSearchData, DeleteSearchErrors, DeleteSearchResponses, GetMeData, GetMeErrors, GetMeResponses, GetSearchByIdData, GetSearchByIdErrors, GetSearchByIdResponses, GetSearchesData, GetSearchesErrors, GetSearchesResponses, GetSearchEventsData, GetSearchEventsErrors, GetSearchRunResultsData, GetSearchRunResultsErrors, GetSearchRunResultsResponses, GetSearchRunsData, GetSearchRunsErrors, GetSearchRunsResponses, GetSyncContextData, PostScrapeData, PostScrapeResponses, UpdateMeData, UpdateMeErrors, UpdateMeResponses, UpdateSearchData, UpdateSearchErrors, UpdateSearchResponses, WebhookAnalyzedListingsData, WebhookContainerExitedData, WebhookNeedsLoginData, WebhookRefreshData } from './types.gen';
+import { zAbortSyncData, zBeginIdentitySyncData, zCreateSearchData, zCreateSearchResponse, zDeleteSearchData, zDeleteSearchResponse, zGetMeData, zGetMeResponse, zGetSearchByIdData, zGetSearchByIdResponse, zGetSearchesData, zGetSearchesResponse, zGetSearchEventsData, zGetSearchRunResultsData, zGetSearchRunResultsResponse, zGetSearchRunsData, zGetSearchRunsResponse, zGetSyncContextData, zPostScrapeData, zPostScrapeResponse, zUpdateMeData, zUpdateMeResponse, zUpdateSearchData, zUpdateSearchResponse, zWebhookAnalyzedListingsData, zWebhookContainerExitedData, zWebhookNeedsLoginData, zWebhookRefreshData } from './zod.gen';
 
 export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends boolean = boolean> = Options2<TData, ThrowOnError> & {
     /**
@@ -101,6 +101,16 @@ export const updateSearch = <ThrowOnError extends boolean = false>(options: Opti
         'Content-Type': 'application/json',
         ...options.headers
     }
+});
+
+/**
+ * SSE stream of real-time search execution events (executing, completed, failed)
+ */
+export const getSearchEvents = <ThrowOnError extends boolean = false>(options: Options<GetSearchEventsData, ThrowOnError>) => (options.client ?? client).get<unknown, GetSearchEventsErrors, ThrowOnError>({
+    requestValidator: async (data) => await zGetSearchEventsData.parseAsync(data),
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/searches/{id}/events',
+    ...options
 });
 
 /**
@@ -212,5 +222,15 @@ export const beginIdentitySync = <ThrowOnError extends boolean = false>(options?
     requestValidator: async (data) => await zBeginIdentitySyncData.parseAsync(data),
     security: [{ scheme: 'bearer', type: 'http' }],
     url: '/api/v1/sync',
+    ...options
+});
+
+/**
+ * Abort an in-progress identity sync — stops the ACI container and cleans up
+ */
+export const abortSync = <ThrowOnError extends boolean = false>(options?: Options<AbortSyncData, ThrowOnError>) => (options?.client ?? client).post<unknown, unknown, ThrowOnError>({
+    requestValidator: async (data) => await zAbortSyncData.parseAsync(data),
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/sync/abort',
     ...options
 });

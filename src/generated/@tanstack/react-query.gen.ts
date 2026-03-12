@@ -4,8 +4,8 @@ import { type DefaultError, queryOptions, type UseMutationOptions } from '@tanst
 import type { AxiosError } from 'axios';
 
 import { client } from '../client.gen';
-import { beginIdentitySync, createSearch, deleteSearch, getMe, getSearchById, getSearches, getSearchRunResults, getSearchRuns, getSyncContext, type Options, postScrape, updateMe, updateSearch, webhookAnalyzedListings, webhookContainerExited, webhookNeedsLogin, webhookRefresh } from '../sdk.gen';
-import type { BeginIdentitySyncData, CreateSearchData, CreateSearchResponse, DeleteSearchData, DeleteSearchError, DeleteSearchResponse, GetMeData, GetMeError, GetMeResponse, GetSearchByIdData, GetSearchByIdError, GetSearchByIdResponse, GetSearchesData, GetSearchesError, GetSearchesResponse, GetSearchRunResultsData, GetSearchRunResultsError, GetSearchRunResultsResponse, GetSearchRunsData, GetSearchRunsError, GetSearchRunsResponse, GetSyncContextData, PostScrapeData, PostScrapeResponse, UpdateMeData, UpdateMeError, UpdateMeResponse, UpdateSearchData, UpdateSearchError, UpdateSearchResponse, WebhookAnalyzedListingsData, WebhookContainerExitedData, WebhookNeedsLoginData, WebhookRefreshData } from '../types.gen';
+import { abortSync, beginIdentitySync, createSearch, deleteSearch, getMe, getSearchById, getSearches, getSearchEvents, getSearchRunResults, getSearchRuns, getSyncContext, type Options, postScrape, updateMe, updateSearch, webhookAnalyzedListings, webhookContainerExited, webhookNeedsLogin, webhookRefresh } from '../sdk.gen';
+import type { AbortSyncData, BeginIdentitySyncData, CreateSearchData, CreateSearchResponse, DeleteSearchData, DeleteSearchError, DeleteSearchResponse, GetMeData, GetMeError, GetMeResponse, GetSearchByIdData, GetSearchByIdError, GetSearchByIdResponse, GetSearchesData, GetSearchesError, GetSearchesResponse, GetSearchEventsData, GetSearchEventsError, GetSearchRunResultsData, GetSearchRunResultsError, GetSearchRunResultsResponse, GetSearchRunsData, GetSearchRunsError, GetSearchRunsResponse, GetSyncContextData, PostScrapeData, PostScrapeResponse, UpdateMeData, UpdateMeError, UpdateMeResponse, UpdateSearchData, UpdateSearchError, UpdateSearchResponse, WebhookAnalyzedListingsData, WebhookContainerExitedData, WebhookNeedsLoginData, WebhookRefreshData } from '../types.gen';
 
 /**
  * Searches Marketplace and returns listings
@@ -143,6 +143,24 @@ export const updateSearchMutation = (options?: Partial<Options<UpdateSearchData>
     };
     return mutationOptions;
 };
+
+export const getSearchEventsQueryKey = (options: Options<GetSearchEventsData>) => createQueryKey('getSearchEvents', options);
+
+/**
+ * SSE stream of real-time search execution events (executing, completed, failed)
+ */
+export const getSearchEventsOptions = (options: Options<GetSearchEventsData>) => queryOptions<unknown, AxiosError<GetSearchEventsError>, unknown, ReturnType<typeof getSearchEventsQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await getSearchEvents({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getSearchEventsQueryKey(options)
+});
 
 export const getSearchRunsQueryKey = (options: Options<GetSearchRunsData>) => createQueryKey('getSearchRuns', options);
 
@@ -318,3 +336,20 @@ export const beginIdentitySyncOptions = (options?: Options<BeginIdentitySyncData
     },
     queryKey: beginIdentitySyncQueryKey(options)
 });
+
+/**
+ * Abort an in-progress identity sync — stops the ACI container and cleans up
+ */
+export const abortSyncMutation = (options?: Partial<Options<AbortSyncData>>): UseMutationOptions<unknown, AxiosError<DefaultError>, Options<AbortSyncData>> => {
+    const mutationOptions: UseMutationOptions<unknown, AxiosError<DefaultError>, Options<AbortSyncData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await abortSync({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
