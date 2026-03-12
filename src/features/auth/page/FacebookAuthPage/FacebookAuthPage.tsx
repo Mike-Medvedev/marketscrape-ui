@@ -1,22 +1,12 @@
-import { useNavigate } from 'react-router'
-import { Container, Button, Title, Text } from '@mantine/core'
-import { IconArrowLeft, IconDeviceDesktop } from '@tabler/icons-react'
+import { Container, Title, Text } from '@mantine/core'
+import { IconDeviceDesktop } from '@tabler/icons-react'
+import { BackButton } from '@/theme/components/BackButton/BackButton'
 import './FacebookAuthPage.css'
 
 export function FacebookAuthPage() {
-  const navigate = useNavigate()
-
   return (
     <Container size="md" className="fb-auth-container">
-      <Button
-        variant="subtle"
-        color="gray"
-        onClick={() => navigate('/')}
-        leftSection={<IconArrowLeft size={16} />}
-        className="fb-auth-back"
-      >
-        Back to Dashboard
-      </Button>
+      <BackButton label="Back to Dashboard" />
 
       <div className="fb-auth-heading">
         <Title order={1} className="fb-auth-title">Facebook Authentication</Title>

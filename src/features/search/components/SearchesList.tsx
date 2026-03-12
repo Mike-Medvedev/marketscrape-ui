@@ -36,17 +36,24 @@ export function SearchesList() {
       )}
 
       {searches.length > 0 ? (
-        <div className="dashboard-grid">
-          {searches.map((search) => (
-            <SearchCard
-              key={search.id}
-              search={search}
-              onDelete={handleDelete}
-              onEdit={handleEdit}
-              onViewResults={handleViewResults}
-            />
-          ))}
-        </div>
+        <>
+          <div className="dashboard-header">
+            <NewSearchButton onClick={() => navigate('/new')}>
+              New Search
+            </NewSearchButton>
+          </div>
+          <div className="dashboard-grid">
+            {searches.map((search) => (
+              <SearchCard
+                key={search.id}
+                search={search}
+                onDelete={handleDelete}
+                onEdit={handleEdit}
+                onViewResults={handleViewResults}
+              />
+            ))}
+          </div>
+        </>
       ) : (
         <div className="dashboard-empty">
           <div className="dashboard-empty-icon">

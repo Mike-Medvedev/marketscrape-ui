@@ -3,7 +3,7 @@
   padding-bottom: 3rem;
 }
 
-.fb-auth-back {
+.fb-auth-container > .back-button {
   margin-bottom: 1.5rem;
 }
 

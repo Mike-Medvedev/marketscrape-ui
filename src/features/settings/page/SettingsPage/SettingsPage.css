@@ -1,9 +1,15 @@
 .settings-page {
   display: flex;
-  align-items: center;
-  justify-content: center;
+  flex-direction: column;
   min-height: calc(100vh - 60px);
   padding: 2rem 1rem;
+}
+
+.settings-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
 }
 
 .settings-icon {

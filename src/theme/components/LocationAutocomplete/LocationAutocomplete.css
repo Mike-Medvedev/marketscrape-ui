@@ -1,3 +1,9 @@
-.location-autocomplete-wrapper {
-  position: relative;
+.location-option-main {
+  font-weight: 500;
+}
+
+.location-option-secondary {
+  color: var(--mantine-color-dimmed);
+  font-size: var(--mantine-font-size-xs);
+  margin-left: 0.4em;
 }

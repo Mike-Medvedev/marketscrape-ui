@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react'
-import { useNavigate, useParams } from 'react-router'
+import { useParams } from 'react-router'
 import { Container, Loader, Text, Title } from '@mantine/core'
-import { IconArrowLeft, IconPlayerPlay, IconSearch } from '@tabler/icons-react'
+import { IconPlayerPlay, IconSearch } from '@tabler/icons-react'
+import { BackButton } from '@/theme/components/BackButton/BackButton'
 import { RunList } from '@/features/search/components/RunList/RunList'
 import { RunListings } from '@/features/search/components/RunListings/RunListings'
 import {
@@ -26,7 +27,6 @@ interface ResultsContentInnerProps {
 }
 
 function ResultsContentInner({ searchId }: ResultsContentInnerProps) {
-  const navigate = useNavigate()
   const { data: searchResponse } = useSearch(searchId)
   const search = searchResponse!.data
   const { data: runsResponse } = useSearchRuns(searchId)
@@ -57,10 +57,7 @@ function ResultsContentInner({ searchId }: ResultsContentInnerProps) {
   return (
     <Container size="xl" className="results-container">
       <div className="results-header">
-        <button className="results-back-button" onClick={() => navigate('/')}>
-          <IconArrowLeft size={18} />
-          <span>Back</span>
-        </button>
+        <BackButton />
 
         <div className="results-header-info">
           <Title order={2} className="results-title">

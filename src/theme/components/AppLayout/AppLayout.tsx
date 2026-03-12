@@ -84,12 +84,12 @@ export function AppLayout({ children }: AppLayoutProps) {
               <Menu.Target>
                 <button className="app-avatar-button" aria-label="User menu">
                   <Avatar
-                    size="sm"
+                    size="md"
                     radius="xl"
                     color="yellow"
                     className="app-avatar"
                   >
-                    {initials || <IconUser size={16} />}
+                    {initials || <IconUser size={18} />}
                   </Avatar>
                 </button>
               </Menu.Target>
