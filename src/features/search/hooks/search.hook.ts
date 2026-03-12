@@ -28,7 +28,13 @@ export function useSearches() {
   });
 }
 
-export function useSearch(id: string | undefined) {
+export function useSearch(id: string) {
+  return useSuspenseQuery({
+    ...getSearchByIdOptions({ path: { id } }),
+  });
+}
+
+export function useSearchConditional(id: string | undefined) {
   return useQuery({
     ...getSearchByIdOptions({ path: { id: id! } }),
     enabled: !!id,

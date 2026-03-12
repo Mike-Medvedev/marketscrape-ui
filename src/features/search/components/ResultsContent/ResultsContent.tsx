@@ -14,24 +14,11 @@ import './ResultsContent.css'
 
 export function ResultsContent() {
   const { id } = useParams<{ id: string }>()
-  const { data: searchResponse, isLoading: searchLoading } = useSearch(id)
-  const search = searchResponse?.data
-
-  if (searchLoading || !search || !id) return null
-
-  return <ResultsContentInner searchId={id} />
-}
-
-interface ResultsContentInnerProps {
-  searchId: string
-}
-
-function ResultsContentInner({ searchId }: ResultsContentInnerProps) {
-  const { data: searchResponse } = useSearch(searchId)
-  const search = searchResponse!.data
-  const { data: runsResponse } = useSearchRuns(searchId)
+  const { data: searchResponse } = useSearch(id!)
+  const search = searchResponse.data
+  const { data: runsResponse } = useSearchRuns(id!)
   const runs = runsResponse.data
-  const executeMutation = useExecuteSearch(searchId)
+  const executeMutation = useExecuteSearch(id!)
 
   const [selectedRunId, setSelectedRunId] = useState<string | null>(null)
 
@@ -117,7 +104,7 @@ function ResultsContentInner({ searchId }: ResultsContentInnerProps) {
             />
           </aside>
           <main className="results-main">
-            <RunListings searchId={searchId} runId={currentSelectedRunId} />
+            <RunListings searchId={id!} runId={currentSelectedRunId} />
           </main>
         </div>
       )}

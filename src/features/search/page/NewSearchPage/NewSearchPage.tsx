@@ -1,6 +1,6 @@
 import { useParams } from 'react-router'
 import { Container, Skeleton } from '@mantine/core'
-import { useSearch } from '@/features/search/hooks/search.hook'
+import { useSearchConditional } from '@/features/search/hooks/search.hook'
 import { SearchForm } from '@/features/search/components/SearchForm'
 import { AppError } from '@/theme/components/AppError/AppError'
 import './NewSearchPage.css'
@@ -9,7 +9,7 @@ export function NewSearchPage() {
   const { id } = useParams()
   const isEditing = !!id
 
-  const { data: existingSearch, isLoading, isError, error } = useSearch(id)
+  const { data: existingSearch, isLoading, isError, error } = useSearchConditional(id)
 
   if (isEditing && isLoading) {
     return (
