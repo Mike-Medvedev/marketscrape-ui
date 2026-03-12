@@ -479,3 +479,13 @@ export const zGetSessionStatusData = z.object({
     path: z.never().optional(),
     query: z.never().optional()
 });
+
+/**
+ * Success
+ */
+export const zGetSessionStatusResponse = z.object({
+    success: z.literal(true),
+    data: z.object({
+        valid: z.boolean()
+    })
+});

@@ -2,8 +2,8 @@
 
 import type { Client, Options as Options2, TDataShape } from './client';
 import { client } from './client.gen';
-import type { AbortSyncData, BeginIdentitySyncData, CreateSearchData, CreateSearchResponses, DeleteSearchData, DeleteSearchErrors, DeleteSearchResponses, GetMeData, GetMeErrors, GetMeResponses, GetSearchByIdData, GetSearchByIdErrors, GetSearchByIdResponses, GetSearchesData, GetSearchesErrors, GetSearchesResponses, GetSearchEventsData, GetSearchEventsErrors, GetSearchRunResultsData, GetSearchRunResultsErrors, GetSearchRunResultsResponses, GetSearchRunsData, GetSearchRunsErrors, GetSearchRunsResponses, GetSessionStatusData, GetSyncContextData, PostScrapeData, PostScrapeResponses, UpdateMeData, UpdateMeErrors, UpdateMeResponses, UpdateSearchData, UpdateSearchErrors, UpdateSearchResponses, WebhookAnalyzedListingsData, WebhookContainerExitedData, WebhookNeedsLoginData, WebhookRefreshData } from './types.gen';
-import { zAbortSyncData, zBeginIdentitySyncData, zCreateSearchData, zCreateSearchResponse, zDeleteSearchData, zDeleteSearchResponse, zGetMeData, zGetMeResponse, zGetSearchByIdData, zGetSearchByIdResponse, zGetSearchesData, zGetSearchesResponse, zGetSearchEventsData, zGetSearchRunResultsData, zGetSearchRunResultsResponse, zGetSearchRunsData, zGetSearchRunsResponse, zGetSessionStatusData, zGetSyncContextData, zPostScrapeData, zPostScrapeResponse, zUpdateMeData, zUpdateMeResponse, zUpdateSearchData, zUpdateSearchResponse, zWebhookAnalyzedListingsData, zWebhookContainerExitedData, zWebhookNeedsLoginData, zWebhookRefreshData } from './zod.gen';
+import type { AbortSyncData, BeginIdentitySyncData, CreateSearchData, CreateSearchResponses, DeleteSearchData, DeleteSearchErrors, DeleteSearchResponses, GetMeData, GetMeErrors, GetMeResponses, GetSearchByIdData, GetSearchByIdErrors, GetSearchByIdResponses, GetSearchesData, GetSearchesErrors, GetSearchesResponses, GetSearchEventsData, GetSearchEventsErrors, GetSearchRunResultsData, GetSearchRunResultsErrors, GetSearchRunResultsResponses, GetSearchRunsData, GetSearchRunsErrors, GetSearchRunsResponses, GetSessionStatusData, GetSessionStatusErrors, GetSessionStatusResponses, GetSyncContextData, PostScrapeData, PostScrapeResponses, UpdateMeData, UpdateMeErrors, UpdateMeResponses, UpdateSearchData, UpdateSearchErrors, UpdateSearchResponses, WebhookAnalyzedListingsData, WebhookContainerExitedData, WebhookNeedsLoginData, WebhookRefreshData } from './types.gen';
+import { zAbortSyncData, zBeginIdentitySyncData, zCreateSearchData, zCreateSearchResponse, zDeleteSearchData, zDeleteSearchResponse, zGetMeData, zGetMeResponse, zGetSearchByIdData, zGetSearchByIdResponse, zGetSearchesData, zGetSearchesResponse, zGetSearchEventsData, zGetSearchRunResultsData, zGetSearchRunResultsResponse, zGetSearchRunsData, zGetSearchRunsResponse, zGetSessionStatusData, zGetSessionStatusResponse, zGetSyncContextData, zPostScrapeData, zPostScrapeResponse, zUpdateMeData, zUpdateMeResponse, zUpdateSearchData, zUpdateSearchResponse, zWebhookAnalyzedListingsData, zWebhookContainerExitedData, zWebhookNeedsLoginData, zWebhookRefreshData } from './zod.gen';
 
 export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends boolean = boolean> = Options2<TData, ThrowOnError> & {
     /**
@@ -238,8 +238,10 @@ export const abortSync = <ThrowOnError extends boolean = false>(options?: Option
 /**
  * Check whether the stored Facebook session is still valid
  */
-export const getSessionStatus = <ThrowOnError extends boolean = false>(options?: Options<GetSessionStatusData, ThrowOnError>) => (options?.client ?? client).get<unknown, unknown, ThrowOnError>({
+export const getSessionStatus = <ThrowOnError extends boolean = false>(options?: Options<GetSessionStatusData, ThrowOnError>) => (options?.client ?? client).get<GetSessionStatusResponses, GetSessionStatusErrors, ThrowOnError>({
     requestValidator: async (data) => await zGetSessionStatusData.parseAsync(data),
+    responseType: 'json',
+    responseValidator: async (data) => await zGetSessionStatusResponse.parseAsync(data),
     security: [{ scheme: 'bearer', type: 'http' }],
     url: '/api/v1/session/status',
     ...options

@@ -573,3 +573,32 @@ export type GetSessionStatusData = {
     query?: never;
     url: '/api/v1/session/status';
 };
+
+export type GetSessionStatusErrors = {
+    /**
+     * Internal Server Error
+     */
+    500: {
+        success: false;
+        statusCode: number;
+        name: string;
+        message: string;
+        detail?: unknown;
+    };
+};
+
+export type GetSessionStatusError = GetSessionStatusErrors[keyof GetSessionStatusErrors];
+
+export type GetSessionStatusResponses = {
+    /**
+     * Success
+     */
+    200: {
+        success: true;
+        data: {
+            valid: boolean;
+        };
+    };
+};
+
+export type GetSessionStatusResponse = GetSessionStatusResponses[keyof GetSessionStatusResponses];

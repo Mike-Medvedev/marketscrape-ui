@@ -72,11 +72,5 @@ export const syncSSEEventSchema = z.discriminatedUnion("status", [
   z.object({ status: z.literal("container_exited"), reason: z.string() }),
 ]);
 
-export const sessionStatusResponseSchema = z.object({
-  valid: z.boolean(),
-});
-
-export type SessionStatusResponse = z.infer<typeof sessionStatusResponseSchema>;
-
 export type SessionValidity = "valid" | "invalid" | "unknown";
 
