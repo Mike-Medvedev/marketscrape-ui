@@ -82,8 +82,10 @@ export function SearchForm({ existingSearch }: SearchFormProps) {
 
   const previousTypeRef = useRef(form.values.notificationType);
 
+  const { notificationType } = form.values;
+
   useEffect(() => {
-    const currentType = form.values.notificationType;
+    const currentType = notificationType;
     if (previousTypeRef.current !== currentType) {
       if (currentType === "email") {
         form.setFieldValue("notificationTarget", email ?? "");
@@ -92,7 +94,7 @@ export function SearchForm({ existingSearch }: SearchFormProps) {
       }
       previousTypeRef.current = currentType;
     }
-  }, [form.values.notificationType, email]);
+  }, [notificationType, email, form]);
 
   const handleNext = () => {
     if (step === 0) {
