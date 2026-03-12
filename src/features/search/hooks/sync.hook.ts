@@ -129,10 +129,18 @@ export function useIdentitySync({ onDismiss }: UseIdentitySyncOptions = {}) {
           closeEventSource();
           appendLog(`Error: ${data.message}`);
           break;
+
+        case "container_exited":
+          setSyncState("error");
+          setErrorMessage("Sync container crashed unexpectedly");
+          closeEventSource();
+          appendLog(`Container exited: ${data.reason}`);
+          break;
       }
     };
 
     evtSource.onerror = () => {
+      if (!eventSourceRef.current) return;
       setSyncState("error");
       setErrorMessage("Connection lost");
       closeEventSource();

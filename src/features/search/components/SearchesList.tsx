@@ -2,18 +2,14 @@ import { useNavigate } from 'react-router'
 import { Text, Title } from '@mantine/core'
 import { IconSearch } from '@tabler/icons-react'
 import { SearchCard } from '@/features/search/components/SearchCard/SearchCard'
-import { SessionAlert } from '@/features/search/components/SessionAlert/SessionAlert'
 import { NewSearchButton } from '@/features/search/components/NewSearchButton/NewSearchButton'
 import { useSearches, useDeleteSearch } from '@/features/search/hooks/search.hook'
-import { requestIdentitySync } from '@/utils/identity-sync.utils'
 
 export function SearchesList() {
   const navigate = useNavigate()
   const { data: response } = useSearches()
   const searches = response.data
   const deleteMutation = useDeleteSearch()
-
-  const hasExpiredSession = searches.some((s) => s.status === 'needs_attention')
 
   const handleDelete = (id: string) => {
     deleteMutation.mutate({ path: { id } })
@@ -29,12 +25,6 @@ export function SearchesList() {
 
   return (
     <>
-      {hasExpiredSession && (
-        <div className="dashboard-alert">
-          <SessionAlert onQuickSync={requestIdentitySync} onClose={() => {}} />
-        </div>
-      )}
-
       {searches.length > 0 ? (
         <>
           <div className="dashboard-header">

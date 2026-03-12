@@ -48,7 +48,8 @@ export type SyncSSEEvent =
   | { status: "needs_login"; novncUrl: string }
   | { status: "synced" }
   | { status: "timeout" }
-  | { status: "error"; message: string };
+  | { status: "error"; message: string }
+  | { status: "container_exited"; reason: string };
 
 export type SyncState =
   | "idle"
@@ -67,5 +68,6 @@ export const syncSSEEventSchema = z.discriminatedUnion("status", [
   z.object({ status: z.literal("synced") }),
   z.object({ status: z.literal("timeout") }),
   z.object({ status: z.literal("error"), message: z.string() }),
+  z.object({ status: z.literal("container_exited"), reason: z.string() }),
 ]);
 

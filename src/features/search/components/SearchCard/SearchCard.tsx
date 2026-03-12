@@ -1,9 +1,6 @@
 import {
   IconClock,
   IconTrash,
-  IconAlertCircle,
-  IconCircleCheck,
-  IconRefresh,
   IconPencil,
   IconListSearch,
   IconCalendarEvent,
@@ -29,30 +26,7 @@ const FREQUENCY_LABELS: Record<ActiveSearch["frequency"], string> = {
   every_24h: "Every 24 hours",
 };
 
-const attentionConfig = {
-  icon: IconRefresh,
-  label: "Action Required",
-  dotClass: "status-dot--refresh",
-} as const;
-
-const statusConfig: Record<ActiveSearch["status"], { icon: typeof IconCircleCheck; label: string; dotClass: string }> = {
-  running: {
-    icon: IconCircleCheck,
-    label: "Sync Healthy",
-    dotClass: "status-dot--running",
-  },
-  needs_attention: attentionConfig,
-  refresh: attentionConfig,
-  error: {
-    icon: IconAlertCircle,
-    label: "Error",
-    dotClass: "status-dot--error",
-  },
-};
-
 export function SearchCard({ search, onDelete, onEdit, onViewResults }: SearchCardProps) {
-  const config = statusConfig[search.status];
-
   const dateLabel =
     search.dateListed === "24h"
       ? "Last 24h"
@@ -82,10 +56,6 @@ export function SearchCard({ search, onDelete, onEdit, onViewResults }: SearchCa
           </p>
         </div>
         <div className="search-card-actions">
-          <div className="search-card-status">
-            <div className={`status-dot ${config.dotClass}`} />
-            <span className="status-label">{config.label}</span>
-          </div>
           <Tooltip label="View listings" withArrow>
             <ActionIcon
               variant="subtle"
@@ -161,13 +131,6 @@ export function SearchCard({ search, onDelete, onEdit, onViewResults }: SearchCa
               <IconCalendarOff size={14} />
               <span>Not scheduled</span>
             </div>
-            <button
-              type="button"
-              className="schedule-edit-link"
-              onClick={() => onEdit(search.id)}
-            >
-              Edit to re-schedule
-            </button>
           </div>
         )}
 

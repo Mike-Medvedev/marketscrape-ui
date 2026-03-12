@@ -1,16 +1,18 @@
 import { type ReactNode, useState, useCallback } from 'react'
 import { useNavigate } from 'react-router'
+import { useQuery } from '@tanstack/react-query'
 import { AppShell, Avatar, Menu } from '@mantine/core'
 import {
   IconSearch,
-  IconRefresh,
   IconLogout,
   IconMenu2,
   IconX,
   IconSettings,
   IconUser,
 } from '@tabler/icons-react'
+import { getSearchesOptions } from '@/generated/@tanstack/react-query.gen'
 import { IdentityAbsorber } from '@/features/search/components/IdentityAbsorber/IdentityAbsorber'
+import { SyncStatusPill } from '@/theme/components/SyncStatusPill/SyncStatusPill'
 import {
   requestIdentitySync,
   useIdentitySyncListener,
@@ -40,6 +42,11 @@ export function AppLayout({ children }: AppLayoutProps) {
   const { logout, email } = useAuth()
   const { data: meResponse } = useMe()
   const me = meResponse?.data
+
+  const { data: searchesResponse } = useQuery({ ...getSearchesOptions() })
+  const syncStatus = searchesResponse?.data.some((s) => s.status === 'needs_attention')
+    ? 'attention' as const
+    : 'healthy' as const
 
   const [showSyncModal, setShowSyncModal] = useState(false)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
@@ -80,6 +87,12 @@ export function AppLayout({ children }: AppLayoutProps) {
           </button>
 
           <div className="app-header-actions">
+            <SyncStatusPill
+              status={syncStatus}
+              disabled={showSyncModal}
+              onClick={requestIdentitySync}
+            />
+
             <Menu shadow="md" width={200} position="bottom-end">
               <Menu.Target>
                 <button className="app-avatar-button" aria-label="User menu">
@@ -100,13 +113,6 @@ export function AppLayout({ children }: AppLayoutProps) {
                   onClick={() => navigate('/settings')}
                 >
                   Settings
-                </Menu.Item>
-                <Menu.Item
-                  leftSection={<IconRefresh size={16} />}
-                  disabled={showSyncModal}
-                  onClick={requestIdentitySync}
-                >
-                  Sync Identity
                 </Menu.Item>
                 <Menu.Divider />
                 <Menu.Item
@@ -134,21 +140,20 @@ export function AppLayout({ children }: AppLayoutProps) {
         <>
           <div className="app-mobile-backdrop" onClick={closeMobileMenu} />
           <div className="app-mobile-menu">
+            <div className="app-mobile-sync">
+              <SyncStatusPill
+                status={syncStatus}
+                disabled={showSyncModal}
+                onClick={() => { requestIdentitySync(); closeMobileMenu() }}
+              />
+            </div>
+
             <button
               onClick={() => { navigate('/settings'); closeMobileMenu() }}
               className="app-mobile-menu-item"
             >
               <IconSettings size={18} />
               <span>Settings</span>
-            </button>
-
-            <button
-              onClick={() => { requestIdentitySync(); closeMobileMenu() }}
-              disabled={showSyncModal}
-              className={`app-mobile-menu-item${showSyncModal ? ' app-mobile-menu-item--disabled' : ''}`}
-            >
-              <IconRefresh size={18} />
-              <span>Sync Identity</span>
             </button>
 
             <button
