@@ -76,7 +76,7 @@ export function IdentityAbsorber({ isOpen, onClose }: IdentityAbsorberProps) {
       <Modal
         opened={isOpen}
         onClose={handleCloseClick}
-        size="xl"
+        size="92vw"
         withCloseButton={false}
         centered
         fullScreen={isMobile ?? false}
@@ -327,7 +327,17 @@ function BrowserPanel({
 
     case "vnc":
       return vncUrl ? (
-        <VncPanel url={vncUrl} onVncError={onVncError} />
+        <div className="identity-vnc-layout">
+          <div className="identity-vnc-instructions">
+            <div className="identity-vnc-instructions-title">Manual login required</div>
+            <p className="identity-vnc-instructions-text">
+              Log into Facebook in the browser below. If you get a notification approval
+              or two-factor prompt on another device, complete it there and this sync will
+              continue automatically.
+            </p>
+          </div>
+          <VncPanel url={vncUrl} onVncError={onVncError} />
+        </div>
       ) : null;
 
     case "vnc_error":
@@ -456,6 +466,8 @@ function VncPanel({ url, onVncError }: VncPanelProps) {
         ref={vncRef}
         url={url}
         scaleViewport
+        resizeSession
+        clipViewport
         background="#000000"
         className={`identity-vnc-screen ${connected ? "" : "identity-vnc-screen--connecting"}`}
         retryDuration={0}
