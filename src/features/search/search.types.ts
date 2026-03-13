@@ -46,8 +46,7 @@ export type SyncSSEEvent =
   | { status: "already_synced" }
   | { status: "starting_container" }
   | { status: "container_running" }
-  | { status: "needs_login"; novncUrl: string }
-  | { status: "status_update"; message: string; step?: string; userId?: string }
+  | { status: "status_update"; message: string; step: string; userId?: string; novncUrl?: string }
   | { status: "synced" }
   | { status: "timeout" }
   | { status: "error"; message: string }
@@ -74,12 +73,12 @@ export const syncSSEEventSchema = z.discriminatedUnion("status", [
   z.object({ status: z.literal("already_synced") }),
   z.object({ status: z.literal("starting_container") }),
   z.object({ status: z.literal("container_running") }),
-  z.object({ status: z.literal("needs_login"), novncUrl: z.string().url() }),
   z.object({
     status: z.literal("status_update"),
     message: z.string(),
-    step: z.string().optional(),
+    step: z.string(),
     userId: z.string().optional(),
+    novncUrl: z.string().url().optional(),
   }),
   z.object({ status: z.literal("synced") }),
   z.object({ status: z.literal("timeout") }),

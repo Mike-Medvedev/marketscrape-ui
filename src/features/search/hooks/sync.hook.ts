@@ -122,19 +122,19 @@ export function useIdentitySync({ onDismiss }: UseIdentitySyncOptions = {}) {
           appendLog("Auto-login in progress...");
           break;
 
-        case "needs_login":
-          setVncUrl(data.novncUrl);
-          setSyncState("vnc");
-          appendLog("Manual login required");
-          appendLog("Please log into the marketplace in the window below");
-          break;
-
         case "status_update":
           appendActivity({
             message: data.message,
             step: data.step,
             userId: data.userId,
           });
+
+          if (data.step === "needs_login" && data.novncUrl) {
+            setVncUrl(data.novncUrl);
+            setSyncState("vnc");
+            appendLog("Manual login required");
+            appendLog("Please log into the marketplace in the window below");
+          }
           break;
 
         case "synced":
