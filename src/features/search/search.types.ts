@@ -47,10 +47,18 @@ export type SyncSSEEvent =
   | { status: "starting_container" }
   | { status: "container_running" }
   | { status: "needs_login"; novncUrl: string }
+  | { status: "status_update"; message: string; step?: string; userId?: string }
   | { status: "synced" }
   | { status: "timeout" }
   | { status: "error"; message: string }
   | { status: "container_exited"; reason: string };
+
+export interface SyncActivity {
+  message: string;
+  step?: string;
+  userId?: string;
+  createdAt: number;
+}
 
 export type SyncState =
   | "idle"
@@ -67,6 +75,12 @@ export const syncSSEEventSchema = z.discriminatedUnion("status", [
   z.object({ status: z.literal("starting_container") }),
   z.object({ status: z.literal("container_running") }),
   z.object({ status: z.literal("needs_login"), novncUrl: z.string().url() }),
+  z.object({
+    status: z.literal("status_update"),
+    message: z.string(),
+    step: z.string().optional(),
+    userId: z.string().optional(),
+  }),
   z.object({ status: z.literal("synced") }),
   z.object({ status: z.literal("timeout") }),
   z.object({ status: z.literal("error"), message: z.string() }),
@@ -92,4 +106,3 @@ export const executionSSEEventSchema = z.discriminatedUnion("status", [
   }),
   z.object({ status: z.literal("failed"), message: z.string() }),
 ]);
-

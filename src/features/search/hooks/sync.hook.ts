@@ -9,7 +9,7 @@ import { settings } from "@/settings";
 import { supabase } from "@/infra/supabase.client";
 import { toast } from "@/utils/toast.utils";
 import { syncSSEEventSchema } from "@/features/search/search.types";
-import type { SyncState } from "@/features/search/search.types";
+import type { SyncActivity, SyncState } from "@/features/search/search.types";
 
 interface UseIdentitySyncOptions {
   onDismiss?: () => void;
@@ -21,6 +21,7 @@ export function useIdentitySync({ onDismiss }: UseIdentitySyncOptions = {}) {
   const [vncUrl, setVncUrl] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [logs, setLogs] = useState<string[]>([]);
+  const [activities, setActivities] = useState<SyncActivity[]>([]);
 
   const eventSourceRef = useRef<EventSource | null>(null);
   const dismissTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -32,6 +33,10 @@ export function useIdentitySync({ onDismiss }: UseIdentitySyncOptions = {}) {
 
   const appendLog = useCallback((message: string) => {
     setLogs((prev) => [...prev, message]);
+  }, []);
+
+  const appendActivity = useCallback((activity: Omit<SyncActivity, "createdAt">) => {
+    setActivities((prev) => [...prev, { ...activity, createdAt: Date.now() }]);
   }, []);
 
   const closeEventSource = useCallback(() => {
@@ -51,6 +56,7 @@ export function useIdentitySync({ onDismiss }: UseIdentitySyncOptions = {}) {
     setVncUrl(null);
     setErrorMessage(null);
     setLogs([]);
+    setActivities([]);
   }, [closeEventSource]);
 
   const startSync = useCallback(async () => {
@@ -75,7 +81,16 @@ export function useIdentitySync({ onDismiss }: UseIdentitySyncOptions = {}) {
     eventSourceRef.current = evtSource;
 
     evtSource.onmessage = (event) => {
-      const parsed = syncSSEEventSchema.safeParse(JSON.parse(event.data));
+      let payload: unknown;
+      try {
+        payload = JSON.parse(event.data);
+      } catch (error) {
+        console.error("SSE JSON parse error:", error, "data:", event.data);
+        appendLog("Received malformed event data");
+        return;
+      }
+
+      const parsed = syncSSEEventSchema.safeParse(payload);
       if (!parsed.success) {
         console.error(
           "SSE parse error:",
@@ -112,6 +127,14 @@ export function useIdentitySync({ onDismiss }: UseIdentitySyncOptions = {}) {
           setSyncState("vnc");
           appendLog("Manual login required");
           appendLog("Please log into the marketplace in the window below");
+          break;
+
+        case "status_update":
+          appendActivity({
+            message: data.message,
+            step: data.step,
+            userId: data.userId,
+          });
           break;
 
         case "synced":
@@ -158,7 +181,7 @@ export function useIdentitySync({ onDismiss }: UseIdentitySyncOptions = {}) {
       closeEventSource();
       appendLog("Connection lost");
     };
-  }, [closeEventSource, reset, appendLog, queryClient]);
+  }, [closeEventSource, reset, appendActivity, appendLog, queryClient]);
 
   const abortMutation = useMutation({ ...abortSyncMutation() });
 
@@ -212,6 +235,7 @@ export function useIdentitySync({ onDismiss }: UseIdentitySyncOptions = {}) {
     vncUrl,
     errorMessage,
     logs,
+    activities,
     isSyncing,
     isTerminal,
     isAborting: abortMutation.isPending,

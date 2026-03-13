@@ -5,11 +5,13 @@ import {
   IconAlertTriangle,
   IconAlertCircle,
   IconPlugConnectedX,
+  IconPointFilled,
 } from "@tabler/icons-react";
-import { Modal, ActionIcon, Button, Text } from "@mantine/core";
+import { Badge, Modal, ActionIcon, Button, Text } from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
 import { VncScreen, type VncScreenHandle } from "react-vnc";
 import { useIdentitySync } from "@/features/search/hooks/sync.hook";
+import type { SyncActivity, SyncState } from "@/features/search/search.types";
 import "./IdentityAbsorber.css";
 
 interface IdentityAbsorberProps {
@@ -25,6 +27,7 @@ export function IdentityAbsorber({ isOpen, onClose }: IdentityAbsorberProps) {
     vncUrl,
     errorMessage,
     logs,
+    activities,
     isSyncing,
     isTerminal,
     isAborting,
@@ -110,14 +113,11 @@ export function IdentityAbsorber({ isOpen, onClose }: IdentityAbsorberProps) {
           </div>
 
           <div className="identity-logs">
-            <div className="identity-logs-inner">
-              {logs.map((log, index) => (
-                <div key={index} className="identity-log-line">
-                  <span className="identity-log-prompt">&rsaquo;</span>
-                  {log}
-                </div>
-              ))}
-            </div>
+            <SyncActivityPanel
+              syncState={syncState}
+              activities={activities}
+              logs={logs}
+            />
           </div>
         </div>
       </Modal>
@@ -164,8 +164,133 @@ export function IdentityAbsorber({ isOpen, onClose }: IdentityAbsorberProps) {
   );
 }
 
+interface SyncActivityPanelProps {
+  syncState: SyncState;
+  activities: SyncActivity[];
+  logs: string[];
+}
+
+function SyncActivityPanel({
+  syncState,
+  activities,
+  logs,
+}: SyncActivityPanelProps) {
+  const currentActivity = activities.at(-1);
+  const currentStatus = getSyncStatusCopy(syncState, currentActivity);
+
+  return (
+    <div className="identity-progress">
+      <div className="identity-progress-card">
+        <div className="identity-progress-label">Current status</div>
+        <div className="identity-progress-value">{currentStatus.title}</div>
+        <p className="identity-progress-desc">{currentStatus.description}</p>
+        {currentActivity?.step ? (
+          <Badge variant="light" color="yellow" radius="sm" className="identity-step-badge">
+            {currentActivity.step}
+          </Badge>
+        ) : null}
+      </div>
+
+      <div className="identity-progress-section">
+        <div className="identity-progress-section-header">
+          <h3 className="identity-progress-section-title">Automation activity</h3>
+          <span className="identity-progress-count">{activities.length}</span>
+        </div>
+
+        {activities.length > 0 ? (
+          <div className="identity-timeline">
+            {activities.map((activity, index) => (
+              <div key={`${activity.createdAt}-${index}`} className="identity-timeline-item">
+                <div className="identity-timeline-marker">
+                  <IconPointFilled size={12} />
+                </div>
+                <div className="identity-timeline-content">
+                  <div className="identity-timeline-message">{activity.message}</div>
+                  {activity.step ? (
+                    <div className="identity-timeline-meta">{activity.step}</div>
+                  ) : null}
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className="identity-empty-state">
+            Waiting for progress updates from the Playwright container.
+          </div>
+        )}
+      </div>
+
+      <div className="identity-progress-section">
+        <div className="identity-progress-section-header">
+          <h3 className="identity-progress-section-title">System log</h3>
+        </div>
+        <div className="identity-logs-inner">
+          {logs.map((log, index) => (
+            <div key={`${log}-${index}`} className="identity-log-line">
+              <span className="identity-log-prompt">&rsaquo;</span>
+              {log}
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function getSyncStatusCopy(
+  syncState: SyncState,
+  currentActivity?: SyncActivity,
+): { title: string; description: string } {
+  if (currentActivity) {
+    return {
+      title: "Playwright automation running",
+      description: currentActivity.message,
+    };
+  }
+
+  switch (syncState) {
+    case "starting":
+      return {
+        title: "Preparing browser session",
+        description: "Starting the sync container and restoring browser state.",
+      };
+    case "auto_login":
+      return {
+        title: "Checking saved session",
+        description: "The backend is testing the stored browser profile before asking for login.",
+      };
+    case "vnc":
+      return {
+        title: "Waiting for manual login",
+        description: "Log into the marketplace in the remote browser. Automation resumes automatically after login.",
+      };
+    case "success":
+      return {
+        title: "Session captured",
+        description: "Authenticated session data was saved successfully.",
+      };
+    case "timeout":
+      return {
+        title: "Sync timed out",
+        description: "The backend did not finish before the timeout window expired.",
+      };
+    case "vnc_error":
+    case "error":
+      return {
+        title: "Sync failed",
+        description: "The session could not be completed. Check the system log for details.",
+      };
+    case "idle":
+    default:
+      return {
+        title: "Initializing sync",
+        description: "Connecting to the sync service.",
+      };
+  }
+}
+
 interface BrowserPanelProps {
-  syncState: string;
+  syncState: SyncState;
   vncUrl: string | null;
   errorMessage: string | null;
   onRetry: () => void;
