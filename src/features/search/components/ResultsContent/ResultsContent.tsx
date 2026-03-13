@@ -1,25 +1,49 @@
-import { useState } from 'react'
-import { useParams } from 'react-router'
+import { useState, useEffect, useRef } from 'react'
+import { useParams, useSearchParams } from 'react-router'
 import { Container, Loader, Text, Title } from '@mantine/core'
 import { IconPlayerPlay, IconSearch } from '@tabler/icons-react'
 import { RunList } from '@/features/search/components/RunList/RunList'
 import { RunListings } from '@/features/search/components/RunListings/RunListings'
+import { ExecutionProgress } from '@/features/search/components/ExecutionProgress/ExecutionProgress'
 import {
   useSearch,
   useSearchRuns,
-  useExecuteSearch,
 } from '@/features/search/hooks/search.hook'
+import { useSearchExecution } from '@/features/search/hooks/execution.hook'
 import './ResultsContent.css'
 
 export function ResultsContent() {
   const { id } = useParams<{ id: string }>()
+  const [searchParams, setSearchParams] = useSearchParams()
   const { data: searchResponse } = useSearch(id!)
   const search = searchResponse.data
   const { data: runsResponse } = useSearchRuns(id!)
   const runs = runsResponse.data
-  const executeMutation = useExecuteSearch(id!)
+  const execution = useSearchExecution(id!)
 
   const [selectedRunId, setSelectedRunId] = useState<string | null>(null)
+  const autoExecutedRef = useRef(false)
+
+  const shouldAutoExecute = searchParams.get('autoExecute') === 'true'
+
+  useEffect(() => {
+    if (
+      shouldAutoExecute &&
+      !autoExecutedRef.current &&
+      runs.length === 0 &&
+      !execution.isExecuting
+    ) {
+      autoExecutedRef.current = true
+      setSearchParams({}, { replace: true })
+      execution.execute()
+    }
+  }, [shouldAutoExecute, runs.length, execution, setSearchParams])
+
+  useEffect(() => {
+    if (execution.completedRunId) {
+      setSelectedRunId(execution.completedRunId)
+    }
+  }, [execution.completedRunId])
 
   const hasRuns = runs.length > 0
 
@@ -29,15 +53,15 @@ export function ResultsContent() {
       : runs[0]?.id ?? null
 
   const handleExecute = () => {
-    executeMutation.mutate(
-      { path: { id: id! } },
-      { onSuccess: (data) => setSelectedRunId(data.data.runId) },
-    )
+    if (execution.isExecuting) return
+    execution.execute()
   }
+
+  const isPending = execution.isExecuting
 
   return (
     <Container size="xl" className="results-container">
-      <div className={`results-header${hasRuns ? '' : ' results-header--empty'}`}>
+      <div className={`results-header${hasRuns || execution.isExecuting ? '' : ' results-header--empty'}`}>
         <div className="results-header-info">
           <Title order={2} className="results-title">
             {search.query}
@@ -58,18 +82,26 @@ export function ResultsContent() {
         <button
           className="results-execute-button"
           onClick={handleExecute}
-          disabled={executeMutation.isPending}
+          disabled={isPending}
         >
-          {executeMutation.isPending ? (
+          {isPending ? (
             <Loader size={16} color="dark" />
           ) : (
             <IconPlayerPlay size={16} />
           )}
           <span>
-            {executeMutation.isPending ? 'Searching...' : 'Execute Search'}
+            {isPending ? 'Searching...' : 'Execute Search'}
           </span>
         </button>
       </div>
+
+      {execution.executionState !== 'idle' && (
+        <ExecutionProgress
+          executionState={execution.executionState}
+          statusMessage={execution.statusMessage}
+          listingCount={execution.listingCount}
+        />
+      )}
 
       {hasRuns ? (
         <div className="results-body">
@@ -84,7 +116,7 @@ export function ResultsContent() {
             <RunListings searchId={id!} runId={currentSelectedRunId} />
           </main>
         </div>
-      ) : (
+      ) : !execution.isExecuting ? (
         <div className="results-empty">
           <div className="results-empty-icon">
             <IconSearch size={32} color="var(--muted-foreground)" />
@@ -96,7 +128,7 @@ export function ResultsContent() {
             Hit the button above to run your first search
           </Text>
         </div>
-      )}
+      ) : null}
     </Container>
   )
 }

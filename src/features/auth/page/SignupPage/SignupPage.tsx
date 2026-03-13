@@ -88,7 +88,7 @@ export function SignupPage() {
           Create an account
         </Title>
         <Text size="sm" c="dimmed" className="auth-card-subtitle">
-          Get started with marketscrape
+          Get started with Marketscrape
         </Text>
 
         {error && (

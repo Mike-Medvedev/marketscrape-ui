@@ -75,3 +75,21 @@ export const syncSSEEventSchema = z.discriminatedUnion("status", [
 
 export type SessionValidity = "valid" | "invalid" | "unknown";
 
+export type ExecutionState = "idle" | "executing" | "completed" | "failed";
+
+export type ExecutionSSEEvent =
+  | { status: "executing"; message?: string }
+  | { status: "completed"; runId: string; listingCount: number; executedAt: string }
+  | { status: "failed"; message: string };
+
+export const executionSSEEventSchema = z.discriminatedUnion("status", [
+  z.object({ status: z.literal("executing"), message: z.string().optional() }),
+  z.object({
+    status: z.literal("completed"),
+    runId: z.string(),
+    listingCount: z.number(),
+    executedAt: z.string(),
+  }),
+  z.object({ status: z.literal("failed"), message: z.string() }),
+]);
+

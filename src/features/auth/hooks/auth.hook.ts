@@ -9,6 +9,7 @@ import {
 import { useQuery } from '@tanstack/react-query'
 import type { Provider } from '@supabase/supabase-js'
 import { supabase } from '@/infra/supabase.client'
+import { queryClient } from '@/infra/tanstack.client'
 import { getMeOptions } from '@/generated/@tanstack/react-query.gen'
 import * as authService from '@/features/auth/service/auth.service'
 import type { AuthState } from '@/features/auth/auth.types'
@@ -61,7 +62,11 @@ export function useAuthProvider(): AuthContextValue {
     })
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (_event, session) => {
+      (event, session) => {
+        if (event === 'SIGNED_OUT') {
+          queryClient.clear()
+        }
+
         if (session?.user) {
           setState({
             status: 'authenticated',
@@ -90,6 +95,7 @@ export function useAuthProvider(): AuthContextValue {
   }, [])
 
   const logout = useCallback(async () => {
+    queryClient.clear()
     await authService.logout()
   }, [])
 

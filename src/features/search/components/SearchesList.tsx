@@ -3,13 +3,18 @@ import { Text, Title } from '@mantine/core'
 import { IconSearch } from '@tabler/icons-react'
 import { SearchCard } from '@/features/search/components/SearchCard/SearchCard'
 import { NewSearchButton } from '@/features/search/components/NewSearchButton/NewSearchButton'
+import { SyncOnboarding } from '@/features/search/components/SyncOnboarding/SyncOnboarding'
 import { useSearches, useDeleteSearch } from '@/features/search/hooks/search.hook'
+import { useSessionStatus } from '@/features/search/hooks/session.hook'
+import { requestIdentitySync } from '@/utils/identity-sync.utils'
 
 export function SearchesList() {
   const navigate = useNavigate()
   const { data: response } = useSearches()
   const searches = response.data
   const deleteMutation = useDeleteSearch()
+  const { status: sessionStatus } = useSessionStatus()
+  const showOnboarding = searches.length === 0 && sessionStatus !== 'valid'
 
   const deletingId = deleteMutation.isPending
     ? (deleteMutation.variables?.path?.id ?? null)
@@ -59,6 +64,9 @@ export function SearchesList() {
         </>
       ) : (
         <div className="dashboard-empty">
+          {showOnboarding && (
+            <SyncOnboarding onSyncClick={requestIdentitySync} />
+          )}
           <div className="dashboard-empty-icon">
             <IconSearch size={32} color="var(--muted-foreground)" />
           </div>

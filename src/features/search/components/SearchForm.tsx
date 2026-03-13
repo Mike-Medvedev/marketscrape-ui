@@ -32,6 +32,11 @@ import {
   useUpdateSearch,
 } from "@/features/search/hooks/search.hook";
 import { useAuth } from "@/features/auth/hooks/auth.hook";
+import { useQueryClient } from "@tanstack/react-query";
+import { getSearchesQueryKey } from "@/generated/@tanstack/react-query.gen";
+import type { GetSearchesResponse } from "@/generated/types.gen";
+import { findDuplicateSearch } from "@/features/search/service/search.service";
+import { toast } from "@/utils/toast.utils";
 import "@/features/search/page/NewSearchPage/NewSearchPage.css";
 
 const DATE_LISTED_OPTIONS = [
@@ -69,6 +74,7 @@ export function SearchForm({ existingSearch }: SearchFormProps) {
   const { email } = useAuth();
   const isEditing = !!existingSearch;
 
+  const queryClient = useQueryClient();
   const createMutation = useCreateSearch();
   const updateMutation = useUpdateSearch();
 
@@ -134,6 +140,22 @@ export function SearchForm({ existingSearch }: SearchFormProps) {
         notificationTarget: values.notificationTarget,
       };
 
+      const cachedSearches =
+        queryClient.getQueryData<GetSearchesResponse>(getSearchesQueryKey());
+      if (cachedSearches) {
+        const duplicate = findDuplicateSearch(
+          cachedSearches.data,
+          payload,
+          existingSearch?.id,
+        );
+        if (duplicate) {
+          toast.warning({
+            message: `A search with identical criteria already exists: "${duplicate.query}"`,
+          });
+          return;
+        }
+      }
+
       if (isEditing && existingSearch) {
         updateMutation.mutate(
           { body: payload, path: { id: existingSearch.id } },
@@ -142,7 +164,10 @@ export function SearchForm({ existingSearch }: SearchFormProps) {
       } else {
         createMutation.mutate(
           { body: payload },
-          { onSuccess: () => navigate("/") },
+          {
+            onSuccess: (data) =>
+              navigate(`/results/${data.data.id}?autoExecute=true`),
+          },
         );
       }
     }
@@ -221,6 +246,7 @@ export function SearchForm({ existingSearch }: SearchFormProps) {
             <Select
               label="Date Listed"
               data={DATE_LISTED_OPTIONS}
+              allowDeselect={false}
               key={form.key("dateListed")}
               {...form.getInputProps("dateListed")}
             />
@@ -261,6 +287,7 @@ export function SearchForm({ existingSearch }: SearchFormProps) {
               label="Search Frequency"
               placeholder="Select frequency"
               data={FREQUENCY_OPTIONS}
+              allowDeselect={false}
               key={form.key("frequency")}
               {...form.getInputProps("frequency")}
             />
@@ -280,6 +307,7 @@ export function SearchForm({ existingSearch }: SearchFormProps) {
             <Select
               label="Notification Type"
               data={NOTIFICATION_TYPE_OPTIONS}
+              allowDeselect={false}
               key={form.key("notificationType")}
               {...form.getInputProps("notificationType")}
             />

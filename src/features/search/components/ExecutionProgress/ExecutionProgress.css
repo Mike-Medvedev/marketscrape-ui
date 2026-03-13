@@ -1,0 +1,158 @@
+.execution-progress {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  padding: 1.25rem 1.5rem;
+  border-radius: var(--mantine-radius-lg);
+  border: 1px solid var(--border);
+  background: var(--card);
+  overflow: hidden;
+  margin-bottom: 1.25rem;
+  animation: executionSlideIn 0.3s ease-out;
+}
+
+.execution-progress--executing {
+  border-color: rgba(250, 204, 21, 0.25);
+  background: linear-gradient(
+    135deg,
+    rgba(250, 204, 21, 0.04) 0%,
+    var(--card) 100%
+  );
+}
+
+.execution-progress--completed {
+  border-color: rgba(34, 197, 94, 0.3);
+  background: linear-gradient(
+    135deg,
+    rgba(34, 197, 94, 0.06) 0%,
+    var(--card) 100%
+  );
+}
+
+.execution-progress--failed {
+  border-color: rgba(239, 68, 68, 0.3);
+  background: linear-gradient(
+    135deg,
+    rgba(239, 68, 68, 0.06) 0%,
+    var(--card) 100%
+  );
+}
+
+.execution-progress-indicator {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 3rem;
+  height: 3rem;
+}
+
+.execution-progress-pulse {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.execution-progress-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 9999px;
+}
+
+.execution-progress-icon--success {
+  background: rgba(34, 197, 94, 0.15);
+  color: #22c55e;
+}
+
+.execution-progress-icon--error {
+  background: rgba(239, 68, 68, 0.15);
+  color: #ef4444;
+}
+
+.execution-progress-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.execution-progress-header {
+  margin-bottom: 0.25rem;
+}
+
+.execution-progress-radar {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.execution-progress-radar-icon {
+  color: var(--primary);
+  animation: radarSpin 2s linear infinite;
+}
+
+.execution-progress-title {
+  color: var(--foreground);
+}
+
+.execution-progress-message {
+  margin: 0;
+}
+
+.execution-progress-count {
+  margin-top: 0.5rem;
+}
+
+.execution-progress-count-text {
+  color: #22c55e;
+}
+
+.execution-progress-bar-track {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: rgba(250, 204, 21, 0.1);
+}
+
+.execution-progress-bar {
+  height: 100%;
+  background: var(--primary);
+  animation: executionBarIndeterminate 1.8s ease-in-out infinite;
+  border-radius: 2px;
+}
+
+@keyframes executionSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes executionBarIndeterminate {
+  0% {
+    width: 0%;
+    margin-left: 0%;
+  }
+  50% {
+    width: 40%;
+    margin-left: 30%;
+  }
+  100% {
+    width: 0%;
+    margin-left: 100%;
+  }
+}
+
+@keyframes radarSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}

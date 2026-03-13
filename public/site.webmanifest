@@ -1,0 +1,16 @@
+{
+  "name": "Marketscrape",
+  "short_name": "Marketscrape",
+  "description": "Never miss a listing. Monitor online marketplace listings and get instant alerts.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0a0a0a",
+  "theme_color": "#eab308",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}

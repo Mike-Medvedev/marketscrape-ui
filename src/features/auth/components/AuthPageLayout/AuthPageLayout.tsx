@@ -14,7 +14,7 @@ export function AuthPageLayout({ children }: AuthPageLayoutProps) {
           <div className="auth-page-logo-icon">
             <IconSearch size={24} />
           </div>
-          <span className="auth-page-logo-text">marketscrape</span>
+          <span className="auth-page-logo-text">Marketscrape</span>
         </div>
         {children}
       </div>
