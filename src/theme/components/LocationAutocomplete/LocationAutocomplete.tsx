@@ -41,7 +41,7 @@ export function LocationAutocomplete({
     if (typeof value === "string" && value !== inputValue) {
       setInputValue(value);
     }
-  }, [value]);
+  }, [value, inputValue]);
 
   const getSessionToken = useCallback(() => {
     if (!places) return null;

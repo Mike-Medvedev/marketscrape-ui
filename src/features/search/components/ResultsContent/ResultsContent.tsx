@@ -39,17 +39,12 @@ export function ResultsContent() {
     }
   }, [shouldAutoExecute, runs.length, execution, setSearchParams])
 
-  useEffect(() => {
-    if (execution.completedRunId) {
-      setSelectedRunId(execution.completedRunId)
-    }
-  }, [execution.completedRunId])
-
   const hasRuns = runs.length > 0
 
+  const preferredRunId = execution.completedRunId ?? selectedRunId
   const currentSelectedRunId =
-    selectedRunId && runs.some((run) => run.id === selectedRunId)
-      ? selectedRunId
+    preferredRunId && runs.some((run) => run.id === preferredRunId)
+      ? preferredRunId
       : runs[0]?.id ?? null
 
   const handleExecute = () => {
