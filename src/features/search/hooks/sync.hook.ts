@@ -26,9 +26,11 @@ export function useIdentitySync({ onDismiss }: UseIdentitySyncOptions = {}) {
   const eventSourceRef = useRef<EventSource | null>(null);
   const dismissTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const onDismissRef = useRef(onDismiss);
+  const syncStateRef = useRef(syncState);
 
   useEffect(() => {
     onDismissRef.current = onDismiss;
+    syncStateRef.current = syncState;
   });
 
   const appendLog = useCallback((message: string) => {
@@ -130,7 +132,7 @@ export function useIdentitySync({ onDismiss }: UseIdentitySyncOptions = {}) {
             setSyncState("login");
             appendLog("Manual login required");
             appendLog("Please log into the marketplace in the browser below");
-          } else if (syncState !== "login") {
+          } else if (syncStateRef.current !== "login") {
             setSyncState("running");
           }
           break;
@@ -158,13 +160,16 @@ export function useIdentitySync({ onDismiss }: UseIdentitySyncOptions = {}) {
           appendLog("Timeout — no session captured");
           break;
 
-        case "error":
+        case "error": {
           setSyncState("error");
           setDebuggerUrl(null);
-          setErrorMessage(data.message);
+          const friendly = toFriendlyError(data.message);
+          setErrorMessage(friendly);
           closeEventSource();
-          appendLog(`Error: ${data.message}`);
+          appendLog(`Error: ${friendly}`);
+          console.error("Sync error (raw):", data.message);
           break;
+        }
       }
     };
 
@@ -176,7 +181,7 @@ export function useIdentitySync({ onDismiss }: UseIdentitySyncOptions = {}) {
       closeEventSource();
       appendLog("Connection lost");
     };
-  }, [closeEventSource, reset, appendActivity, appendLog, queryClient, syncState]);
+  }, [closeEventSource, reset, appendActivity, appendLog, queryClient]);
 
   const abortMutation = useMutation({ ...abortSyncMutation() });
 
@@ -240,4 +245,19 @@ export function useIdentitySync({ onDismiss }: UseIdentitySyncOptions = {}) {
     abort,
     handleDebuggerError,
   };
+}
+
+const ERROR_PATTERNS: Array<[RegExp, string]> = [
+  [/connectOverCDP.*400 Bad Request/i, "Could not reach the remote browser. It may still be starting — try again in a moment."],
+  [/connectOverCDP.*WebSocket error/i, "Failed to connect to the remote browser service."],
+  [/timed?\s*out/i, "The sync operation timed out. Please try again."],
+  [/ECONNREFUSED|ENOTFOUND/i, "The sync service is unreachable. Please try again later."],
+];
+
+function toFriendlyError(raw: string): string {
+  for (const [pattern, friendly] of ERROR_PATTERNS) {
+    if (pattern.test(raw)) return friendly;
+  }
+  const firstLine = raw.split("\n")[0].trim();
+  return firstLine.length > 120 ? `${firstLine.slice(0, 117)}...` : firstLine;
 }
