@@ -28,19 +28,19 @@ export class ValidationError extends ApplicationError {
   }
 }
 
-export class VncConnectionError extends ApplicationError {
+export class DebuggerConnectionError extends ApplicationError {
   constructor(
     message: string,
     public url: string,
     options?: { cause?: unknown },
   ) {
-    super(message, 'VNC_CONNECTION_ERROR', 502, { url })
+    super(message, 'DEBUGGER_CONNECTION_ERROR', 502, { url })
     if (options?.cause) this.cause = options.cause
   }
 }
 
-export class VncDisconnectedError extends ApplicationError {
-  constructor(message: string = 'VNC session ended unexpectedly') {
-    super(message, 'VNC_DISCONNECTED', 503)
+export class DebuggerDisconnectedError extends ApplicationError {
+  constructor(message: string = 'Remote browser session ended unexpectedly') {
+    super(message, 'DEBUGGER_DISCONNECTED', 503)
   }
 }

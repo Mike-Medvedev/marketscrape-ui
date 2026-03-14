@@ -44,46 +44,42 @@ export type SearchFormValues = z.infer<typeof searchFormSchema>;
 
 export type SyncSSEEvent =
   | { status: "already_synced" }
-  | { status: "starting_container" }
-  | { status: "container_running" }
-  | { status: "status_update"; message: string; step: string; userId?: string; novncUrl?: string }
+  | { status: "connecting" }
+  | { status: "status_update"; message: string; step: string; userId?: string; debuggerUrl?: string }
   | { status: "synced" }
   | { status: "timeout" }
-  | { status: "error"; message: string }
-  | { status: "container_exited"; reason: string };
+  | { status: "error"; message: string };
 
 export interface SyncActivity {
   message: string;
-  step?: string;
+  step: string;
   userId?: string;
   createdAt: number;
 }
 
 export type SyncState =
   | "idle"
-  | "starting"
-  | "auto_login"
-  | "vnc"
-  | "vnc_error"
+  | "connecting"
+  | "running"
+  | "login"
+  | "login_error"
   | "success"
   | "timeout"
   | "error";
 
 export const syncSSEEventSchema = z.discriminatedUnion("status", [
   z.object({ status: z.literal("already_synced") }),
-  z.object({ status: z.literal("starting_container") }),
-  z.object({ status: z.literal("container_running") }),
+  z.object({ status: z.literal("connecting") }),
   z.object({
     status: z.literal("status_update"),
     message: z.string(),
     step: z.string(),
     userId: z.string().optional(),
-    novncUrl: z.string().url().optional(),
+    debuggerUrl: z.string().url().optional(),
   }),
   z.object({ status: z.literal("synced") }),
   z.object({ status: z.literal("timeout") }),
   z.object({ status: z.literal("error"), message: z.string() }),
-  z.object({ status: z.literal("container_exited"), reason: z.string() }),
 ]);
 
 export type SessionValidity = "valid" | "invalid" | "unknown";

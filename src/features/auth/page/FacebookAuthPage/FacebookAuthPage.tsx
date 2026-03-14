@@ -14,7 +14,7 @@ export function FacebookAuthPage() {
         <div className="fb-auth-toolbar">
           <div className="fb-auth-toolbar-label">
             <IconDeviceDesktop size={16} />
-            VNC Session
+            Remote Browser
           </div>
           <div className="fb-auth-toolbar-dots">
             <div className="fb-auth-dot fb-auth-dot--active" />
@@ -26,9 +26,9 @@ export function FacebookAuthPage() {
         <div className="fb-auth-viewport">
           <div className="fb-auth-placeholder">
             <IconDeviceDesktop size={64} color="var(--muted-foreground)" />
-            <Text c="dimmed" mt="md">VNC component will be integrated here</Text>
+            <Text c="dimmed" mt="md">Remote browser will be integrated here</Text>
             <Text size="sm" c="dimmed" mt="xs" opacity={0.7}>
-              Login session persists via Playwright in Docker container
+              Login session persists via Browserless
             </Text>
           </div>
         </div>

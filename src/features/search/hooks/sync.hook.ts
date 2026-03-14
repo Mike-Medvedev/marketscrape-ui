@@ -18,7 +18,7 @@ interface UseIdentitySyncOptions {
 export function useIdentitySync({ onDismiss }: UseIdentitySyncOptions = {}) {
   const queryClient = useQueryClient();
   const [syncState, setSyncState] = useState<SyncState>("idle");
-  const [vncUrl, setVncUrl] = useState<string | null>(null);
+  const [debuggerUrl, setDebuggerUrl] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [logs, setLogs] = useState<string[]>([]);
   const [activities, setActivities] = useState<SyncActivity[]>([]);
@@ -53,7 +53,7 @@ export function useIdentitySync({ onDismiss }: UseIdentitySyncOptions = {}) {
       dismissTimerRef.current = null;
     }
     setSyncState("idle");
-    setVncUrl(null);
+    setDebuggerUrl(null);
     setErrorMessage(null);
     setLogs([]);
     setActivities([]);
@@ -66,10 +66,11 @@ export function useIdentitySync({ onDismiss }: UseIdentitySyncOptions = {}) {
       dismissTimerRef.current = null;
     }
 
-    setSyncState("starting");
-    setVncUrl(null);
+    setSyncState("connecting");
+    setDebuggerUrl(null);
     setErrorMessage(null);
     setLogs(["Connecting to sync service..."]);
+    setActivities([]);
 
     const { data } = await supabase.auth.getSession();
     const token = data.session?.access_token;
@@ -112,14 +113,9 @@ export function useIdentitySync({ onDismiss }: UseIdentitySyncOptions = {}) {
           onDismissRef.current?.();
           break;
 
-        case "starting_container":
-          setSyncState("starting");
-          appendLog("Launching instance...");
-          break;
-
-        case "container_running":
-          setSyncState("auto_login");
-          appendLog("Auto-login in progress...");
+        case "connecting":
+          setSyncState("connecting");
+          appendLog("Connecting to remote browser...");
           break;
 
         case "status_update":
@@ -129,18 +125,21 @@ export function useIdentitySync({ onDismiss }: UseIdentitySyncOptions = {}) {
             userId: data.userId,
           });
 
-          if (data.step === "needs_login" && data.novncUrl) {
-            setVncUrl(data.novncUrl);
-            setSyncState("vnc");
+          if (data.step === "needs_login" && data.debuggerUrl) {
+            setDebuggerUrl(data.debuggerUrl);
+            setSyncState("login");
             appendLog("Manual login required");
-            appendLog("Please log into the marketplace in the window below");
+            appendLog("Please log into the marketplace in the browser below");
+          } else if (syncState !== "login") {
+            setSyncState("running");
           }
           break;
 
         case "synced":
           setSyncState("success");
+          setDebuggerUrl(null);
           closeEventSource();
-          appendLog("Session absorbed ✓");
+          appendLog("Session synced successfully");
           queryClient.invalidateQueries({ queryKey: getSearchesQueryKey() });
           queryClient.invalidateQueries({ queryKey: getSessionStatusQueryKey() });
           toast.success({ message: "Session synced successfully" });
@@ -153,23 +152,18 @@ export function useIdentitySync({ onDismiss }: UseIdentitySyncOptions = {}) {
 
         case "timeout":
           setSyncState("timeout");
-          setErrorMessage("Sync timed out after 5 minutes");
+          setDebuggerUrl(null);
+          setErrorMessage("Sync timed out");
           closeEventSource();
           appendLog("Timeout — no session captured");
           break;
 
         case "error":
           setSyncState("error");
+          setDebuggerUrl(null);
           setErrorMessage(data.message);
           closeEventSource();
           appendLog(`Error: ${data.message}`);
-          break;
-
-        case "container_exited":
-          setSyncState("error");
-          setErrorMessage("Sync container crashed unexpectedly");
-          closeEventSource();
-          appendLog(`Container exited: ${data.reason}`);
           break;
       }
     };
@@ -177,11 +171,12 @@ export function useIdentitySync({ onDismiss }: UseIdentitySyncOptions = {}) {
     evtSource.onerror = () => {
       if (!eventSourceRef.current) return;
       setSyncState("error");
+      setDebuggerUrl(null);
       setErrorMessage("Connection lost");
       closeEventSource();
       appendLog("Connection lost");
     };
-  }, [closeEventSource, reset, appendActivity, appendLog, queryClient]);
+  }, [closeEventSource, reset, appendActivity, appendLog, queryClient, syncState]);
 
   const abortMutation = useMutation({ ...abortSyncMutation() });
 
@@ -209,30 +204,30 @@ export function useIdentitySync({ onDismiss }: UseIdentitySyncOptions = {}) {
     };
   }, [closeEventSource]);
 
-  const handleVncError = useCallback(
+  const handleDebuggerError = useCallback(
     (reason: string) => {
-      setSyncState("vnc_error");
+      setSyncState("login_error");
       setErrorMessage(reason);
-      appendLog(`VNC error: ${reason}`);
+      appendLog(`Debugger error: ${reason}`);
     },
     [appendLog],
   );
 
   const isSyncing =
-    syncState === "starting" ||
-    syncState === "auto_login" ||
-    syncState === "vnc";
+    syncState === "connecting" ||
+    syncState === "running" ||
+    syncState === "login";
 
   const isTerminal =
     syncState === "idle" ||
     syncState === "success" ||
     syncState === "timeout" ||
-    syncState === "vnc_error" ||
+    syncState === "login_error" ||
     syncState === "error";
 
   return {
     syncState,
-    vncUrl,
+    debuggerUrl,
     errorMessage,
     logs,
     activities,
@@ -243,6 +238,6 @@ export function useIdentitySync({ onDismiss }: UseIdentitySyncOptions = {}) {
     retry,
     reset,
     abort,
-    handleVncError,
+    handleDebuggerError,
   };
 }

@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, useCallback } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   IconX,
   IconCircleCheck,
@@ -9,7 +9,6 @@ import {
 } from "@tabler/icons-react";
 import { Badge, Modal, ActionIcon, Button, Text } from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
-import { VncScreen, type VncScreenHandle } from "react-vnc";
 import { useIdentitySync } from "@/features/search/hooks/sync.hook";
 import type { SyncActivity, SyncState } from "@/features/search/search.types";
 import "./IdentityAbsorber.css";
@@ -24,7 +23,7 @@ export function IdentityAbsorber({ isOpen, onClose }: IdentityAbsorberProps) {
   const [showAbortConfirm, setShowAbortConfirm] = useState(false);
   const {
     syncState,
-    vncUrl,
+    debuggerUrl,
     errorMessage,
     logs,
     activities,
@@ -35,7 +34,7 @@ export function IdentityAbsorber({ isOpen, onClose }: IdentityAbsorberProps) {
     retry,
     reset,
     abort,
-    handleVncError,
+    handleDebuggerError,
   } = useIdentitySync({ onDismiss: onClose });
 
   useEffect(() => {
@@ -65,9 +64,9 @@ export function IdentityAbsorber({ isOpen, onClose }: IdentityAbsorberProps) {
   const shimmerClass =
     syncState === "success"
       ? "identity-shimmer identity-shimmer--success"
-      : syncState === "error" || syncState === "timeout" || syncState === "vnc_error"
+      : syncState === "error" || syncState === "timeout" || syncState === "login_error"
         ? "identity-shimmer identity-shimmer--error"
-        : syncState === "vnc"
+        : syncState === "login"
           ? "identity-shimmer identity-shimmer--hidden"
           : "identity-shimmer";
 
@@ -105,10 +104,10 @@ export function IdentityAbsorber({ isOpen, onClose }: IdentityAbsorberProps) {
           <div className="identity-browser">
             <BrowserPanel
               syncState={syncState}
-              vncUrl={vncUrl}
+              debuggerUrl={debuggerUrl}
               errorMessage={errorMessage}
               onRetry={retry}
-              onVncError={handleVncError}
+              onDebuggerError={handleDebuggerError}
             />
           </div>
 
@@ -206,16 +205,14 @@ function SyncActivityPanel({
                 </div>
                 <div className="identity-timeline-content">
                   <div className="identity-timeline-message">{activity.message}</div>
-                  {activity.step ? (
-                    <div className="identity-timeline-meta">{activity.step}</div>
-                  ) : null}
+                  <div className="identity-timeline-meta">{activity.step}</div>
                 </div>
               </div>
             ))}
           </div>
         ) : (
           <div className="identity-empty-state">
-            Waiting for progress updates from the Playwright container.
+            Waiting for progress updates from the automation.
           </div>
         )}
       </div>
@@ -243,26 +240,26 @@ function getSyncStatusCopy(
 ): { title: string; description: string } {
   if (currentActivity) {
     return {
-      title: "Playwright automation running",
+      title: "Automation running",
       description: currentActivity.message,
     };
   }
 
   switch (syncState) {
-    case "starting":
+    case "connecting":
       return {
-        title: "Preparing browser session",
-        description: "Starting the sync container and restoring browser state.",
+        title: "Connecting",
+        description: "Connecting to the remote browser...",
       };
-    case "auto_login":
+    case "running":
       return {
-        title: "Checking saved session",
-        description: "The backend is testing the stored browser profile before asking for login.",
+        title: "Checking session",
+        description: "The backend is verifying the stored browser session.",
       };
-    case "vnc":
+    case "login":
       return {
         title: "Waiting for manual login",
-        description: "Log into the marketplace in the remote browser. Automation resumes automatically after login.",
+        description: "Log into Facebook in the browser below. Automation resumes automatically after login.",
       };
     case "success":
       return {
@@ -274,7 +271,7 @@ function getSyncStatusCopy(
         title: "Sync timed out",
         description: "The backend did not finish before the timeout window expired.",
       };
-    case "vnc_error":
+    case "login_error":
     case "error":
       return {
         title: "Sync failed",
@@ -291,56 +288,56 @@ function getSyncStatusCopy(
 
 interface BrowserPanelProps {
   syncState: SyncState;
-  vncUrl: string | null;
+  debuggerUrl: string | null;
   errorMessage: string | null;
   onRetry: () => void;
-  onVncError: (reason: string) => void;
+  onDebuggerError: (reason: string) => void;
 }
 
 function BrowserPanel({
   syncState,
-  vncUrl,
+  debuggerUrl,
   errorMessage,
   onRetry,
-  onVncError,
+  onDebuggerError,
 }: BrowserPanelProps) {
   switch (syncState) {
-    case "starting":
+    case "connecting":
       return (
         <div className="identity-loading">
           <div className="identity-spinner" />
-          <p className="identity-loading-text">Starting sync container...</p>
-          <p className="identity-loading-hint">This may take 30-60 seconds</p>
+          <p className="identity-loading-text">Connecting...</p>
+          <p className="identity-loading-hint">This usually takes under a second</p>
         </div>
       );
 
-    case "auto_login":
+    case "running":
       return (
         <div className="identity-loading">
           <div className="identity-spinner" />
-          <p className="identity-loading-text">Attempting auto-login...</p>
+          <p className="identity-loading-text">Automation in progress...</p>
           <p className="identity-loading-hint">
-            Using saved browser context
+            Checking session and capturing data
           </p>
         </div>
       );
 
-    case "vnc":
-      return vncUrl ? (
-        <div className="identity-vnc-layout">
-          <div className="identity-vnc-instructions">
-            <div className="identity-vnc-instructions-title">Manual login required</div>
-            <p className="identity-vnc-instructions-text">
+    case "login":
+      return debuggerUrl ? (
+        <div className="identity-debugger-layout">
+          <div className="identity-debugger-instructions">
+            <div className="identity-debugger-instructions-title">Manual login required</div>
+            <p className="identity-debugger-instructions-text">
               Log into Facebook in the browser below. If you get a notification approval
               or two-factor prompt on another device, complete it there and this sync will
               continue automatically.
             </p>
           </div>
-          <VncPanel url={vncUrl} onVncError={onVncError} />
+          <DebuggerPanel url={debuggerUrl} onError={onDebuggerError} />
         </div>
       ) : null;
 
-    case "vnc_error":
+    case "login_error":
       return (
         <div className="identity-terminal">
           <div className="identity-terminal-icon identity-terminal-icon--error">
@@ -384,7 +381,7 @@ function BrowserPanel({
           </div>
           <h3 className="identity-terminal-title">Sync Timed Out</h3>
           <p className="identity-terminal-desc">
-            No session was captured within 5 minutes.
+            No session was captured within the timeout window.
           </p>
           <Button onClick={onRetry} color="amber" className="identity-retry-btn">
             Try Again
@@ -413,67 +410,47 @@ function BrowserPanel({
   }
 }
 
-interface VncPanelProps {
+interface DebuggerPanelProps {
   url: string;
-  onVncError: (reason: string) => void;
+  onError: (reason: string) => void;
 }
 
-function VncPanel({ url, onVncError }: VncPanelProps) {
-  const vncRef = useRef<VncScreenHandle>(null);
-  const [connected, setConnected] = useState(false);
+function DebuggerPanel({ url, onError }: DebuggerPanelProps) {
+  const iframeRef = useRef<HTMLIFrameElement>(null);
+  const [loaded, setLoaded] = useState(false);
   const errorFiredRef = useRef(false);
 
-  const handleConnect = useCallback(() => {
-    setConnected(true);
+  useEffect(() => {
     errorFiredRef.current = false;
-  }, []);
+    setLoaded(false);
+  }, [url]);
 
-  const handleDisconnect = useCallback(
-    (event: CustomEvent<{ clean: boolean }> | undefined) => {
-      if (errorFiredRef.current) return;
+  const handleLoad = () => {
+    setLoaded(true);
+  };
 
-      const clean = event?.detail?.clean ?? false;
-      if (!clean) {
-        errorFiredRef.current = true;
-        const reason = connected
-          ? "The remote browser disconnected unexpectedly."
-          : "Could not establish a connection to the remote browser.";
-        onVncError(reason);
-      }
-    },
-    [connected, onVncError],
-  );
-
-  const handleSecurityFailure = useCallback(
-    (event: CustomEvent<{ status: number; reason: string }> | undefined) => {
-      if (errorFiredRef.current) return;
-      errorFiredRef.current = true;
-      const reason = event?.detail?.reason ?? "Security handshake failed";
-      onVncError(`Security failure: ${reason}`);
-    },
-    [onVncError],
-  );
+  const handleError = () => {
+    if (errorFiredRef.current) return;
+    errorFiredRef.current = true;
+    onError("Could not load the remote browser session.");
+  };
 
   return (
-    <div className="identity-vnc-container">
-      {!connected && (
-        <div className="identity-vnc-connecting">
+    <div className="identity-debugger-container">
+      {!loaded && (
+        <div className="identity-debugger-connecting">
           <div className="identity-spinner identity-spinner--small" />
-          <p className="identity-loading-text">Connecting to remote browser...</p>
+          <p className="identity-loading-text">Loading remote browser...</p>
         </div>
       )}
-      <VncScreen
-        ref={vncRef}
-        url={url}
-        scaleViewport
-        resizeSession
-        clipViewport
-        background="#000000"
-        className={`identity-vnc-screen ${connected ? "" : "identity-vnc-screen--connecting"}`}
-        retryDuration={0}
-        onConnect={handleConnect}
-        onDisconnect={handleDisconnect}
-        onSecurityFailure={handleSecurityFailure}
+      <iframe
+        ref={iframeRef}
+        src={url}
+        title="Remote browser session"
+        className={`identity-debugger-frame ${loaded ? "" : "identity-debugger-frame--loading"}`}
+        onLoad={handleLoad}
+        onError={handleError}
+        sandbox="allow-scripts allow-same-origin allow-forms allow-popups"
       />
     </div>
   );

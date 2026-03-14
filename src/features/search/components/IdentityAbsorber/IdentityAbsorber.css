@@ -281,7 +281,7 @@
   color: rgba(229, 229, 229, 0.6);
 }
 
-.identity-vnc-layout {
+.identity-debugger-layout {
   display: flex;
   flex-direction: column;
   gap: 0.9rem;
@@ -290,27 +290,27 @@
   min-height: 0;
 }
 
-.identity-vnc-instructions {
+.identity-debugger-instructions {
   padding: 0.9rem 1rem;
   border: 1px solid rgba(250, 204, 21, 0.16);
   background: linear-gradient(180deg, rgba(250, 204, 21, 0.1), rgba(250, 204, 21, 0.04));
   border-radius: 12px;
 }
 
-.identity-vnc-instructions-title {
+.identity-debugger-instructions-title {
   font-size: 0.95rem;
   font-weight: 600;
   color: var(--foreground);
 }
 
-.identity-vnc-instructions-text {
+.identity-debugger-instructions-text {
   margin: 0.35rem 0 0;
   font-size: 0.83rem;
   line-height: 1.5;
   color: rgba(229, 229, 229, 0.78);
 }
 
-.identity-vnc-container {
+.identity-debugger-container {
   width: 100%;
   height: 100%;
   display: flex;
@@ -323,16 +323,18 @@
   border: 1px solid rgba(255, 255, 255, 0.06);
 }
 
-.identity-vnc-screen {
+.identity-debugger-frame {
   width: 100%;
   height: 100%;
+  border: none;
+  border-radius: 16px;
 }
 
-.identity-vnc-screen--connecting {
+.identity-debugger-frame--loading {
   opacity: 0;
 }
 
-.identity-vnc-connecting {
+.identity-debugger-connecting {
   position: absolute;
   inset: 0;
   display: flex;
@@ -355,7 +357,7 @@
   max-width: 300px;
 }
 
-.identity-browser:has(.identity-vnc-container) {
+.identity-browser:has(.identity-debugger-container) {
   padding: 1rem;
   align-items: stretch;
   justify-content: stretch;
