@@ -1,0 +1,4 @@
+data: {"status":"connecting"}
+
+data: {"status":"error","message":"browserType.connectOverCDP: WebSocket error: wss://browserless-container.internal.kindocean-fa25625e.eastus2.azurecontainerapps.io/ 400 Bad Request\nCall log:\n  - <ws connecting> wss://browserless-container.internal.kindocean-fa25625e.eastus2.azurecontainerapps.io/\n  - <ws unexpected response> wss://browserless-container.internal.kindocean-fa25625e.eastus2.azurecontainerapps.io/ 400 Bad Request\n  - <ws error> wss://browserless-container.internal.kindocean-fa25625e.eastus2.azurecontainerapps.io/ error WebSocket was closed before the connection was established\n  - <ws connect error> wss://browserless-container.internal.kindocean-fa25625e.eastus2.azurecontainerapps.io/ WebSocket was closed before the connection was established\n  - <ws disconnected> wss://browserless-container.internal.kindocean-fa25625e.eastus2.azurecontainerapps.io/ code=1006 reason=\n"}
+
