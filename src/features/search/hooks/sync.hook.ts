@@ -62,7 +62,8 @@ export function useIdentitySync({ onDismiss }: UseIdentitySyncOptions = {}) {
   }, [closeEventSource]);
 
   const startSync = useCallback(async () => {
-    closeEventSource();
+    if (eventSourceRef.current) return;
+
     if (dismissTimerRef.current) {
       clearTimeout(dismissTimerRef.current);
       dismissTimerRef.current = null;
@@ -197,8 +198,9 @@ export function useIdentitySync({ onDismiss }: UseIdentitySyncOptions = {}) {
   }, [closeEventSource, reset, abortMutation]);
 
   const retry = useCallback(() => {
+    closeEventSource();
     startSync();
-  }, [startSync]);
+  }, [closeEventSource, startSync]);
 
   useEffect(() => {
     return () => {
